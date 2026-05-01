@@ -1,7 +1,7 @@
 {
-  "actualizado": "2026-04-30 19:04:12",
+  "actualizado": "2026-04-30 19:19:21",
   "kpis": {
-    "nivel_l": 13.8,
+    "nivel_l": 13.85,
     "humedad_pct": 52.0,
     "temp_c": 16.3,
     "punto_rocio_c": 6.4,
@@ -20,9 +20,9 @@
   "sistema": {
     "cpu_temp_c": 36.0,
     "voltaje_v": 0.946,
-    "ram_uso_pct": 11.4,
+    "ram_uso_pct": 11.7,
     "disco_uso_pct": 10.4,
-    "uptime": "8h 19m",
+    "uptime": "8h 34m",
     "gpu_temp_c": null,
     "freq_cpu_mhz": 1800,
     "throttle_ok": true,
@@ -135,10 +135,12 @@
       "2026-04-29 06:01:39"
     ],
     "labels_nivel": [
-      "2026-04-30 19:04:05"
+      "2026-04-30 19:04:05",
+      "2026-04-30 19:19:16"
     ],
     "nivel_l": [
-      13.8
+      13.8,
+      13.85
     ],
     "humedad_pct": [
       69.0,
