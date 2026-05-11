@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>AWA05 · Análisis Estadístico Científico Avanzado</title>
+  <title>AWA05 · Análisis Estadístico y Simulación Microclimática</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet" />
 
@@ -1611,6 +1611,292 @@
         font-size: 44px;
       }
     }
+
+
+    /* ─────────────────────────────────────────────────────────────
+       AJUSTES V4: SIN PANEL IZQUIERDO, SIN TOOLTIP FLOTANTE
+    ───────────────────────────────────────────────────────────── */
+    .layout {
+      grid-template-columns: minmax(0, 1fr) var(--insight-w) !important;
+    }
+
+    .sidebar,
+    .hover-tooltip {
+      display: none !important;
+    }
+
+    main {
+      max-width: 1620px;
+      padding-left: 44px;
+      padding-right: 44px;
+    }
+
+    .insight-rail {
+      box-shadow: -8px 0 28px rgba(0,0,0,0.035);
+    }
+
+    .insight-title {
+      font-size: 21px;
+    }
+
+    .insight-text {
+      font-size: 13px;
+    }
+
+    .hero h1,
+    .section-title {
+      text-wrap: balance;
+    }
+
+    .section-title {
+      font-size: 31px;
+    }
+
+    .section-sub {
+      max-width: 1040px;
+      font-size: 13.5px;
+    }
+
+    .clickable-row {
+      cursor: pointer;
+    }
+
+    .clickable-row:hover td {
+      background: rgba(28,63,110,0.075) !important;
+    }
+
+    .clickable-row.is-selected td {
+      background: rgba(28,63,110,0.115) !important;
+      box-shadow: inset 3px 0 0 var(--cobalt);
+    }
+
+    th,
+    td {
+      padding: 11px 13px;
+    }
+
+    th {
+      text-align: center;
+    }
+
+    td {
+      white-space: normal;
+      vertical-align: middle;
+    }
+
+    td.num,
+    td.center,
+    td.value-cell,
+    #block-table td,
+    #quality-table td {
+      text-align: center !important;
+    }
+
+    td:first-child,
+    th:first-child {
+      text-align: left;
+    }
+
+    #block-table td:first-child,
+    #quality-table td:first-child {
+      text-align: left !important;
+      font-weight: 500;
+      color: var(--ink-mid);
+    }
+
+    .table-wrap {
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.65);
+    }
+
+    .table-wrap table {
+      min-width: 720px;
+    }
+
+    .equation-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: stretch;
+    }
+
+    .equation-card {
+      min-height: 172px;
+      overflow: hidden;
+    }
+
+    .equation-card .math-display {
+      margin: 12px 0 10px;
+      padding: 12px;
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(28,63,110,0.12);
+      background: rgba(28,63,110,0.035);
+      overflow-x: auto;
+    }
+
+    .equation-card mjx-container {
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 4px 0;
+      font-size: 112% !important;
+    }
+
+    .equation-desc {
+      font-size: 12.5px;
+      line-height: 1.62;
+    }
+
+    .simulator-shell {
+      grid-template-columns: minmax(360px, 0.95fr) minmax(0, 1.65fr);
+      align-items: stretch;
+      gap: 18px;
+    }
+
+    .sim-panel,
+    .sim-result-card {
+      min-width: 0;
+    }
+
+    .sim-readout {
+      padding: 24px 22px 22px;
+    }
+
+    .sim-main {
+      font-size: clamp(44px, 4.8vw, 70px);
+      letter-spacing: -0.045em;
+      white-space: nowrap;
+    }
+
+    .sim-main span {
+      display: inline-block;
+      margin-left: 8px;
+    }
+
+    .sim-controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .control {
+      min-width: 0;
+    }
+
+    .control-head {
+      align-items: flex-start;
+    }
+
+    .control-label {
+      line-height: 1.35;
+      white-space: normal;
+    }
+
+    .control-value {
+      flex-shrink: 0;
+    }
+
+    .scenario-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .scenario-btn {
+      min-height: 42px;
+      line-height: 1.3;
+      white-space: normal;
+    }
+
+    .sim-kpi-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .sim-kpi-value {
+      font-size: 15px;
+      line-height: 1.25;
+      word-break: normal;
+    }
+
+    .sim-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0 14px;
+    }
+
+    .sim-mini {
+      padding: 11px 12px;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      background: var(--surface2);
+    }
+
+    .sim-mini-label {
+      color: var(--ink-faint);
+      font-family: var(--mono);
+      font-size: 7px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      line-height: 1.25;
+    }
+
+    .sim-mini-value {
+      margin-top: 5px;
+      color: var(--ink-mid);
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .chart.short {
+      height: 310px;
+    }
+
+    .plotly .gtitle {
+      white-space: normal !important;
+    }
+
+    @media(max-width: 1280px) {
+      .layout {
+        grid-template-columns: 1fr !important;
+      }
+      .insight-rail {
+        position: static;
+        height: auto;
+        border-left: 0;
+        border-top: 1px solid var(--rule);
+        padding: 18px 24px 80px;
+      }
+      .simulator-shell,
+      .sim-controls,
+      .sim-kpi-grid,
+      .sim-metrics-grid {
+        grid-template-columns: 1fr;
+      }
+      main {
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+    }
+
+    @media(max-width: 760px) {
+      main {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+      .equation-grid,
+      .grid-2,
+      .grid-3,
+      .grid-4 {
+        grid-template-columns: 1fr !important;
+      }
+      .hero h1 {
+        font-size: 42px;
+      }
+      .section-title {
+        font-size: 26px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -1674,8 +1960,6 @@
     </div>
   </div>
 
-  <div class="hover-tooltip" id="hover-tooltip"></div>
-
   <div class="layout">
     <aside class="sidebar">
       <div class="sb-section">
@@ -1720,18 +2004,18 @@
     </aside>
 
     <main>
-      <section id="resumen" class="hero insightable" data-insight="Esta página no recalcula estadística pesada en el navegador. Presenta resultados precalculados en Python y los transforma en narrativa, gráficos e interpretación interactiva.">
+      <section id="resumen" class="hero insightable" data-insight="Resumen del informe estadístico del bloque B01: producción observada, tramo climático común y lectura del modelo microclimático.">
         <div class="hero-inner">
           <div class="eyebrow">Informe científico interactivo · bloque experimental B01</div>
-          <h1>Producción de agua atmosférica explicada por microclima</h1>
+          <h1>Producción atmosférica de agua y respuesta microclimática</h1>
           <p>
-            Esta versión convierte el análisis estadístico en un informe navegable: cada tarjeta, ecuación,
-            gráfico y tabla tiene interpretación contextual. La variable dependiente es producción de agua,
-            y las variables explicativas son humedad, temperatura, punto de rocío, VPD, viento, lluvia,
-            radiación y tiempo operativo. El simulador traduce la evidencia del bloque en escenarios de producción.
+            Este informe evalúa la producción de agua del sistema AWA05 frente a humedad relativa,
+            temperatura, punto de rocío, VPD, radiación, viento y hora de operación. La lectura separa
+            tres niveles: producción total medida, producción con clima simultáneo y capacidad explicativa
+            del modelo durante el solapamiento real de sensores.
           </p>
           <div class="pill-row">
-            <span class="pill ok">JSON precalculado</span>
+            <span class="pill ok">Datos procesados</span>
             <span class="pill ok">MathJax</span>
             <span class="pill ok">Plotly</span>
             <span class="pill warn">1 bloque activo</span>
@@ -1795,14 +2079,14 @@
       <section id="simulador" class="section">
         <div class="section-head">
           <div>
-            <div class="eyebrow">Simulador exploratorio</div>
-            <h2 class="section-title">¿Cuánta agua produciría AWA05 bajo otro <em>microclima</em>?</h2>
+            <div class="eyebrow">Simulación microclimática</div>
+            <h2 class="section-title">Respuesta estimada del sistema ante escenarios de operación</h2>
             <p class="section-sub">
-              El simulador usa el modelo lineal robusto disponible y lo mezcla con patrones observados por franja horaria.
-              No es una garantía operativa: es una traducción visual de la evidencia del bloque B01.
+              El simulador combina el ajuste estadístico del bloque con reglas físicas simples de condensación.
+              Permite comparar escenarios de humedad, temperatura, VPD, radiación, viento y horario sin alterar los datos originales.
             </p>
           </div>
-          <span class="badge warn">Exploratorio</span>
+          <span class="badge warn">Simulador</span>
         </div>
         <div class="section-rule"></div>
 
@@ -1854,31 +2138,43 @@
             </div>
           </div>
 
-          <div class="card insightable" data-insight="Estas gráficas no son datos nuevos: son el modelo recorriendo valores posibles. Sirven para pensar escenarios y sensibilidad.">
+          <div class="card sim-result-card insightable" data-insight="Resultados del simulador. La lectura principal es comparativa: cómo cambia el rendimiento estimado cuando varían las condiciones microclimáticas.">
             <div class="card-head">
               <div>
-                <div class="card-title">Respuesta simulada</div>
-                <div class="card-sub">Sensibilidad a humedad y mapa temperatura × humedad</div>
+                <div class="card-title">Respuesta estimada del sistema</div>
+                <div class="card-sub">Producción, incertidumbre, sensibilidad a humedad y superficie temperatura × humedad</div>
               </div>
-              <span class="badge warn">Modelo + patrón observado</span>
+              <span class="badge warn">Modelo híbrido</span>
             </div>
 
             <div class="sim-kpi-grid">
               <div class="sim-kpi">
-                <div class="sim-kpi-label">Producción diaria</div>
+                <div class="sim-kpi-label">Producción diaria equivalente</div>
                 <div class="sim-kpi-value" id="sim-day">—</div>
-                <div class="sim-kpi-note">Escenario × 24 h</div>
+                <div class="sim-kpi-note">si el escenario se mantiene 24 h</div>
               </div>
               <div class="sim-kpi">
-                <div class="sim-kpi-label">Rango probable</div>
+                <div class="sim-kpi-label">Intervalo operativo</div>
                 <div class="sim-kpi-value" id="sim-band">—</div>
-                <div class="sim-kpi-note">± RMSE del modelo</div>
+                <div class="sim-kpi-note">banda basada en RMSE</div>
               </div>
               <div class="sim-kpi">
-                <div class="sim-kpi-label">Lectura</div>
+                <div class="sim-kpi-label">Comparación con B01</div>
                 <div class="sim-kpi-value" id="sim-quality">—</div>
-                <div class="sim-kpi-note">comparado con B01</div>
+                <div class="sim-kpi-note">respecto al promedio horario</div>
               </div>
+              <div class="sim-kpi">
+                <div class="sim-kpi-label">Índice microclimático</div>
+                <div class="sim-kpi-value" id="sim-index">—</div>
+                <div class="sim-kpi-note">0–100, condiciones favorables</div>
+              </div>
+            </div>
+
+            <div class="sim-metrics-grid">
+              <div class="sim-mini"><div class="sim-mini-label">Punto de rocío estimado</div><div class="sim-mini-value" id="sim-dew">—</div></div>
+              <div class="sim-mini"><div class="sim-mini-label">Humedad absoluta</div><div class="sim-mini-value" id="sim-ah">—</div></div>
+              <div class="sim-mini"><div class="sim-mini-label">Franja horaria</div><div class="sim-mini-value" id="sim-part">—</div></div>
+              <div class="sim-mini"><div class="sim-mini-label">Penalización solar / VPD</div><div class="sim-mini-value" id="sim-penalty">—</div></div>
             </div>
 
             <div class="grid-2">
@@ -1891,8 +2187,7 @@
             </div>
 
             <div class="sim-explain" id="sim-explain">
-              <strong>Interpretación:</strong> mueve los controles para ver cómo el modelo responde. Si el R² es bajo,
-              el simulador debe leerse como exploración, no como predicción contractual.
+              Ajusta las variables o elige un escenario. El resultado se interpreta como rendimiento relativo frente al bloque B01.
             </div>
           </div>
         </div>
@@ -1943,7 +2238,7 @@
             <div class="eyebrow">Formalización matemática</div>
             <h2 class="section-title">Ecuaciones base del análisis</h2>
             <p class="section-sub">
-              El informe utiliza ecuaciones renderizadas con MathJax para que el marco analítico sea transparente y auditable.
+              Las ecuaciones definen la variable dependiente, los estadísticos descriptivos, las pruebas de grupos y el modelo climático.
             </p>
           </div>
           <span class="badge violet">MathJax</span>
@@ -2156,8 +2451,8 @@
             <div class="eyebrow">Modelado predictivo</div>
             <h2 class="section-title">OLS robusto y modelos no lineales</h2>
             <p class="section-sub">
-              El modelo lineal se presenta por interpretabilidad; los modelos no lineales se reportan para explorar señales.
-              La validación cruzada es más importante que el ajuste dentro de muestra.
+              El modelo lineal permite leer coeficientes climáticos; los modelos no lineales permiten detectar señales curvas o interacciones.
+              La comparación se interpreta con énfasis en error y validación.
             </p>
           </div>
           <span class="badge">Modelos</span>
@@ -2207,8 +2502,7 @@
             <div class="eyebrow">Diagnóstico estadístico</div>
             <h2 class="section-title">Predicción, residuos e influencia</h2>
             <p class="section-sub">
-              Un modelo serio no solo reporta R²; también muestra errores, residuos, autocorrelación,
-              heterocedasticidad y puntos influyentes.
+              Se revisan ajuste, error, residuos, autocorrelación, heterocedasticidad y puntos influyentes.
             </p>
           </div>
           <span class="badge warn">Diagnóstico</span>
@@ -2254,13 +2548,13 @@
       <section id="conclusiones" class="section">
         <div class="section-head">
           <div>
-            <div class="eyebrow">Síntesis científica</div>
-            <h2 class="section-title">Qué sí se puede afirmar y qué todavía no</h2>
+            <div class="eyebrow">Síntesis de resultados</div>
+            <h2 class="section-title">Conclusiones</h2>
             <p class="section-sub">
-              Las conclusiones distinguen evidencia operacional, evidencia estadística y límites por tener solo un bloque experimental.
+              Lectura integrada de producción, humedad, temperatura, VPD, radiación y desempeño del modelo durante el bloque B01.
             </p>
           </div>
-          <span class="badge ok">Auditable</span>
+          <span class="badge ok">B01</span>
         </div>
         <div class="section-rule"></div>
 
@@ -2268,8 +2562,8 @@
           <div class="card insightable" data-insight="Estas conclusiones se generan a partir del JSON y son conservadoras: separan evidencia real de interpretación exploratoria.">
             <div class="card-head">
               <div>
-                <div class="card-title">Conclusiones</div>
-                <div class="card-sub">Lectura automática del bloque</div>
+                <div class="card-title">Producción y microclima</div>
+                <div class="card-sub">Interpretación técnica del bloque</div>
               </div>
               <span class="badge ok">Evidencia</span>
             </div>
@@ -2293,11 +2587,11 @@
     <aside class="insight-rail">
       <div class="insight-card">
         <div class="insight-eyebrow">Lente interpretativa</div>
-        <div class="insight-title" id="insight-title">Pasa el cursor sobre cualquier elemento</div>
+        <div class="insight-title" id="insight-title">Lente interpretativa</div>
         <div class="insight-text" id="insight-text">
-          Cada gráfico, ecuación, KPI y tabla puede explicar qué significa, cómo se interpreta y qué cautela estadística aplica.
+          Haz clic en una tarjeta, fila de tabla, ecuación o gráfica para ver aquí la lectura técnica correspondiente.
         </div>
-        <div class="insight-meta" id="insight-meta">Modo explicación activo</div>
+        <div class="insight-meta" id="insight-meta">Modo explicación por clic</div>
       </div>
 
       <div class="card" style="margin-top:16px">
@@ -2331,11 +2625,11 @@
     const FALLBACK_DATA = {
       metadata: {
         generated_at: '2026-05-08T00:00:00',
-        analysis_version: 'fallback-minimal'
+        analysis_version: 'respaldo-minimal'
       },
       block: {
         block_id: 'B01',
-        block_name: 'Bloque 01 · fallback',
+        block_name: 'Bloque 01 · respaldo',
         water_start: '2026-04-23 12:29:11',
         water_end: '2026-05-06 09:27:12',
         climate_start: '2026-04-23 12:30:20',
@@ -2500,36 +2794,54 @@
       return Array.isArray(value) ? value : [];
     }
 
-    function get(obj, path, fallback = null) {
+    function get(obj, path, respaldo = null) {
       return path.split('.').reduce((acc, key) => {
         if (acc && Object.prototype.hasOwnProperty.call(acc, key)) return acc[key];
         return undefined;
-      }, obj) ?? fallback;
+      }, obj) ?? respaldo;
     }
 
     function clamp(value, min, max) {
       return Math.max(min, Math.min(max, value));
     }
 
-    function table(headers, rows) {
+    function table(headers, rows, options = {}) {
+      const title = options.title || 'Fila de tabla';
       return `
         <table>
           <thead>
             <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
           </thead>
           <tbody>
-            ${rows.map(row => `
-              <tr>
-                ${row.map(cell => {
-                  const raw = cell === null || cell === undefined ? '—' : cell;
-                  const numeric = typeof raw === 'number' || String(raw).match(/^-?\d+(\.\d+)?$/);
-                  return `<td class="${numeric ? 'num' : ''}">${raw}</td>`;
-                }).join('')}
-              </tr>
-            `).join('')}
+            ${rows.map((row, index) => {
+              const insight = options.rowInsights?.[index] || buildRowInsight(headers, row, title);
+              const rowTitle = `${title} · ${stripHTML(row[0])}`;
+              return `
+                <tr class="clickable-row" tabindex="0" data-insight-title="${escapeAttr(rowTitle)}" data-insight="${escapeAttr(insight)}">
+                  ${row.map((cell, cIndex) => {
+                    const raw = cell === null || cell === undefined ? '—' : cell;
+                    const asText = stripHTML(raw);
+                    const numeric = typeof raw === 'number' || asText.match(/^-?\d+(\.\d+)?(\s?(L|h|d|%|kPa|°C|L\/h|L\/día))?$/i);
+                    const cls = [numeric ? 'num' : '', cIndex > 0 ? 'value-cell' : ''].join(' ').trim();
+                    return `<td class="${cls}">${raw}</td>`;
+                  }).join('')}
+                </tr>
+              `;
+            }).join('')}
           </tbody>
         </table>
       `;
+    }
+
+    function stripHTML(value) {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = String(value ?? '');
+      return tmp.textContent || tmp.innerText || '';
+    }
+
+    function buildRowInsight(headers, row, title) {
+      const pairs = headers.map((h, i) => `${h}: ${stripHTML(row[i])}`).join(' · ');
+      return `${title}. ${pairs}.`;
     }
 
     function pStatus(p) {
@@ -2617,7 +2929,7 @@
         return await response.json();
       } catch (error) {
         USING_FALLBACK = true;
-        console.warn('No se pudo cargar statistical_analysis.json; usando fallback mínimo.', error);
+        console.warn('No se pudo cargar statistical_analysis.json; usando respaldo mínimo.', error);
         return FALLBACK_DATA;
       }
     }
@@ -2628,32 +2940,23 @@
       setText('insight-meta', meta);
     }
 
-    function installHoverInsights() {
-      const tooltip = $('hover-tooltip');
-
-      document.addEventListener('pointerover', event => {
-        const target = event.target.closest('.insightable, [data-insight]');
+    function installInsightInteractions() {
+      document.addEventListener('click', event => {
+        const target = event.target.closest('.clickable-row, .insightable, [data-insight]');
         if (!target) return;
-        const text = target.dataset.insight;
-        if (!text) return;
-        const title = target.dataset.insightTitle || target.querySelector('.card-title, .kpi-label, .method-title, .equation-title')?.textContent || 'Lectura contextual';
-        updateInsight(title, text, 'Hover interpretativo');
-        tooltip.innerHTML = `<strong>${title}</strong><br>${text}`;
-        tooltip.style.display = 'block';
+        const title = target.dataset.insightTitle || target.querySelector('.card-title, .kpi-label, .method-title, .equation-title')?.textContent || 'Lectura técnica';
+        const text = target.dataset.insight || 'Este elemento no tiene una interpretación específica registrada.';
+        document.querySelectorAll('.clickable-row.is-selected').forEach(row => row.classList.remove('is-selected'));
+        if (target.classList.contains('clickable-row')) target.classList.add('is-selected');
+        updateInsight(title, text, target.classList.contains('clickable-row') ? 'Fila seleccionada' : 'Elemento seleccionado');
       });
 
-      document.addEventListener('pointermove', event => {
-        if (tooltip.style.display !== 'block') return;
-        const pad = 18;
-        const x = Math.min(window.innerWidth - 340, event.clientX + pad);
-        const y = Math.min(window.innerHeight - 160, event.clientY + pad);
-        tooltip.style.left = `${Math.max(12, x)}px`;
-        tooltip.style.top = `${Math.max(12, y)}px`;
-      });
-
-      document.addEventListener('pointerout', event => {
-        if (!event.target.closest('.insightable, [data-insight]')) return;
-        tooltip.style.display = 'none';
+      document.addEventListener('keydown', event => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        const target = event.target.closest('.clickable-row');
+        if (!target) return;
+        event.preventDefault();
+        target.click();
       });
     }
 
@@ -2671,7 +2974,7 @@
       setText('h-overlap', `${fmt.num(get(quality, 'analytical_overlap.days', block.overlap_days), 2)} d`);
       setText('h-best-rho', best ? `ρ ${fmt.num(best.spearman_rho, 2)}` : 'ρ —');
       setText('header-ts', String(get(data, 'metadata.generated_at', '—')).slice(0, 16));
-      setText('footer-ts', `Análisis generado · ${String(get(data, 'metadata.generated_at', '—')).slice(0, 19)}${USING_FALLBACK ? ' · fallback' : ''}`);
+      setText('footer-ts', `Análisis generado · ${String(get(data, 'metadata.generated_at', '—')).slice(0, 19)}${USING_FALLBACK ? ' · respaldo' : ''}`);
       setText('sb-block', block.block_id || 'B01');
       setText('sb-water', `${fmt.int(quality.water_records_total || block.water_records)} registros`);
       setText('sb-climate', `${fmt.int(quality.climate_records_total || block.climate_records)} registros`);
@@ -2821,7 +3124,8 @@
           ['Producción válida total', `${fmt.num(block.water_production_l_valid, 2)} L`, 'Toda la serie de agua'],
           ['Producción con clima', `${fmt.num(block.production_l_overlap_with_climate || quality.total_positive_overlap_with_climate_l, 2)} L`, 'Solo solapamiento'],
           ['Ventanas modeladas', `${fmt.int(block.hourly_windows_modeled || quality.hourly_windows_with_water_and_climate)} h`, 'n efectivo para modelos']
-        ]
+        ],
+        { title: 'Periodo real del bloque y solapamiento' }
       ));
 
       setHTML('quality-table', table(
@@ -2835,42 +3139,58 @@
           ['Eventos positivos válidos', fmt.int(quality.water_positive_valid_events), 'después de QC'],
           ['Eventos removidos', fmt.int(quality.water_positive_events_removed), 'saltos sospechosos'],
           ['Saltos > 6 L removidos', fmt.int(quality.water_large_positive_removed_gt_6l), 'regla física']
-        ]
+        ],
+        { title: 'Control de calidad del bloque' }
       ));
     }
 
+    function normalizeLatex(raw) {
+      return String(raw || '')
+        .replace(/^\s*\\\[/, '')
+        .replace(/\\\]\s*$/, '')
+        .replace(/^\s*\$\$/, '')
+        .replace(/\$\$\s*$/, '')
+        .trim();
+    }
+
     function renderEquations(data) {
-      const fallbackEquations = [
-        { id: 'Yb', title: 'Producción total del bloque', latex: 'Y_b = V_{b,final} - V_{b,inicial}', desc: 'Variable dependiente agregada por bloque.' },
-        { id: 'Pb', title: 'Producción normalizada', latex: 'P_b = \\frac{Y_b}{D_b}', desc: 'Litros por día válido del bloque.' },
-        { id: 'xbar', title: 'Agregación climática', latex: '\\bar{X}_{j,b} = \\frac{1}{n_b}\\sum_{i=1}^{n_b} X_{j,i}', desc: 'Resumen climático por bloque o ventana.' },
-        { id: 'vpd', title: 'Déficit de presión de vapor', latex: 'VPD = e_s(T) - e_a', desc: 'Distancia atmosférica respecto a saturación.' },
-        { id: 'ols', title: 'Modelo climático lineal', latex: 'Y_t = \\beta_0 + \\beta_1 RH_t + \\beta_2 T_t + \\beta_3 VPD_t + \\beta_4 S_t + \\epsilon_t', desc: 'Modelo interpretable por ventana horaria.' },
-        { id: 'dw', title: 'Durbin-Watson', latex: 'DW = \\frac{\\sum_{t=2}^{n}(e_t-e_{t-1})^2}{\\sum_{t=1}^{n}e_t^2}', desc: 'Autocorrelación de residuos.' },
-        { id: 'eta', title: 'Eta cuadrado', latex: '\\eta^2 = \\frac{SS_{between}}{SS_{total}}', desc: 'Tamaño de efecto en ANOVA.' },
-        { id: 'cliff', title: "Cliff's delta", latex: '\\delta = \\frac{\\#(x_i>y_j)-\\#(x_i<y_j)}{mn}', desc: 'Tamaño de efecto no paramétrico.' }
+      const respaldoEquations = [
+        { id: 'Yb', title: 'Producción total del bloque', latex: 'Y_b = V_{b,final} - V_{b,inicial}', desc: 'Producción acumulada entre el primer y último volumen válido del bloque.' },
+        { id: 'Pb', title: 'Producción normalizada', latex: 'P_b = \\frac{Y_b}{D_b}', desc: 'Producción media diaria para comparar periodos de distinta duración.' },
+        { id: 'xbar', title: 'Agregación climática', latex: '\\bar{X}_{j,b} = \\frac{1}{n_b}\\sum_{i=1}^{n_b} X_{j,i}', desc: 'Promedio de una variable climática dentro del bloque o ventana analítica.' },
+        { id: 'vpd', title: 'Déficit de presión de vapor', latex: 'VPD = e_s(T) - e_a', desc: 'Distancia entre saturación y vapor real; valores bajos suelen favorecer condensación.' },
+        { id: 'ols', title: 'Modelo climático lineal', latex: 'Y_t = \\beta_0 + \\beta_1 RH_t + \\beta_2 T_t + \\beta_3 VPD_t + \\beta_4 S_t + \\epsilon_t', desc: 'Modelo interpretable para explicar producción horaria mediante variables microclimáticas.' },
+        { id: 'dw', title: 'Durbin-Watson', latex: 'DW = \\frac{\\sum_{t=2}^{n}(e_t-e_{t-1})^2}{\\sum_{t=1}^{n}e_t^2}', desc: 'Prueba visual y numérica de autocorrelación en los residuos.' },
+        { id: 'eta', title: 'Eta cuadrado', latex: '\\eta^2 = \\frac{SS_{between}}{SS_{total}}', desc: 'Proporción de variación atribuible a diferencias entre grupos.' },
+        { id: 'cliff', title: "Cliff's delta", latex: '\\delta = \\frac{\\#(x_i>y_j)-\\#(x_i<y_j)}{mn}', desc: 'Magnitud de diferencia entre dos grupos sin asumir normalidad.' }
       ];
-      const equations = safeArray(data.equations).length ? data.equations : fallbackEquations;
+      const equations = safeArray(data.equations).length ? data.equations : respaldoEquations;
 
-      setHTML('equation-grid', equations.slice(0, 12).map(eq => `
-        <div class="equation-card insightable" data-insight="${escapeAttr(eq.desc || interpretEquation(eq.title))}" data-insight-title="${escapeAttr(eq.title)}">
-          <div class="equation-title">${eq.title}</div>
-          \\
-          [
-            ${eq.latex}
-          \\
-          ]
-          <div class="equation-desc">${eq.desc || interpretEquation(eq.title)}</div>
-        </div>
-      `).join(''));
+      setHTML('equation-grid', equations.slice(0, 12).map(eq => {
+        const latex = normalizeLatex(eq.latex);
+        const desc = eq.desc || interpretEquation(eq.title);
+        return `
+          <div class="equation-card insightable" data-insight="${escapeAttr(desc)}" data-insight-title="${escapeAttr(eq.title)}">
+            <div class="equation-title">${eq.title}</div>
+            <div class="math-display">\\[${latex}\\]</div>
+            <div class="equation-desc">${desc}</div>
+          </div>
+        `;
+      }).join(''));
 
+      typesetMath();
+    }
+
+    function typesetMath(retries = 20) {
       if (window.MathJax && MathJax.typesetPromise) {
         MathJax.typesetPromise();
+      } else if (retries > 0) {
+        setTimeout(() => typesetMath(retries - 1), 150);
       }
     }
 
     function interpretEquation(title) {
-      return `Ecuación usada para formalizar ${title}. Pasa de mediciones crudas a una cantidad estadística auditable.`;
+      return `Ecuación usada para formalizar ${title} dentro del análisis del bloque.`;
     }
 
     function renderAssumptions(data) {
@@ -3300,8 +3620,39 @@
     }
 
     function renderConclusions(data) {
-      setHTML('conclusion-list', safeArray(data.scientific_conclusions).map(x => `<li>${x}</li>`).join(''));
-      setHTML('limitation-list', safeArray(data.limitations).map(x => `<li>${x}</li>`).join(''));
+      const block = data.block || {};
+      const quality = data.data_quality || {};
+      const bestCorr = safeArray(get(data, 'correlations.hourly_production_vs_climate', []))
+        .filter(d => Number.isFinite(Number(d.spearman_rho)))
+        .sort((a, b) => Math.abs(Number(b.spearman_rho)) - Math.abs(Number(a.spearman_rho)))[0];
+      const bestDaypart = [...safeArray(get(data, 'summaries.daypart', []))]
+        .sort((a, b) => Number(b.production_mean) - Number(a.production_mean))[0];
+      const bestHumid = [...safeArray(get(data, 'summaries.humidity_groups', []))]
+        .sort((a, b) => Number(b.production_mean) - Number(a.production_mean))[0];
+      const r2 = Number(get(data, 'models.ols_hac.r2', 0));
+      const rmse = get(data, 'models.ols_hac.rmse', null);
+      const total = block.water_production_l_valid;
+      const overlap = block.production_l_overlap_with_climate || quality.total_positive_overlap_with_climate_l;
+      const days = get(quality, 'analytical_overlap.days', block.overlap_days);
+
+      const conclusions = [
+        `El bloque B01 registra ${fmt.num(total, 2)} L de producción válida total. Para la relación con clima se usan ${fmt.num(overlap, 2)} L dentro de ${fmt.num(days, 2)} días con solapamiento entre sensores.`,
+        bestDaypart ? `La franja con mayor producción media fue ${bestDaypart.daypart}, con ${fmt.num(bestDaypart.production_mean, 2)} L/h. Esto sugiere que el horario de operación y el ciclo diurno/nocturno son factores relevantes para el rendimiento.` : null,
+        bestHumid ? `El grupo de humedad con mayor producción media fue ${bestHumid.humidity_group}, con ${fmt.num(bestHumid.production_mean, 2)} L/h. La humedad relativa aparece como una condición operativa clave, aunque debe leerse junto con VPD, temperatura y radiación.` : null,
+        bestCorr ? `${label(bestCorr.variable)} presentó la asociación monotónica más alta con producción horaria (Spearman ρ=${fmt.num(bestCorr.spearman_rho, 3)}, p=${fmt.p(bestCorr.spearman_p)}). Esta evidencia prioriza esa variable para monitoreo y diseño de futuros bloques.` : null,
+        `El modelo lineal OLS/HAC explica una fracción ${r2 < 0.15 ? 'baja' : 'moderada'} de la variabilidad horaria (R²=${fmt.num(r2, 3)}, RMSE=${fmt.num(rmse, 2)} L/h). Por eso el simulador se usa para comparar escenarios, no para prometer producción exacta.`,
+        `El siguiente bloque debe mantener la misma estructura de sensores para evaluar estabilidad: si los patrones de humedad, VPD y franja horaria se repiten, la evidencia se vuelve más fuerte.`
+      ].filter(Boolean);
+
+      const limitations = [
+        `Solo existe un bloque experimental completo; todavía no corresponde hacer inferencia inter-bloque fuerte.`,
+        `La estación climática termina antes que la serie de producción; por eso producción total y producción climáticamente explicable se reportan separadas.`,
+        `La producción horaria contiene eventos y pausas; una parte del comportamiento puede depender de operación, vaciado, energía o mantenimiento, no solo de clima.`,
+        `El modelo actual no sustituye mediciones futuras. Su valor principal es orientar hipótesis y escenarios para el bloque siguiente.`
+      ];
+
+      setHTML('conclusion-list', conclusions.map(x => `<li class="clickable-row" data-insight-title="Conclusión" data-insight="${escapeAttr(x)}">${x}</li>`).join(''));
+      setHTML('limitation-list', limitations.map(x => `<li class="clickable-row" data-insight-title="Limitación metodológica" data-insight="${escapeAttr(x)}">${x}</li>`).join(''));
     }
 
     function bindPlotInsight(id, title, text) {
@@ -3311,14 +3662,36 @@
       el.dataset.insightTitle = title;
       el.dataset.insight = text;
       if (el.on) {
-        el.on('plotly_hover', event => {
+        el.on('plotly_click', event => {
           const point = event.points && event.points[0];
           const extra = point
-            ? ` Punto actual: ${point.x !== undefined ? point.x : ''} ${point.y !== undefined ? '· ' + point.y : ''}.`
+            ? ` Punto seleccionado: ${point.x !== undefined ? point.x : ''}${point.y !== undefined ? ' · ' + point.y : ''}.`
             : '';
-          updateInsight(title, text + extra, 'Hover sobre gráfica');
+          updateInsight(title, text + extra, 'Gráfica seleccionada');
         });
       }
+    }
+
+    function calcDewPoint(temp, rh) {
+      const a = 17.27;
+      const b = 237.7;
+      const gamma = (a * temp) / (b + temp) + Math.log(Math.max(1, rh) / 100);
+      return (b * gamma) / (a - gamma);
+    }
+
+    function calcAbsHumidity(temp, rh) {
+      const es = 6.112 * Math.exp((17.67 * temp) / (temp + 243.5));
+      const e = es * rh / 100;
+      return 2.1674 * e / (273.15 + temp) * 100;
+    }
+
+    function microclimateIndex(input) {
+      const humidityScore = clamp((input.humidity - 45) / 45, 0, 1) * 34;
+      const vpdScore = clamp(1 - (input.vpd - 0.2) / 1.6, 0, 1) * 28;
+      const tempScore = clamp(1 - Math.abs(input.temp - 20) / 12, 0, 1) * 18;
+      const solarScore = clamp(1 - input.solar / 180, 0, 1) * 12;
+      const windScore = clamp(1 - Math.max(0, input.wind - 1.2) / 6, 0, 1) * 8;
+      return humidityScore + vpdScore + tempScore + solarScore + windScore;
     }
 
     function computePrediction(input) {
@@ -3363,7 +3736,12 @@
       const high = lph + rmse;
       const daypart = inferDaypart(input.hour);
       const blockAvg = mean(safeArray(get(ANALYSIS, 'chart_data.hourly', [])).map(d => Number(d.production_lph)).filter(Number.isFinite)) || 1.61;
-      const quality = lph > blockAvg * 1.25 ? 'alto' : lph < blockAvg * 0.75 ? 'bajo' : 'medio';
+      const ratio = blockAvg ? lph / blockAvg : 1;
+      const quality = ratio > 1.25 ? 'alto' : ratio < 0.75 ? 'bajo' : 'medio';
+      const dew = calcDewPoint(input.temp, input.humidity);
+      const ah = calcAbsHumidity(input.temp, input.humidity);
+      const idx = microclimateIndex(input);
+      const penalty = Math.max(0, input.vpd - 0.75) * 0.42 + Math.max(0, input.solar - 30) * 0.004;
 
       setText('temp-val', `${fmt.num(input.temp, 1)} °C`);
       setText('humidity-val', `${fmt.num(input.humidity, 1)} %`);
@@ -3372,17 +3750,22 @@
       setText('wind-val', `${fmt.num(input.wind, 1)} km/h`);
       setText('hour-val', `${String(input.hour).padStart(2, '0')}:00 · ${daypart}`);
       setText('sim-lph', fmt.num(lph, 2));
-      setText('sim-sub', `Escenario ${daypart.toLowerCase()}: ${fmt.num(input.humidity, 1)}% HR, ${fmt.num(input.temp, 1)}°C, VPD ${fmt.num(input.vpd, 2)} kPa.`);
+      setText('sim-sub', `${daypart}: ${fmt.num(input.humidity, 1)}% HR · ${fmt.num(input.temp, 1)}°C · VPD ${fmt.num(input.vpd, 2)} kPa · índice ${fmt.num(idx, 0)}/100.`);
       setText('sim-day', `${fmt.num(lph * 24, 1)} L/día`);
       setText('sim-band', `${fmt.num(low, 1)}–${fmt.num(high, 1)} L/h`);
-      setText('sim-quality', quality.toUpperCase());
+      setText('sim-quality', `${quality.toUpperCase()} · ${fmt.num(ratio, 2)}×`);
+      setText('sim-index', `${fmt.num(idx, 0)}/100`);
+      setText('sim-dew', `${fmt.num(dew, 1)} °C`);
+      setText('sim-ah', `${fmt.num(ah, 1)} g/m³`);
+      setText('sim-part', daypart);
+      setText('sim-penalty', `${fmt.num(penalty, 2)} L/h`);
 
       const r2 = Number(get(ANALYSIS, 'models.ols_hac.r2', 0));
       setHTML('sim-explain', `
-        <strong>Interpretación:</strong> bajo este escenario el simulador estima ${fmt.num(lph, 2)} L/h (${fmt.num(lph * 24, 1)} L/día si se mantuviera 24 h).
-        La franja es <strong>${daypart}</strong>. El R² lineal del bloque es ${fmt.num(r2, 3)}, por lo que la salida debe leerse como exploratoria y comparativa, no como garantía.
+        <strong>Lectura del escenario:</strong> el modelo estima ${fmt.num(lph, 2)} L/h. Frente al promedio horario del bloque, este escenario equivale a ${fmt.num(ratio, 2)}×. El punto de rocío estimado es ${fmt.num(dew, 1)}°C y la humedad absoluta ${fmt.num(ah, 1)} g/m³. La banda ${fmt.num(low, 1)}–${fmt.num(high, 1)} L/h refleja el error observado del ajuste. R² OLS/HAC=${fmt.num(r2, 3)}.
       `);
 
+      updateInsight('Simulador microclimático', `Escenario actual: ${fmt.num(lph, 2)} L/h, índice ${fmt.num(idx, 0)}/100, ${daypart}. La lectura combina coeficientes estadísticos con penalización física por VPD alto y radiación.`, 'Simulador activo');
       renderSimulatorCharts(input);
     }
 
@@ -3512,16 +3895,16 @@
       renderModels(ANALYSIS);
       renderDiagnostics(ANALYSIS);
       renderConclusions(ANALYSIS);
-      installHoverInsights();
+      installInsightInteractions();
       installSimulatorEvents();
       installNavigationSpy();
       updateSimulator();
       updateInsight(
         'Informe cargado',
         USING_FALLBACK
-          ? 'No se pudo cargar statistical_analysis.json, así que se activó un fallback mínimo. Sube el JSON a data/processed para ver el informe completo.'
+          ? 'No se pudo cargar statistical_analysis.json, así que se activó un respaldo mínimo. Sube el JSON a data/processed para ver el informe completo.'
           : 'El archivo statistical_analysis.json se cargó correctamente. Pasa el cursor sobre cualquier elemento para obtener interpretación contextual.',
-        USING_FALLBACK ? 'Modo fallback' : 'Datos precalculados'
+        USING_FALLBACK ? 'Modo respaldo' : 'Datos procesados'
       );
     }
 
