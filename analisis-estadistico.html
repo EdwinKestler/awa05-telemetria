@@ -3230,7 +3230,7 @@
       width: 0%;
       background: linear-gradient(90deg, #7ec8f4, #fff, #5ba3e0);
       border-radius: 999px;
-      animation: barFill 3.8s cubic-bezier(.4,0,.6,1) 0.3s forwards;
+      animation: barFill 5.2s cubic-bezier(.4,0,.2,1) 0.2s forwards;
     }
 
     @keyframes barFill {
@@ -6046,7 +6046,7 @@
   <script>
     /* ── AWA05 Loader dismiss — runs immediately, no dependencies ── */
     (function () {
-      var DISMISS_MS = 3500;
+      var DISMISS_MS = 5500;
       function dismiss() {
         var el = document.getElementById('awa-loader');
         if (!el || el.classList.contains('fade-out')) return;
@@ -6055,10 +6055,12 @@
       }
       // Auto-dismiss
       setTimeout(dismiss, DISMISS_MS);
-      // Click anywhere dismisses immediately (no delay guard)
-      document.addEventListener('click', dismiss, { once: true, capture: true });
-      document.addEventListener('keydown', dismiss, { once: true, capture: true });
-      document.addEventListener('scroll', dismiss, { once: true, passive: true, capture: true });
+      // Allow dismiss after 3s via interaction
+      setTimeout(function() {
+        document.addEventListener('click', dismiss, { once: true, capture: true });
+        document.addEventListener('keydown', dismiss, { once: true, capture: true });
+        document.addEventListener('scroll', dismiss, { once: true, passive: true, capture: true });
+      }, 3000);
       // Failsafe: if page loads, dismiss after 1s
       window.addEventListener('load', function() { setTimeout(dismiss, 800); });
     })();
