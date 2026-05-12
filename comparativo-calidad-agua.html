@@ -1,152 +1,3102 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>AWA05 · Comparativo de Calidad de Agua</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,700&family=JetBrains+Mono:wght@300;400;500;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,600;9..40,700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>AWA05 · Benchmark de Calidad de Agua</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,700;1,900&family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
   <style>
     :root {
-      --bg:#f7f6f1; --surface:#fff; --surface2:#faf9f4; --surface3:#efede4;
-      --ink:#171714; --ink-mid:#343229; --ink-soft:#69655d; --ink-faint:#9c9890;
-      --rule:rgba(38,36,28,.11); --rule-strong:rgba(38,36,28,.20);
-      --cobalt:#1c3f6e; --cobalt-deep:#10284d; --cobalt-pale:rgba(28,63,110,.07);
-      --water:#08a9c6; --water-deep:#087998; --water-pale:rgba(8,169,198,.10); --water-rim:rgba(8,169,198,.25);
-      --mint:#1b7f5b; --mint-pale:rgba(27,127,91,.10); --amber:#b06400; --amber-pale:rgba(176,100,0,.09);
-      --danger:#9b2c2c; --danger-pale:rgba(155,44,44,.08);
-      --display:'Playfair Display',serif; --mono:'JetBrains Mono',monospace; --body:'DM Sans',sans-serif;
-      --radius:5px; --shadow-sm:0 1px 3px rgba(0,0,0,.05),0 2px 8px rgba(0,0,0,.04);
-      --shadow-md:0 4px 14px rgba(0,0,0,.06),0 14px 34px rgba(0,0,0,.06); --lens-w:360px;
+      --bg: #f5f8f8;
+      --bg2: #eef6f7;
+      --paper: #fffefa;
+      --surface: #ffffff;
+      --surface2: #f8fbfb;
+      --surface3: #eef6f7;
+      --ink: #111917;
+      --ink2: #283a36;
+      --ink3: #61706d;
+      --ink4: #99a7a4;
+      --rule: rgba(14, 35, 34, .105);
+      --rule2: rgba(14, 35, 34, .18);
+      --cobalt: #1c3f6e;
+      --cobalt-deep: #0e274b;
+      --cobalt-soft: rgba(28, 63, 110, .08);
+      --water: #10a8d0;
+      --water2: #087fa5;
+      --water3: #0b5d7d;
+      --water-soft: rgba(16, 168, 208, .12);
+      --water-rim: rgba(16, 168, 208, .28);
+      --mint: #18a978;
+      --mint2: #0d7451;
+      --mint-soft: rgba(24, 169, 120, .11);
+      --amber: #b36a08;
+      --amber-soft: rgba(179, 106, 8, .11);
+      --red: #a33737;
+      --red-soft: rgba(163, 55, 55, .11);
+      --violet: #6957b0;
+      --violet-soft: rgba(105, 87, 176, .11);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.05), 0 2px 8px rgba(0,0,0,.04);
+      --shadow-md: 0 8px 28px rgba(10, 35, 38, .08);
+      --shadow-lg: 0 18px 60px rgba(10, 35, 38, .12);
+      --display: 'Playfair Display', serif;
+      --body: 'DM Sans', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --radius: 7px;
+      --lens-w: 388px;
     }
-    *{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{background:radial-gradient(circle at 10% 8%,rgba(8,169,198,.10),transparent 28%),radial-gradient(circle at 80% 6%,rgba(28,63,110,.08),transparent 34%),var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.56;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-    body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.45;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E")}
-    header{position:sticky;top:0;z-index:200;min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 32px;background:linear-gradient(135deg,var(--cobalt),var(--cobalt-deep));color:#fff;overflow:hidden}
-    header::before{content:"AWA05";position:absolute;right:-12px;top:-22px;color:rgba(255,255,255,.045);font-family:var(--display);font-size:104px;font-weight:900;letter-spacing:-5px;pointer-events:none}
-    header::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:rgba(255,255,255,.12)}
-    .hd-brand,.hd-center,.hd-right{position:relative;z-index:1;display:flex;align-items:center}
-    .hd-brand{gap:12px;flex-shrink:0} .hd-name{font-family:var(--display);font-weight:900;font-style:italic;font-size:15px;letter-spacing:.02em} .hd-sep{width:1px;height:18px;background:rgba(255,255,255,.20)}
-    .hd-sub{font-family:var(--mono);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.58)} .hd-center{flex:1;justify-content:center;gap:22px} .hd-stat{text-align:center;min-width:72px}
-    .hd-stat-val{font-family:var(--mono);font-size:11px;font-weight:700;color:#fff} .hd-stat-lbl{margin-top:1px;font-family:var(--mono);font-size:7px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.45)}
-    .hd-right{gap:10px;flex-shrink:0} .top-link,.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:30px;padding:7px 13px;border-radius:4px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:rgba(255,255,255,.86);font-family:var(--mono);font-size:8.2px;font-weight:700;letter-spacing:.10em;text-decoration:none;text-transform:uppercase;transition:all .15s;cursor:pointer}
-    .top-link:hover,.top-link.active,.btn:hover{background:rgba(255,255,255,.92);border-color:transparent;color:var(--cobalt)} .hd-ts{font-family:var(--mono);font-size:8px;color:rgba(255,255,255,.65);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:2px;padding:4px 9px}
-    .mobile-menu-button{display:none} .mobile-menu{display:none;position:fixed;top:56px;left:0;right:0;z-index:190;background:var(--surface);border-bottom:1px solid var(--rule-strong);box-shadow:var(--shadow-md);padding:14px} .mobile-menu.is-open{display:grid;gap:8px}
-    .mobile-menu a{padding:12px 14px;border:1px solid var(--rule);background:var(--surface2);color:var(--cobalt);text-decoration:none;font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.10em;border-radius:var(--radius)}
-    .layout{display:grid;grid-template-columns:minmax(0,1fr) var(--lens-w);min-height:calc(100vh - 56px)} main{padding:42px 44px 92px;max-width:1580px;width:100%;margin:0 auto;min-width:0}
-    .lens{position:sticky;top:56px;height:calc(100vh - 56px);border-left:1px solid var(--rule);background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(250,249,245,.97));padding:24px 22px;overflow:auto;box-shadow:-10px 0 30px rgba(0,0,0,.035)}
-    .lens-kicker{color:var(--water-deep);font-family:var(--mono);font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:9px} .lens-title{font-family:var(--display);font-size:25px;font-weight:900;letter-spacing:-.025em;line-height:1.05;margin-bottom:10px;color:var(--ink)}
-    .lens-text{color:var(--ink-soft);font-size:13px;line-height:1.72} .lens-meta{margin-top:14px;padding-top:14px;border-top:1px solid var(--rule);font-family:var(--mono);font-size:8px;color:var(--ink-faint);letter-spacing:.08em;text-transform:uppercase}
-    .lens-list{margin-top:16px;display:grid;gap:8px} .lens-chip{padding:9px 10px;border:1px solid var(--water-rim);background:var(--water-pale);color:var(--cobalt);border-radius:var(--radius);font-family:var(--mono);font-size:8px;line-height:1.45;letter-spacing:.07em;text-transform:uppercase}
-    .hero{position:relative;overflow:hidden;margin-bottom:28px;padding:42px 38px 36px;background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(255,255,255,.76)),radial-gradient(circle at 70% 15%,rgba(8,169,198,.14),transparent 40%);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow-sm)}
-    .hero::before{content:"H₂O";position:absolute;right:24px;bottom:-50px;font-family:var(--display);font-size:190px;font-weight:900;color:rgba(8,169,198,.055);letter-spacing:-.08em;pointer-events:none} .eyebrow{color:var(--cobalt);font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.20em;text-transform:uppercase;margin-bottom:8px}
-    .hero h1{max-width:1100px;font-family:var(--display);font-size:clamp(46px,6.5vw,95px);font-weight:900;line-height:.93;letter-spacing:-.055em;margin-bottom:18px;color:var(--ink);text-wrap:balance} .hero h1 em{color:var(--cobalt);font-style:italic}
-    .hero p{max-width:1080px;color:var(--ink-soft);font-size:16px;line-height:1.75} .hero-actions{position:relative;z-index:1;margin-top:24px;display:flex;flex-wrap:wrap;gap:10px} .hero-action{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 18px;border:1px solid var(--rule-strong);border-radius:var(--radius);color:var(--ink-mid);background:rgba(255,255,255,.62);text-decoration:none;font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;transition:all .15s} .hero-action.primary{color:#fff;border-color:var(--cobalt);background:var(--cobalt)} .hero-action:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm)}
-    .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px} .pill{padding:7px 11px;border-radius:999px;border:1px solid var(--rule-strong);background:var(--surface2);color:var(--ink-soft);font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;text-transform:uppercase} .pill.ok{background:var(--mint-pale);border-color:rgba(26,127,90,.22);color:var(--mint)} .pill.water{background:var(--water-pale);border-color:var(--water-rim);color:var(--water-deep)} .pill.warn{background:var(--amber-pale);border-color:rgba(176,100,0,.22);color:var(--amber)}
-    .section{margin-top:42px;scroll-margin-top:78px} .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:22px;margin-bottom:14px} .section-title{font-family:var(--display);font-size:35px;font-weight:900;line-height:1.05;letter-spacing:-.03em;color:var(--ink);text-wrap:balance} .section-title em{color:var(--cobalt);font-style:italic} .section-sub{margin-top:8px;max-width:1080px;color:var(--ink-soft);font-size:14.2px;line-height:1.68} .section-rule{height:1px;background:linear-gradient(90deg,var(--rule-strong),transparent);margin:18px 0 18px}
-    .badge{display:inline-flex;align-items:center;justify-content:center;padding:5px 9px;border:1px solid var(--rule-strong);border-radius:3px;color:var(--ink-soft);background:var(--surface2);font-family:var(--mono);font-size:7.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap} .badge.ok{border-color:rgba(26,127,90,.24);background:var(--mint-pale);color:var(--mint)} .badge.water{border-color:var(--water-rim);background:var(--water-pale);color:var(--water-deep)} .badge.warn{border-color:rgba(176,100,0,.24);background:var(--amber-pale);color:var(--amber)} .badge.danger{border-color:rgba(155,44,44,.24);background:var(--danger-pale);color:var(--danger)}
-    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px} .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px} .grid-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px} .col-span-2{grid-column:span 2} .col-span-3{grid-column:span 3} .col-span-4{grid-column:span 4}
-    .card{min-width:0;background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden} .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:18px 20px 14px;border-bottom:1px solid var(--rule);background:rgba(255,255,255,.62)} .card-title{color:var(--ink-mid);font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase} .card-sub{margin-top:3px;color:var(--ink-soft);font-size:12.3px;line-height:1.55} .card-body{padding:18px 20px 20px}
-    .kpi-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-top:20px} .kpi-card{position:relative;overflow:hidden;padding:16px 15px;background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow-sm);min-height:132px;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s} .kpi-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--water-rim)} .kpi-card::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(180deg,var(--water),var(--cobalt))} .kpi-label{color:var(--ink-faint);font-family:var(--mono);font-size:7px;letter-spacing:.13em;text-transform:uppercase;line-height:1.5;min-height:22px} .kpi-value{margin-top:8px;font-family:var(--display);font-size:31px;font-weight:900;line-height:1;letter-spacing:-.045em;color:var(--ink)} .kpi-unit{margin-left:3px;color:var(--ink-soft);font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.04em} .kpi-note{margin-top:9px;color:var(--ink-soft);font-size:11.5px;line-height:1.45}
-    .provider-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px} .provider-card{position:relative;overflow:hidden;min-height:360px;padding:22px;border:1px solid var(--rule);background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow-sm);cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s} .provider-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--water-rim)} .provider-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 82% 8%,rgba(8,169,198,.12),transparent 28%),linear-gradient(180deg,rgba(255,255,255,.1),rgba(8,169,198,.035));pointer-events:none} .provider-inner{position:relative;z-index:1} .provider-label{color:var(--water-deep);font-family:var(--mono);font-size:7.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px} .provider-name{font-family:var(--display);font-size:33px;font-weight:900;letter-spacing:-.04em;line-height:1;color:var(--ink);margin-bottom:10px} .provider-type{color:var(--ink-soft);font-size:13px;line-height:1.62;margin-bottom:16px} .provider-metric-row{display:grid;gap:9px;margin-top:16px} .provider-metric{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:10px 0;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-soft)} .provider-metric strong{color:var(--ink-mid);font-family:var(--mono);font-size:10px} .provider-status{margin-top:16px;padding:12px 13px;border-radius:var(--radius);border:1px solid var(--water-rim);background:var(--water-pale);color:var(--cobalt);font-size:12px;line-height:1.6}
-    .filters{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 14px;align-items:center} .filter-input,.filter-select{min-height:38px;border:1px solid var(--rule-strong);border-radius:var(--radius);background:rgba(255,255,255,.74);padding:8px 11px;font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:var(--ink-mid);outline:none} .filter-input{min-width:250px;flex:1} .filter-input:focus,.filter-select:focus{border-color:var(--water);box-shadow:0 0 0 3px var(--water-pale)} .switch{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:8px 11px;border:1px solid var(--rule-strong);border-radius:var(--radius);background:var(--surface2);color:var(--ink-soft);font-family:var(--mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer} .switch input{accent-color:var(--water)}
-    .table-wrap{width:100%;overflow:auto;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface)} table{width:100%;min-width:980px;border-collapse:collapse} th{position:sticky;top:0;z-index:1;padding:11px 12px;background:linear-gradient(180deg,var(--surface3),#e9e5da);border-bottom:1px solid var(--rule-strong);color:var(--ink-mid);font-family:var(--mono);font-size:7.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;text-align:center;white-space:nowrap} td{padding:11px 12px;border-bottom:1px solid var(--rule);color:var(--ink-soft);font-size:12.5px;vertical-align:middle;text-align:center} td:first-child,th:first-child{text-align:left} tr:last-child td{border-bottom:0} .click-row{cursor:pointer;transition:background .12s} .click-row:hover td{background:rgba(8,169,198,.06)} .click-row.selected td{background:rgba(8,169,198,.10);box-shadow:inset 3px 0 0 var(--water)} .td-name{color:var(--ink-mid);font-weight:600} .td-small{font-size:11px;color:var(--ink-faint)} .mini-bar{position:relative;height:10px;border-radius:999px;background:rgba(28,63,110,.10);min-width:90px;overflow:hidden} .mini-fill{position:absolute;inset:0 auto 0 0;width:0%;border-radius:inherit;background:linear-gradient(90deg,var(--water),var(--cobalt))}
-    .status-pill{display:inline-flex;align-items:center;justify-content:center;min-width:68px;padding:5px 8px;border-radius:999px;font-family:var(--mono);font-size:7px;font-weight:700;letter-spacing:.10em;text-transform:uppercase} .status-ok{background:var(--mint-pale);color:var(--mint);border:1px solid rgba(26,127,90,.22)} .status-watch{background:var(--amber-pale);color:var(--amber);border:1px solid rgba(176,100,0,.22)} .status-missing{background:rgba(100,100,100,.06);color:var(--ink-faint);border:1px solid rgba(100,100,100,.15)} .status-bad{background:var(--danger-pale);color:var(--danger);border:1px solid rgba(155,44,44,.22)}
-    .score-board{display:grid;grid-template-columns:minmax(250px,.8fr) minmax(0,1.2fr);gap:16px} .score-ring-card{padding:24px;display:grid;grid-template-columns:160px 1fr;gap:20px;align-items:center} .ring{--angle:0deg;width:150px;height:150px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--water) var(--angle),rgba(8,169,198,.12) 0deg);position:relative} .ring::after{content:"";position:absolute;inset:14px;border-radius:50%;background:var(--surface);box-shadow:inset 0 0 0 1px var(--rule)} .ring-center{position:relative;z-index:1;text-align:center} .ring-value{font-family:var(--display);font-size:46px;font-weight:900;letter-spacing:-.06em;color:var(--ink);line-height:1} .ring-label{margin-top:5px;color:var(--ink-faint);font-family:var(--mono);font-size:7px;letter-spacing:.13em;text-transform:uppercase} .score-text h3{font-family:var(--display);font-size:30px;line-height:1.05;letter-spacing:-.035em;margin-bottom:10px} .score-text p{color:var(--ink-soft);font-size:13.2px;line-height:1.72} .score-components{display:grid;gap:11px;padding:20px} .component{display:grid;grid-template-columns:160px 1fr 56px;gap:12px;align-items:center;cursor:pointer} .component-label{color:var(--ink-mid);font-size:12.5px;font-weight:600} .component-track{height:10px;border-radius:999px;overflow:hidden;background:rgba(8,169,198,.12)} .component-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--water),var(--cobalt))} .component-value{text-align:right;color:var(--cobalt);font-family:var(--mono);font-size:10px;font-weight:700}
-    .market-matrix{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px} .market-column{border:1px solid var(--rule);background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden} .market-head{padding:18px;background:linear-gradient(135deg,var(--cobalt),var(--cobalt-deep));color:#fff} .market-head.water{background:linear-gradient(135deg,var(--water),var(--water-deep))} .market-head h3{font-family:var(--display);font-size:28px;font-weight:900;line-height:1;letter-spacing:-.035em;margin-bottom:5px} .market-head p{color:rgba(255,255,255,.72);font-size:12px;line-height:1.5} .market-list{padding:12px 18px 18px;display:grid;gap:11px} .market-item{padding:11px 0;border-bottom:1px solid var(--rule)} .market-item:last-child{border-bottom:0} .market-item strong{display:block;color:var(--ink-mid);font-size:12.5px;margin-bottom:4px} .market-item span{color:var(--ink-soft);font-size:12px;line-height:1.55}
-    .builder{display:grid;grid-template-columns:minmax(280px,.9fr) minmax(0,1.1fr);gap:16px} .builder-controls{display:grid;gap:12px} .field{display:grid;gap:7px} .field label{color:var(--ink-mid);font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase} .field input,.field select{min-height:42px;border:1px solid var(--rule-strong);border-radius:var(--radius);padding:9px 11px;background:var(--surface2);color:var(--ink-mid);font-family:var(--mono);font-size:10px} .button-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px} .action-btn{min-height:40px;padding:9px 14px;border:1px solid var(--water-rim);background:var(--water-pale);color:var(--water-deep);border-radius:var(--radius);cursor:pointer;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.10em;text-transform:uppercase} .action-btn.primary{background:var(--cobalt);border-color:var(--cobalt);color:#fff} .compare-panel{padding:20px;background:linear-gradient(180deg,rgba(8,169,198,.06),transparent),var(--surface);border:1px solid var(--rule);border-radius:var(--radius)} .compare-title{font-family:var(--display);font-size:31px;line-height:1.05;font-weight:900;letter-spacing:-.04em;color:var(--ink);margin-bottom:10px} .compare-text{color:var(--ink-soft);font-size:13px;line-height:1.68;margin-bottom:16px} .compare-bars{display:grid;gap:12px} .compare-bar-row{display:grid;grid-template-columns:130px 1fr 100px;gap:12px;align-items:center} .compare-label{color:var(--ink-mid);font-size:12px;font-weight:600} .compare-track{height:14px;border-radius:999px;background:rgba(8,169,198,.12);overflow:hidden} .compare-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--water),var(--cobalt))} .compare-number{text-align:right;font-family:var(--mono);font-size:10px;color:var(--cobalt);font-weight:700}
-    .source-grid,.timeline{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px} .source-card,.lot{padding:18px;background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow-sm)} .source-card h3,.lot h3{font-family:var(--display);font-size:24px;line-height:1.05;margin-bottom:8px} .source-card p,.lot p{color:var(--ink-soft);font-size:12.5px;line-height:1.68} .source-card a{display:inline-flex;margin-top:12px;color:var(--water-deep);font-family:var(--mono);font-size:8px;letter-spacing:.10em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid var(--water-rim)} .lot{min-height:190px} .lot.done{border-color:var(--water-rim);background:linear-gradient(180deg,var(--water-pale),var(--surface))} .lot-num{color:var(--water-deep);font-family:var(--mono);font-size:8px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px}
-    .device-flag{position:fixed;left:12px;bottom:12px;z-index:100;display:none;padding:6px 9px;border-radius:999px;border:1px solid var(--water-rim);background:rgba(255,255,255,.86);backdrop-filter:blur(8px);color:var(--water-deep);font-family:var(--mono);font-size:7px;letter-spacing:.12em;text-transform:uppercase}
-    .dash-footer{position:relative;overflow:hidden;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 36px;background:linear-gradient(135deg,var(--cobalt),var(--cobalt-deep));color:rgba(255,255,255,.82)} .dash-footer::before{content:"AWA05";position:absolute;right:-10px;top:-18px;color:rgba(255,255,255,.04);font-family:var(--display);font-size:96px;font-weight:900;letter-spacing:-4px;pointer-events:none} .footer-left,.footer-right{position:relative;z-index:1;color:rgba(255,255,255,.40);font-family:var(--mono);font-size:7.5px;letter-spacing:.10em;text-transform:uppercase} .footer-center{position:absolute;left:50%;transform:translateX(-50%);z-index:1;font-family:var(--display);font-size:14px;font-weight:700;font-style:italic;color:rgba(255,255,255,.92);white-space:nowrap}
-    @media(max-width:1320px){.layout{grid-template-columns:1fr}.lens{position:static;height:auto;border-left:0;border-top:1px solid var(--rule)}main{padding:32px 24px 72px}.kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hd-center{display:none}}
-    @media(max-width:940px){header{min-height:52px;padding:0 14px}.hd-sub,.hd-ts,.top-link{display:none}.mobile-menu-button{display:inline-flex}.mobile-menu{top:52px}main{padding:24px 14px 64px}.hero{padding:30px 18px 28px}.hero h1{font-size:48px}.grid-2,.grid-3,.grid-4,.provider-grid,.market-matrix,.builder,.score-board,.source-grid,.timeline{grid-template-columns:1fr}.col-span-2,.col-span-3,.col-span-4{grid-column:span 1}.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.section-head{align-items:flex-start;flex-direction:column}.section-title{font-size:29px}.score-ring-card{grid-template-columns:1fr}.component{grid-template-columns:1fr}.compare-bar-row{grid-template-columns:1fr}.dash-footer{height:auto;padding:14px;flex-wrap:wrap;gap:8px;justify-content:center}.footer-center{position:static;transform:none;order:-1;width:100%;text-align:center}.footer-left,.footer-right{width:100%;text-align:center}}
-    @media(max-width:560px){.kpi-grid{grid-template-columns:1fr}.hero h1{font-size:38px}.provider-name{font-size:29px}.ring{width:128px;height:128px}.lens-title{font-size:22px}.filter-input,.filter-select,.switch{width:100%}}
-    body.device-phone .device-flag,body.device-tablet .device-flag{display:inline-flex} body.device-phone table{min-width:920px}
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--body);
+      font-size: 14px;
+      line-height: 1.55;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      background:
+        radial-gradient(circle at 10% 8%, rgba(16,168,208,.15), transparent 24%),
+        radial-gradient(circle at 86% 0%, rgba(28,63,110,.11), transparent 26%),
+        linear-gradient(180deg, var(--bg) 0%, #fbfbf6 45%, #efeee6 100%);
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: .34;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='190'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.74' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='190' height='190' filter='url(%23n)' opacity='0.022'/%3E%3C/svg%3E");
+    }
+
+    a {
+      color: inherit;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 300;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 0 32px;
+      background: linear-gradient(135deg, var(--cobalt) 0%, var(--cobalt-deep) 100%);
+      color: #fff;
+      overflow: hidden;
+      box-shadow: 0 2px 20px rgba(0,0,0,.08);
+    }
+
+    header::before {
+      content: 'CALIDAD';
+      position: absolute;
+      right: -18px;
+      top: -22px;
+      color: rgba(255,255,255,.045);
+      font-family: var(--display);
+      font-size: 96px;
+      font-weight: 900;
+      letter-spacing: -.06em;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .hd-brand,
+    .hd-center,
+    .hd-right {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hd-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex-shrink: 0;
+    }
+
+    .hd-name {
+      font-family: var(--display);
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: .02em;
+      font-size: 15px;
+      white-space: nowrap;
+    }
+
+    .hd-sep {
+      width: 1px;
+      height: 18px;
+      background: rgba(255,255,255,.20);
+      flex-shrink: 0;
+    }
+
+    .hd-sub {
+      font-family: var(--mono);
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: .17em;
+      color: rgba(255,255,255,.56);
+      white-space: nowrap;
+    }
+
+    .hd-center {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      min-width: 0;
+    }
+
+    .hd-stat {
+      text-align: center;
+      min-width: 72px;
+    }
+
+    .hd-stat-val {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: #fff;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .hd-stat-lbl {
+      margin-top: 1px;
+      font-family: var(--mono);
+      font-size: 7px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.45);
+      white-space: nowrap;
+    }
+
+    .hd-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .top-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 31px;
+      padding: 7px 12px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 4px;
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.86);
+      font-family: var(--mono);
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: .11em;
+      text-decoration: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: all .16s ease;
+    }
+
+    .top-link:hover,
+    .top-link.active {
+      background: rgba(255,255,255,.94);
+      color: var(--cobalt);
+      border-color: transparent;
+    }
+
+    .hd-ts {
+      font-family: var(--mono);
+      font-size: 7.5px;
+      color: rgba(255,255,255,.62);
+      border: 1px solid rgba(255,255,255,.17);
+      background: rgba(255,255,255,.07);
+      border-radius: 3px;
+      padding: 5px 8px;
+      white-space: nowrap;
+    }
+
+    .mobile-menu-button {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      height: 32px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 4px;
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      font-family: var(--mono);
+    }
+
+    .mobile-menu {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 56px;
+      z-index: 260;
+      display: none;
+      padding: 14px;
+      background: rgba(255,255,255,.98);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--rule2);
+      box-shadow: var(--shadow-md);
+    }
+
+    .mobile-menu.open {
+      display: grid;
+      gap: 8px;
+    }
+
+    .mobile-menu a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 10px;
+      color: var(--cobalt);
+      border: 1px solid var(--cobalt-soft);
+      background: var(--cobalt-soft);
+      border-radius: var(--radius);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: .09em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .page {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) var(--lens-w);
+      gap: 0;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+
+    main {
+      min-width: 0;
+      padding: 38px 44px 80px;
+    }
+
+    .lens {
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      padding: 24px 22px;
+      border-left: 1px solid var(--rule);
+      background: rgba(255,255,255,.74);
+      backdrop-filter: blur(14px);
+      overflow-y: auto;
+      box-shadow: -8px 0 30px rgba(10,35,38,.035);
+    }
+
+    .lens-kicker {
+      font-family: var(--mono);
+      color: var(--water2);
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .15em;
+      margin-bottom: 9px;
+    }
+
+    .lens-title {
+      font-family: var(--display);
+      font-size: 25px;
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -.025em;
+      margin-bottom: 12px;
+      color: var(--ink);
+    }
+
+    .lens-body {
+      color: var(--ink3);
+      font-size: 13px;
+      line-height: 1.72;
+    }
+
+    .lens-body strong {
+      color: var(--ink2);
+    }
+
+    .lens-list {
+      margin-top: 14px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .lens-item {
+      padding: 10px 11px;
+      border: 1px solid var(--rule);
+      background: var(--surface2);
+      border-radius: var(--radius);
+    }
+
+    .lens-item-label {
+      font-family: var(--mono);
+      font-size: 7px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--ink4);
+      margin-bottom: 4px;
+    }
+
+    .lens-item-value {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--ink2);
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 34px 38px;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      background:
+        radial-gradient(circle at 84% 22%, rgba(16,168,208,.18), transparent 28%),
+        linear-gradient(135deg, rgba(255,255,255,.96), rgba(247,252,252,.92));
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero::before {
+      content: 'H₂O';
+      position: absolute;
+      right: 22px;
+      bottom: -38px;
+      font-family: var(--display);
+      font-size: 150px;
+      font-weight: 900;
+      letter-spacing: -.08em;
+      color: rgba(16,168,208,.07);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      color: var(--water2);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .hero h1 {
+      position: relative;
+      max-width: 980px;
+      font-family: var(--display);
+      font-size: clamp(42px, 6.4vw, 82px);
+      font-weight: 900;
+      line-height: .94;
+      letter-spacing: -.055em;
+      color: var(--ink);
+    }
+
+    .hero h1 em {
+      color: var(--water2);
+      font-style: italic;
+    }
+
+    .hero-text {
+      position: relative;
+      max-width: 1030px;
+      margin-top: 16px;
+      color: var(--ink3);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .hero-actions {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    .hero-action,
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--rule2);
+      background: var(--surface);
+      color: var(--ink2);
+      font-family: var(--mono);
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: .11em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: all .16s ease;
+    }
+
+    .hero-action:hover,
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+      border-color: var(--water-rim);
+      color: var(--water2);
+    }
+
+    .hero-action.primary,
+    .btn.primary {
+      border-color: var(--water2);
+      background: linear-gradient(135deg, var(--water), var(--water2));
+      color: #fff;
+    }
+
+    .section {
+      margin-top: 36px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-family: var(--display);
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -.035em;
+      color: var(--ink);
+    }
+
+    .section-title em {
+      color: var(--water2);
+      font-style: italic;
+    }
+
+    .section-sub {
+      max-width: 1000px;
+      margin-top: 7px;
+      color: var(--ink3);
+      font-size: 13.5px;
+      line-height: 1.7;
+    }
+
+    .section-rule {
+      height: 1px;
+      margin: 14px 0 18px;
+      background: linear-gradient(90deg, var(--rule2), transparent);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-height: 24px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--rule2);
+      background: var(--surface2);
+      color: var(--ink3);
+      font-family: var(--mono);
+      font-size: 7.5px;
+      font-weight: 700;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .badge.ok {
+      border-color: rgba(24,169,120,.30);
+      background: var(--mint-soft);
+      color: var(--mint2);
+    }
+
+    .badge.water {
+      border-color: var(--water-rim);
+      background: var(--water-soft);
+      color: var(--water2);
+    }
+
+    .badge.warn {
+      border-color: rgba(179,106,8,.26);
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .badge.red {
+      border-color: rgba(163,55,55,.26);
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .badge.violet {
+      border-color: rgba(105,87,176,.26);
+      background: var(--violet-soft);
+      color: var(--violet);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .col-span-2 { grid-column: span 2; }
+    .col-span-3 { grid-column: span 3; }
+    .col-span-4 { grid-column: span 4; }
+
+    .card {
+      min-width: 0;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 17px 18px 14px;
+      border-bottom: 1px solid var(--rule);
+      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(248,251,251,.88));
+    }
+
+    .card-title {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      color: var(--ink2);
+      text-transform: uppercase;
+    }
+
+    .card-sub {
+      margin-top: 3px;
+      color: var(--ink3);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .card-body {
+      padding: 16px 18px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .kpi-card {
+      position: relative;
+      overflow: hidden;
+      padding: 16px;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.94);
+      box-shadow: var(--shadow-sm);
+      min-height: 138px;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--water), var(--water2));
+    }
+
+    .kpi-label {
+      font-family: var(--mono);
+      font-size: 7.5px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink4);
+      line-height: 1.45;
+    }
+
+    .kpi-value {
+      margin-top: 10px;
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 33px;
+      font-weight: 900;
+      line-height: .95;
+      letter-spacing: -.035em;
+    }
+
+    .kpi-meta {
+      margin-top: 8px;
+      color: var(--ink3);
+      font-size: 11.5px;
+      line-height: 1.45;
+    }
+
+    .source-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .source-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(248,252,252,.92));
+      box-shadow: var(--shadow-sm);
+      transition: all .16s ease;
+      cursor: pointer;
+    }
+
+    .source-card:hover,
+    .source-card.selected {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--water-rim);
+    }
+
+    .source-card.selected::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--water), var(--cobalt));
+    }
+
+    .source-inner {
+      padding: 16px;
+    }
+
+    .source-type {
+      color: var(--water2);
+      font-family: var(--mono);
+      font-size: 7px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .source-name {
+      font-family: var(--display);
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -.025em;
+      color: var(--ink);
+    }
+
+    .source-desc {
+      min-height: 66px;
+      margin-top: 9px;
+      color: var(--ink3);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .source-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .source-metric {
+      padding: 8px;
+      border: 1px solid var(--rule);
+      background: var(--surface2);
+      border-radius: 5px;
+      text-align: center;
+      min-width: 0;
+    }
+
+    .source-metric-label {
+      font-family: var(--mono);
+      font-size: 6.5px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink4);
+    }
+
+    .source-metric-value {
+      margin-top: 4px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .source-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 16px;
+      border-top: 1px solid var(--rule);
+      background: rgba(238,246,247,.58);
+    }
+
+    .source-foot span {
+      font-family: var(--mono);
+      font-size: 7px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--ink4);
+      white-space: nowrap;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(240px, 1fr) 190px 170px 170px auto auto;
+      gap: 10px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field label {
+      font-family: var(--mono);
+      font-size: 7px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--ink4);
+      font-weight: 700;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      min-height: 38px;
+      padding: 9px 10px;
+      border: 1px solid var(--rule2);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.92);
+      color: var(--ink2);
+      outline: none;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--water-rim);
+      box-shadow: 0 0 0 4px var(--water-soft);
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow: auto;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+      font-size: 12px;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      padding: 10px 10px;
+      border-bottom: 1px solid var(--rule2);
+      background: #eff8fa;
+      color: var(--ink2);
+      font-family: var(--mono);
+      font-size: 7.5px;
+      font-weight: 700;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 10px 10px;
+      border-bottom: 1px solid var(--rule);
+      color: var(--ink3);
+      vertical-align: middle;
+      text-align: center;
+    }
+
+    td:first-child,
+    th:first-child {
+      text-align: left;
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      background: inherit;
+      box-shadow: 1px 0 0 var(--rule);
+    }
+
+    th:first-child {
+      z-index: 3;
+      background: #eff8fa;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(248,251,251,.78);
+    }
+
+    tr:hover td,
+    tr.selected-row td {
+      background: var(--water-soft) !important;
+    }
+
+    .param-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 210px;
+    }
+
+    .param-name {
+      color: var(--ink2);
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .param-meta {
+      font-family: var(--mono);
+      font-size: 8px;
+      color: var(--ink4);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .value-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 26px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--rule2);
+      background: var(--surface2);
+      color: var(--ink2);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .value-chip.ok {
+      border-color: rgba(24,169,120,.26);
+      background: var(--mint-soft);
+      color: var(--mint2);
+    }
+
+    .value-chip.warn {
+      border-color: rgba(179,106,8,.26);
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .value-chip.empty {
+      color: var(--ink4);
+      background: #f5f5f0;
+      border-style: dashed;
+    }
+
+    .value-chip.red {
+      border-color: rgba(163,55,55,.26);
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .micro-ok {
+      color: var(--mint2);
+      font-weight: 700;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .chart-box {
+      height: 335px;
+      padding: 14px;
+    }
+
+    .chart-box.tall {
+      height: 420px;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .compare-panel {
+      display: grid;
+      grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+      gap: 16px;
+    }
+
+    .selector-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .compare-kpis {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .compare-kpi {
+      padding: 12px;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      background: var(--surface2);
+      text-align: center;
+    }
+
+    .compare-kpi-label {
+      font-family: var(--mono);
+      font-size: 7px;
+      text-transform: uppercase;
+      letter-spacing: .11em;
+      color: var(--ink4);
+      line-height: 1.4;
+    }
+
+    .compare-kpi-value {
+      margin-top: 7px;
+      font-family: var(--display);
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--water2);
+      line-height: .95;
+    }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 160px 1fr 150px 120px auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .paste-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .source-note-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .note-card {
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      padding: 14px;
+      background: rgba(255,255,255,.78);
+    }
+
+    .note-card h4 {
+      font-family: var(--display);
+      font-size: 18px;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .note-card p {
+      color: var(--ink3);
+      font-size: 12.5px;
+      line-height: 1.65;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .lot-card {
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lot-card.done::before {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 4px;
+      background: var(--mint);
+    }
+
+    .lot-card.pending::before {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 4px;
+      background: var(--amber);
+    }
+
+    .lot-title {
+      font-family: var(--display);
+      font-weight: 900;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .lot-meta {
+      margin-top: 8px;
+      color: var(--ink3);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .dash-footer {
+      position: relative;
+      overflow: hidden;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 36px;
+      background: linear-gradient(135deg, var(--cobalt) 0%, var(--cobalt-deep) 100%);
+      color: #fff;
+    }
+
+    .dash-footer::before {
+      content: 'AWA05';
+      position: absolute;
+      right: -10px;
+      top: -18px;
+      color: rgba(255,255,255,.04);
+      font-family: var(--display);
+      font-size: 96px;
+      font-weight: 900;
+      letter-spacing: -4px;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .footer-left,
+    .footer-right {
+      position: relative;
+      z-index: 1;
+      color: rgba(255,255,255,.42);
+      font-family: var(--mono);
+      font-size: 7.5px;
+      text-transform: uppercase;
+      letter-spacing: .10em;
+    }
+
+    .footer-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      color: rgba(255,255,255,.92);
+      font-family: var(--display);
+      font-weight: 800;
+      font-style: italic;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .muted {
+      color: var(--ink4);
+    }
+
+    .small {
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1450px) {
+      .source-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .kpi-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr 170px 150px 150px;
+      }
+
+      .toolbar .btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 1180px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .lens {
+        position: static;
+        height: auto;
+        border-left: 0;
+        border-top: 1px solid var(--rule);
+      }
+
+      .hd-center {
+        display: none;
+      }
+
+      main {
+        padding: 30px 26px 70px;
+      }
+
+      .source-grid,
+      .grid-4,
+      .grid-3,
+      .chart-grid,
+      .compare-panel,
+      .source-note-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .toolbar,
+      .editor-grid,
+      .paste-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      header {
+        height: 52px;
+        padding: 0 14px;
+      }
+
+      header::before {
+        font-size: 76px;
+      }
+
+      .hd-sub,
+      .hd-ts,
+      .top-link {
+        display: none;
+      }
+
+      .mobile-menu-button {
+        display: inline-flex;
+      }
+
+      .mobile-menu {
+        top: 52px;
+      }
+
+      main {
+        padding: 22px 14px 60px;
+      }
+
+      .hero {
+        padding: 26px 18px;
+      }
+
+      .hero h1 {
+        font-size: 40px;
+      }
+
+      .hero-text {
+        font-size: 13.5px;
+      }
+
+      .section-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .section-title {
+        font-size: 27px;
+      }
+
+      .grid-2,
+      .grid-3,
+      .grid-4,
+      .source-grid,
+      .kpi-grid,
+      .chart-grid,
+      .compare-panel,
+      .source-note-grid,
+      .toolbar,
+      .editor-grid,
+      .paste-grid,
+      .timeline,
+      .compare-kpis,
+      .selector-row {
+        grid-template-columns: 1fr;
+      }
+
+      .col-span-2,
+      .col-span-3,
+      .col-span-4 {
+        grid-column: span 1;
+      }
+
+      .chart-box,
+      .chart-box.tall {
+        height: 300px;
+      }
+
+      .dash-footer {
+        height: auto;
+        padding: 14px;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+      }
+
+      .footer-center {
+        position: static;
+        transform: none;
+        order: -1;
+        width: 100%;
+        text-align: center;
+      }
+
+      .footer-left,
+      .footer-right {
+        width: 100%;
+        text-align: center;
+      }
+    }
   </style>
 </head>
+
 <body>
   <header>
-    <div class="hd-brand"><span class="hd-name">AWA05</span><div class="hd-sep"></div><span class="hd-sub">Calidad de agua</span></div>
-    <div class="hd-center"><div class="hd-stat"><div class="hd-stat-val">1/3</div><div class="hd-stat-lbl">Análisis</div></div><div class="hd-sep"></div><div class="hd-stat"><div class="hd-stat-val">29</div><div class="hd-stat-lbl">Parámetros</div></div><div class="hd-sep"></div><div class="hd-stat"><div class="hd-stat-val">Sí</div><div class="hd-stat-lbl">Potable</div></div><div class="hd-sep"></div><div class="hd-stat"><div class="hd-stat-val">COGUANOR</div><div class="hd-stat-lbl">Referencia</div></div></div>
-    <div class="hd-right"><a class="top-link" href="index.html">Inicio</a><a class="top-link" href="dashboard.html">Dashboard</a><a class="top-link" href="analisis-estadistico.html">Análisis</a><a class="top-link active" href="comparativo-calidad-agua.html">Calidad</a><div class="hd-ts">Lote 1</div><button class="btn mobile-menu-button" id="mobileBtn">☰</button></div>
+    <div class="hd-brand">
+      <span class="hd-name">AWA05</span>
+      <div class="hd-sep"></div>
+      <span class="hd-sub">Benchmark de calidad de agua</span>
+    </div>
+
+    <div class="hd-center">
+      <div class="hd-stat">
+        <div class="hd-stat-val" id="h-status">Potable</div>
+        <div class="hd-stat-lbl">AWA05 Lote 1</div>
+      </div>
+      <div class="hd-sep"></div>
+      <div class="hd-stat">
+        <div class="hd-stat-val" id="h-sources">—</div>
+        <div class="hd-stat-lbl">Fuentes</div>
+      </div>
+      <div class="hd-sep"></div>
+      <div class="hd-stat">
+        <div class="hd-stat-val" id="h-params">—</div>
+        <div class="hd-stat-lbl">Parámetros</div>
+      </div>
+      <div class="hd-sep"></div>
+      <div class="hd-stat">
+        <div class="hd-stat-val" id="h-comparable">—</div>
+        <div class="hd-stat-lbl">Comparables</div>
+      </div>
+    </div>
+
+    <div class="hd-right">
+      <a class="top-link" href="index.html">Inicio</a>
+      <a class="top-link" href="dashboard.html">Dashboard</a>
+      <a class="top-link" href="analisis-estadistico.html">Análisis</a>
+      <a class="top-link active" href="comparativo-calidad-agua.html">Calidad</a>
+      <div class="hd-ts" id="header-ts">Lote 1 · 2026</div>
+      <button class="mobile-menu-button" id="mobile-btn" aria-label="Abrir navegación">☰</button>
+    </div>
   </header>
-  <nav class="mobile-menu" id="mobileMenu"><a href="index.html">Inicio</a><a href="dashboard.html">Dashboard</a><a href="analisis-estadistico.html">Análisis estadístico</a><a href="comparativo-calidad-agua.html">Calidad de agua</a></nav>
-  <div class="layout">
+
+  <nav class="mobile-menu" id="mobile-menu">
+    <a href="index.html">Inicio</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="analisis-estadistico.html">Análisis estadístico</a>
+    <a href="comparativo-calidad-agua.html">Calidad de agua</a>
+  </nav>
+
+  <div class="page">
     <main>
       <section class="hero" id="inicio">
-        <div class="eyebrow">Comparativo técnico · AWA05 · Mercado guatemalteco</div>
-        <h1>Calidad de agua AWA05 frente a <em>referencias comerciales</em></h1>
-        <p>Esta página compara el Lote 1 de AWA05 contra la norma COGUANOR y contra referencias de mercado: Agua Pura Salvavidas como agua embotellada comercial, y Ecofiltro como tecnología de filtración. La comparación separa valores de laboratorio, certificaciones, evidencia microbiológica y datos no publicados.</p>
-        <div class="pill-row"><span class="pill ok">AWA05: certificado por lote</span><span class="pill water">COGUANOR NTG 290001</span><span class="pill">Salvavidas: certificaciones/proceso</span><span class="pill">Ecofiltro: filtración/microbiología</span><span class="pill warn">2 análisis pendientes</span></div>
-        <div class="hero-actions"><a class="hero-action primary" href="#comparador">Comparar fuentes</a><a class="hero-action" href="#parametros">Ver parámetros AWA05</a><a class="hero-action" href="#constructor">Cargar valores comerciales</a><a class="hero-action" href="#lotes">Estado de lotes</a></div>
+        <div class="eyebrow">Comparativo técnico · agua atmosférica · aguas comerciales · filtración</div>
+        <h1>Calidad del agua AWA05 frente a <em>referencias comerciales</em></h1>
+        <p class="hero-text">
+          El Lote 1 de AWA05 se compara contra aguas con información pública verificable: VOSS, Acqua Panna, FIJI, Essentia,
+          S.Pellegrino, Evian, Ecofiltro y Salvavidas. La tabla separa valores de laboratorio, datos publicados, resultados microbiológicos
+          y campos pendientes para cargar certificados locales cuando estén disponibles.
+        </p>
+        <div class="hero-actions">
+          <a class="hero-action primary" href="#matriz">Ver matriz comparativa</a>
+          <a class="hero-action" href="#comparador">Comparar dos fuentes</a>
+          <a class="hero-action" href="#editor">Cargar resultados comerciales</a>
+          <a class="hero-action" href="#lote">Ver Lote 1 AWA05</a>
+        </div>
       </section>
-      <section class="section" id="kpis"><div class="kpi-grid" id="kpiGrid"></div></section>
-      <section class="section" id="comparador">
-        <div class="section-head"><div><div class="eyebrow">Tres referencias, tres tipos de evidencia</div><h2 class="section-title">No todo compite en la misma categoría</h2><p class="section-sub">AWA05 tiene una muestra analizada parámetro por parámetro. Salvavidas declara certificaciones, control interno y aval externo, pero las fuentes públicas revisadas no publican una tabla de lote comparable. Ecofiltro no es agua embotellada: es un sistema de filtración cuyo desempeño depende del agua que entra.</p></div><span class="badge water">Comparador principal</span></div>
-        <div class="section-rule"></div><div class="provider-grid" id="providerGrid"></div>
+
+      <section class="section" id="kpis">
+        <div class="kpi-grid" id="kpi-grid"></div>
       </section>
-      <section class="section" id="score">
-        <div class="section-head"><div><div class="eyebrow">Lectura ejecutiva del Lote 1</div><h2 class="section-title">Índice interno de calidad del agua AWA05</h2><p class="section-sub">El score no reemplaza la certificación de laboratorio. Sirve para leer el lote de forma rápida, separando microbiología, claridad, mineralización, metales y nutrientes.</p></div><span class="badge ok">Lote 1 aprobado</span></div>
-        <div class="section-rule"></div><div class="score-board"><div class="card score-ring-card"><div class="ring" id="scoreRing"><div class="ring-center"><div class="ring-value" id="scoreValue">—</div><div class="ring-label">Score interno</div></div></div><div class="score-text"><h3>Potable y con microbiología negativa</h3><p>El resultado fuerte del lote está en microbiología: coliformes, E. coli, Salmonella, Vibrio y Enterobacter aparecen negativos. La fisicoquímica se mantiene dentro de límites reportados, con agua de baja mineralización y turbidez baja.</p></div></div><div class="card score-components" id="scoreComponents"></div></div>
-      </section>
-      <section class="section" id="mercado">
-        <div class="section-head"><div><div class="eyebrow">Matriz de mercado</div><h2 class="section-title">Qué se puede comparar hoy</h2><p class="section-sub">La tabla siguiente deja claro dónde hay valor numérico, dónde hay evidencia institucional y dónde hace falta certificado público. Esto evita una comparación falsa entre una muestra de laboratorio y una marca que no publica sus parámetros de lote.</p></div><span class="badge">Mercado</span></div>
-        <div class="section-rule"></div><div class="market-matrix"><div class="market-column"><div class="market-head water"><h3>Físico-químico</h3><p>pH, turbidez, TDS, conductividad, metales y nutrientes.</p></div><div class="market-list"><div class="market-item"><strong>AWA05</strong><span>Comparable por parámetro: tiene valores de laboratorio en el Lote 1.</span></div><div class="market-item"><strong>Salvavidas</strong><span>Comparable solo si se consigue certificado de lote o ficha técnica pública con valores.</span></div><div class="market-item"><strong>Ecofiltro</strong><span>No es agua de lote; la salida depende del agua de entrada y del estado del filtro.</span></div></div></div><div class="market-column"><div class="market-head"><h3>Microbiológico</h3><p>Coliformes, E. coli, bacterias indicadoras y patógenos.</p></div><div class="market-list"><div class="market-item"><strong>AWA05</strong><span>Resultado negativo en todos los indicadores microbiológicos del lote.</span></div><div class="market-item"><strong>Salvavidas</strong><span>Declara control de calidad, aval externo y certificaciones de inocuidad.</span></div><div class="market-item"><strong>Ecofiltro</strong><span>Publica resultados microbiológicos y ficha de efectividad de filtración.</span></div></div></div><div class="market-column"><div class="market-head"><h3>Trazabilidad</h3><p>Lote, proceso, certificación o desempeño de dispositivo.</p></div><div class="market-list"><div class="market-item"><strong>AWA05</strong><span>Respaldo por muestra puntual. Faltan dos lotes para estabilidad.</span></div><div class="market-item"><strong>Salvavidas</strong><span>Respaldo por proceso empresarial y certificaciones; faltan valores públicos por parámetro.</span></div><div class="market-item"><strong>Ecofiltro</strong><span>Respaldo por tecnología de tratamiento. La calidad final no se interpreta sin saber el agua inicial.</span></div></div></div></div>
-      </section>
-      <section class="section" id="parametros">
-        <div class="section-head"><div><div class="eyebrow">Lote 1 · Atitlab · 28 abril 2026</div><h2 class="section-title">Parámetros del sistema AWA05</h2><p class="section-sub">Cada fila es clickeable. Al seleccionar un parámetro, la lente explica qué significa, cómo se compara con el límite y qué tan útil es para contrastar contra una fuente comercial.</p></div><span class="badge ok">29 filas</span></div>
-        <div class="section-rule"></div><div class="filters"><input id="searchInput" class="filter-input" type="search" placeholder="Buscar parámetro, categoría o unidad..."><select id="categoryFilter" class="filter-select"></select><select id="statusFilter" class="filter-select"><option value="all">Todos los estados</option><option value="ok">Cumple / negativo</option><option value="watch">Monitorear</option></select><label class="switch"><input type="checkbox" id="comparableOnly"> Solo comparables</label><button class="action-btn" id="downloadCsv">Exportar CSV</button></div>
-        <div class="table-wrap"><table id="parameterTable"><thead><tr><th>Parámetro</th><th>Categoría</th><th>AWA05</th><th>LMP</th><th>LMA</th><th>Unidad</th><th>Margen</th><th>Estado</th><th>Comparación comercial</th></tr></thead><tbody id="parameterBody"></tbody></table></div>
-      </section>
-      <section class="section" id="constructor">
-        <div class="section-head"><div><div class="eyebrow">Comparador editable</div><h2 class="section-title">Carga valores comerciales cuando consigas certificados</h2><p class="section-sub">Si luego tienes análisis de Salvavidas, Ecofiltro u otra fuente, puedes introducir un valor por parámetro. La página calcula el contraste contra AWA05 y lo guarda localmente en este navegador.</p></div><span class="badge water">Herramienta</span></div>
-        <div class="section-rule"></div><div class="builder"><div class="card"><div class="card-head"><div><div class="card-title">Entrada de comparación</div><div class="card-sub">Valores manuales para fuentes comerciales o futuros análisis</div></div></div><div class="card-body builder-controls"><div class="field"><label for="builderProvider">Fuente</label><select id="builderProvider"><option value="salvavidas">Agua Pura Salvavidas</option><option value="ecofiltro">Ecofiltro</option><option value="otro">Otra fuente</option></select></div><div class="field"><label for="builderParam">Parámetro</label><select id="builderParam"></select></div><div class="field"><label for="builderValue">Valor publicado o medido</label><input id="builderValue" type="number" step="any" placeholder="Ej. 7.1"></div><div class="field"><label for="builderSource">Fuente / nota</label><input id="builderSource" type="text" placeholder="Ej. certificado laboratorio, lote, fecha"></div><div class="button-row"><button class="action-btn primary" id="saveBenchmark">Guardar comparación</button><button class="action-btn" id="clearBenchmark">Limpiar valores</button></div></div></div><div class="compare-panel"><div class="compare-title" id="comparePanelTitle">Selecciona un parámetro</div><div class="compare-text" id="comparePanelText">Elige una fuente y un parámetro para ver cómo se ubica frente al resultado AWA05 y al límite COGUANOR.</div><div class="compare-bars" id="compareBars"></div></div></div>
-      </section>
-      <section class="section" id="matriz">
-        <div class="section-head"><div><div class="eyebrow">Matriz parámetro por fuente</div><h2 class="section-title">Contraste directo AWA05 · Salvavidas · Ecofiltro</h2><p class="section-sub">Esta matriz es el centro del comparativo. AWA05 entra con datos medidos; las otras fuentes se muestran con evidencia disponible, datos cargados manualmente o estado “no publicado”.</p></div><span class="badge">Matriz</span></div>
-        <div class="section-rule"></div><div class="table-wrap"><table><thead><tr><th>Parámetro</th><th>AWA05 Lote 1</th><th>Salvavidas</th><th>Ecofiltro</th><th>COGUANOR / lectura</th><th>Decisión de comparación</th></tr></thead><tbody id="matrixBody"></tbody></table></div>
-      </section>
-      <section class="section" id="lotes">
-        <div class="section-head"><div><div class="eyebrow">Evidencia acumulada</div><h2 class="section-title">Estado de análisis por lote</h2><p class="section-sub">Con un solo lote se puede defender potabilidad puntual. Con tres lotes se podrá hablar de estabilidad, variabilidad y consistencia del sistema.</p></div><span class="badge warn">1 de 3</span></div>
-        <div class="section-rule"></div><div class="timeline"><div class="lot done"><div class="lot-num">Lote 01 · completado</div><h3>28 abril 2026</h3><p>Atitlab reportó que la muestra AWA05 es potable y cumple COGUANOR. Este lote alimenta toda la tabla de parámetros.</p></div><div class="lot"><div class="lot-num">Lote 02 · pendiente</div><h3>Próxima muestra</h3><p>Permitirá revisar estabilidad microbiológica y confirmar si parámetros como manganeso y mineralización se mantienen.</p></div><div class="lot"><div class="lot-num">Lote 03 · pendiente</div><h3>Confirmación</h3><p>Con tres lotes se podrán calcular promedio, rango, desviación estándar y cumplimiento global por parámetro.</p></div></div>
-      </section>
+
       <section class="section" id="fuentes">
-        <div class="section-head"><div><div class="eyebrow">Fuentes y trazabilidad</div><h2 class="section-title">Base documental del comparativo</h2><p class="section-sub">La página distingue entre certificado de laboratorio, certificaciones institucionales, resultados de efectividad y ausencia de datos publicados.</p></div><span class="badge">Fuentes</span></div>
-        <div class="section-rule"></div><div class="source-grid"><div class="source-card"><h3>AWA05</h3><p>Informe Atitlab del Lote 1: muestra tomada el 28 de abril de 2026 y entregada el 3 de mayo de 2026. Incluye resultados fisicoquímicos y microbiológicos.</p></div><div class="source-card"><h3>Salvavidas</h3><p>Información institucional pública: control interno, aval externo, certificaciones de calidad e inocuidad. No se localizó tabla pública de parámetros por lote.</p><a href="https://www.aguapurasalvavidas.com/" target="_blank" rel="noopener">Ver fuente pública</a></div><div class="source-card"><h3>Ecofiltro</h3><p>Información pública de resultados microbiológicos y ficha de efectividad. Se interpreta como tecnología de filtración, no como agua embotellada de lote.</p><a href="https://ecofiltro.com.gt/resultados-micobiologicos/" target="_blank" rel="noopener">Ver resultados microbiológicos</a></div></div>
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Fuentes incluidas</div>
+            <h2 class="section-title">Un benchmark por <em>tipología de agua</em></h2>
+            <p class="section-sub">
+              La comparación no pretende decir que todas las aguas son iguales. Distingue agua atmosférica generada localmente,
+              aguas minerales naturales, aguas purificadas con minerales añadidos, agua filtrada y una referencia comercial guatemalteca.
+            </p>
+          </div>
+          <span class="badge water">Click en una fuente</span>
+        </div>
+        <div class="section-rule"></div>
+        <div class="source-grid" id="source-grid"></div>
+      </section>
+
+      <section class="section" id="matriz">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Matriz comparativa</div>
+            <h2 class="section-title">Parámetro contra parámetro</h2>
+            <p class="section-sub">
+              Cada fila es clickeable. Las celdas vacías no son fallas de la página: significan que esa fuente no publicó ese parámetro
+              en una fuente abierta o que todavía falta cargar un certificado local.
+            </p>
+          </div>
+          <span class="badge ok">Tabla viva</span>
+        </div>
+        <div class="section-rule"></div>
+
+        <div class="toolbar">
+          <div class="field">
+            <label>Buscar parámetro</label>
+            <input id="search" type="text" placeholder="pH, turbidez, TDS, coliformes..." />
+          </div>
+          <div class="field">
+            <label>Categoría</label>
+            <select id="cat-filter"></select>
+          </div>
+          <div class="field">
+            <label>Fuente visible</label>
+            <select id="source-filter"></select>
+          </div>
+          <div class="field">
+            <label>Evidencia</label>
+            <select id="evidence-filter">
+              <option value="all">Todas</option>
+              <option value="numeric">Con valores numéricos</option>
+              <option value="micro">Microbiología</option>
+              <option value="missing">Pendientes</option>
+            </select>
+          </div>
+          <button class="btn" id="btn-export-csv">Exportar CSV</button>
+          <button class="btn" id="btn-export-json">Exportar JSON</button>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Matriz técnica de calidad</div>
+              <div class="card-sub">AWA05 precargado; referencias comerciales con valores públicos; Salvavidas queda como campo editable hasta obtener certificado</div>
+            </div>
+            <span class="badge water" id="matrix-count">—</span>
+          </div>
+          <div class="table-wrap">
+            <table id="matrix-table"></table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="comparador">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Comparador directo</div>
+            <h2 class="section-title">Elige dos fuentes y mira el contraste</h2>
+            <p class="section-sub">
+              Esta sección convierte la matriz en una lectura más clara: qué parámetros comparten, dónde se separan y qué tipo de agua representa cada una.
+            </p>
+          </div>
+          <span class="badge violet">Contraste</span>
+        </div>
+        <div class="section-rule"></div>
+
+        <div class="compare-panel">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Selección de fuentes</div>
+                <div class="card-sub">Cambia las fuentes para actualizar diferencias, gráficas y lente interpretativa</div>
+              </div>
+              <span class="badge">Selector</span>
+            </div>
+            <div class="card-body">
+              <div class="selector-row">
+                <div class="field">
+                  <label>Fuente A</label>
+                  <select id="compare-a"></select>
+                </div>
+                <div class="field">
+                  <label>Fuente B</label>
+                  <select id="compare-b"></select>
+                </div>
+              </div>
+              <div class="compare-kpis" id="compare-kpis"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Diferencias principales</div>
+                <div class="card-sub">Solo se muestran parámetros con dato en ambas fuentes</div>
+              </div>
+              <span class="badge water">Δ</span>
+            </div>
+            <div class="table-wrap">
+              <table id="compare-table"></table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="graficas">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Visualización</div>
+            <h2 class="section-title">Perfil mineral y fisicoquímico</h2>
+            <p class="section-sub">
+              Las gráficas usan únicamente valores numéricos públicos o cargados manualmente. No convierten “no publicado” en cero.
+            </p>
+          </div>
+          <span class="badge water">Gráficas</span>
+        </div>
+        <div class="section-rule"></div>
+
+        <div class="chart-grid">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">TDS · sólidos disueltos</div>
+                <div class="card-sub">Mineralización total reportada por fuente</div>
+              </div>
+              <span class="badge">mg/L</span>
+            </div>
+            <div class="chart-box"><canvas id="chart-tds"></canvas></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">pH</div>
+                <div class="card-sub">Ubicación frente a rango operativo de agua de consumo</div>
+              </div>
+              <span class="badge">pH</span>
+            </div>
+            <div class="chart-box"><canvas id="chart-ph"></canvas></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Conductividad</div>
+                <div class="card-sub">Lectura indirecta de carga iónica</div>
+              </div>
+              <span class="badge">µS/cm</span>
+            </div>
+            <div class="chart-box"><canvas id="chart-conductivity"></canvas></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Minerales seleccionados</div>
+                <div class="card-sub">Calcio, magnesio, sulfatos y cloruros</div>
+              </div>
+              <span class="badge">mg/L</span>
+            </div>
+            <div class="chart-box"><canvas id="chart-minerals"></canvas></div>
+          </div>
+
+          <div class="card col-span-2">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Mapa pH × TDS</div>
+                <div class="card-sub">Agrupa aguas de baja mineralización, minerales medias y minerales altas</div>
+              </div>
+              <span class="badge water">Mapa</span>
+            </div>
+            <div class="chart-box tall"><canvas id="chart-map"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="microbiologia">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Microbiología</div>
+            <h2 class="section-title">Indicadores sanitarios publicados</h2>
+            <p class="section-sub">
+              AWA05 reporta resultados del Lote 1. Ecofiltro publica resultados después de filtrado. Algunas marcas embotelladas reportan ausencia o no detección en sus reportes,
+              pero no todas publican el mismo conjunto microbiológico.
+            </p>
+          </div>
+          <span class="badge ok">Sanitario</span>
+        </div>
+        <div class="section-rule"></div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Comparativo microbiológico</div>
+                <div class="card-sub">Resultados disponibles por fuente</div>
+              </div>
+              <span class="badge ok">Indicadores</span>
+            </div>
+            <div class="chart-box"><canvas id="chart-micro"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Lectura sanitaria</div>
+                <div class="card-sub">Diferencia entre resultado negativo, no detectado y no publicado</div>
+              </div>
+              <span class="badge">Criterio</span>
+            </div>
+            <div class="card-body small">
+              <p><strong>Negativo / menor que límite:</strong> el laboratorio no detectó el indicador por encima del umbral reportado.</p>
+              <p style="margin-top:10px"><strong>No detectado:</strong> resultado por debajo del límite de detección del método.</p>
+              <p style="margin-top:10px"><strong>No publicado:</strong> no debe interpretarse como incumplimiento; simplemente no hay tabla abierta comparable.</p>
+              <p style="margin-top:10px"><strong>Unidades:</strong> AWA05 reporta NMP/mL y Ecofiltro NMP/100 mL; se muestran como fueron publicados para evitar conversiones forzadas.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="lote">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">AWA05 · Lote 1</div>
+            <h2 class="section-title">Resultados de laboratorio del sistema AWA05</h2>
+            <p class="section-sub">
+              La muestra corresponde al agua generada por la planta AWA05 instalada en Amigos del Lago, Santa Catarina Palopó. Este es el único análisis completo disponible hasta ahora.
+            </p>
+          </div>
+          <span class="badge ok">1 / 3</span>
+        </div>
+        <div class="section-rule"></div>
+
+        <div class="grid-3">
+          <div class="card col-span-2">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Tabla completa AWA05</div>
+                <div class="card-sub">Fisicoquímicos y microbiológicos del Lote 1</div>
+              </div>
+              <span class="badge ok">Cumple</span>
+            </div>
+            <div class="table-wrap">
+              <table id="awa-table"></table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Estado de análisis</div>
+                <div class="card-sub">El sistema se fortalecerá cuando existan tres lotes</div>
+              </div>
+              <span class="badge warn">Pendiente</span>
+            </div>
+            <div class="card-body">
+              <div class="timeline">
+                <div class="lot-card done">
+                  <div class="lot-title">Lote 1</div>
+                  <div class="lot-meta">Muestra tomada 28 abril 2026. Resultado entregado 3 mayo 2026. Dictamen: potable.</div>
+                </div>
+                <div class="lot-card pending">
+                  <div class="lot-title">Lote 2</div>
+                  <div class="lot-meta">Pendiente. Permitirá medir estabilidad entre análisis.</div>
+                </div>
+                <div class="lot-card pending">
+                  <div class="lot-title">Lote 3</div>
+                  <div class="lot-meta">Pendiente. Permitirá promedios, variabilidad y consistencia por parámetro.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="editor">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Carga de resultados</div>
+            <h2 class="section-title">Agregar certificados comerciales cuando aparezcan</h2>
+            <p class="section-sub">
+              Si consigues un análisis de Salvavidas, Ecofiltro u otra fuente local, puedes cargarlo aquí. Los valores quedan guardados en este navegador y se integran automáticamente a la matriz.
+            </p>
+          </div>
+          <span class="badge water">Editable</span>
+        </div>
+        <div class="section-rule"></div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Editor rápido de valores</div>
+              <div class="card-sub">No modifica AWA05; solo agrega o reemplaza valores de referencia comercial en localStorage</div>
+            </div>
+            <span class="badge">Manual</span>
+          </div>
+          <div class="card-body">
+            <div class="editor-grid">
+              <div class="field">
+                <label>Fuente</label>
+                <select id="edit-source"></select>
+              </div>
+              <div class="field">
+                <label>Parámetro</label>
+                <select id="edit-param"></select>
+              </div>
+              <div class="field">
+                <label>Valor</label>
+                <input id="edit-value" type="text" placeholder="7.4, ND, <1.1" />
+              </div>
+              <div class="field">
+                <label>Unidad</label>
+                <input id="edit-unit" type="text" placeholder="mg/L" />
+              </div>
+              <button class="btn primary" id="btn-save-value">Guardar</button>
+            </div>
+
+            <div class="paste-grid">
+              <div class="field">
+                <label>Pegado por lote</label>
+                <textarea id="paste-area" placeholder="Formato: fuente, parámetro, valor, unidad&#10;Salvavidas, pH, 7.3, pH&#10;Salvavidas, Turbidez, 0.4, NTU"></textarea>
+              </div>
+              <div style="display:grid;gap:10px;align-content:end">
+                <button class="btn" id="btn-apply-paste">Aplicar pegado</button>
+                <button class="btn" id="btn-reset-manual">Limpiar valores manuales</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="fuentes-tecnicas">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Trazabilidad</div>
+            <h2 class="section-title">Qué significa cada tipo de evidencia</h2>
+            <p class="section-sub">
+              La página prioriza valores numéricos publicados. Cuando una marca no publica tabla de parámetros, se deja explícito para no inventar comparaciones.
+            </p>
+          </div>
+          <span class="badge">Fuentes</span>
+        </div>
+        <div class="section-rule"></div>
+
+        <div class="source-note-grid">
+          <div class="note-card">
+            <h4>Dato de laboratorio</h4>
+            <p>Resultado emitido para una muestra específica. Es el caso de AWA05 Lote 1 y permite lectura directa por parámetro.</p>
+          </div>
+          <div class="note-card">
+            <h4>Reporte público de marca</h4>
+            <p>Tabla publicada por el proveedor. Permite comparar parámetros como pH, TDS, conductividad y minerales.</p>
+          </div>
+          <div class="note-card">
+            <h4>No publicado</h4>
+            <p>No es sinónimo de mala calidad. Significa que no hay valor abierto comparable. La celda queda lista para cargar certificado.</p>
+          </div>
+        </div>
       </section>
     </main>
-    <aside class="lens" id="lens"><div class="lens-kicker">Lente interpretativa</div><div class="lens-title" id="lensTitle">Seleccione una fila o tarjeta</div><div class="lens-text" id="lensText">Use esta página como comparador técnico. AWA05 tiene datos de laboratorio por parámetro. Las fuentes comerciales se comparan según la evidencia pública disponible o con valores que usted cargue manualmente.</div><div class="lens-list"><div class="lens-chip">Click en cualquier fila de tabla</div><div class="lens-chip">Filtros por metales, microbiología o mineralización</div><div class="lens-chip">Carga manual de certificados comerciales</div></div><div class="lens-meta" id="lensMeta">AWA05 · Calidad de agua · Lote 1</div></aside>
+
+    <aside class="lens" id="lens">
+      <div class="lens-kicker" id="lens-kicker">Lente interpretativa</div>
+      <div class="lens-title" id="lens-title">Haz clic en una fuente, celda o fila</div>
+      <div class="lens-body" id="lens-body">
+        Esta página está hecha para comparar datos reales. AWA05 tiene análisis completo de Lote 1; varias marcas internacionales publican composición mineral; Salvavidas queda como referencia local hasta cargar resultados por parámetro.
+      </div>
+      <div class="lens-list" id="lens-list"></div>
+    </aside>
   </div>
-  <div class="device-flag" id="deviceFlag">Dispositivo</div>
-  <footer class="dash-footer"><div class="footer-left">AWA05 · Comparativo de calidad de agua</div><div class="footer-center">Asociación Amigos del Lago de Atitlán<sup>®</sup> · 2026</div><div class="footer-right">COGUANOR · Atitlab · Mercado</div></footer>
-  <script>
-    const DATA={"parameters": [{"id": "color", "category": "Fisicoquímico", "name": "Color real", "awa": "0", "value": 0, "unit": "UPtCo", "lmp": "5.0", "lma": "35.0", "type": "max", "limit": 35, "interpretation": "Color 0: agua visualmente limpia; útil contra cualquier ficha comercial si publican color."}, {"id": "olor", "category": "Sensorial", "name": "Olor", "awa": "No rechazable", "value": null, "unit": "", "lmp": "No rechazable", "lma": "NR", "type": "text", "limit": null, "interpretation": "Aceptación sensorial básica. No reemplaza análisis químico ni microbiológico."}, {"id": "temperatura", "category": "Fisicoquímico", "name": "Temperatura", "awa": "23.1", "value": 23.1, "unit": "°C", "lmp": "15–25", "lma": "34", "type": "range", "limit": [15, 34], "interpretation": "Temperatura dentro del rango operativo reportado. Afecta percepción y estabilidad."}, {"id": "turbidez", "category": "Claridad", "name": "Turbidez", "awa": "0.85", "value": 0.85, "unit": "UNT", "lmp": "5.0", "lma": "15.0", "type": "max", "limit": 15, "interpretation": "Turbidez baja. Es uno de los mejores parámetros para mostrar claridad del agua."}, {"id": "conductividad", "category": "Mineralización", "name": "Conductividad eléctrica", "awa": "14.4", "value": 14.4, "unit": "µS/cm", "lmp": "750", "lma": "1500", "type": "max", "limit": 1500, "interpretation": "Conductividad muy baja frente al límite; indica baja carga iónica."}, {"id": "ph", "category": "Equilibrio químico", "name": "pH", "awa": "7.22", "value": 7.22, "unit": "pH", "lmp": "7.0–7.5", "lma": "6.5–8.5", "type": "range", "limit": [6.5, 8.5], "interpretation": "pH prácticamente neutro, favorable para consumo y sabor."}, {"id": "tds", "category": "Mineralización", "name": "Sólidos totales disueltos", "awa": "20.2", "value": 20.2, "unit": "mg/L", "lmp": "500.0", "lma": "1000", "type": "max", "limit": 1000, "interpretation": "TDS bajo; agua de baja mineralización."}, {"id": "cloro_total", "category": "Desinfección", "name": "Cloro total", "awa": "0.0", "value": 0, "unit": "mg/L", "lmp": "0.5", "lma": "1", "type": "max", "limit": 1, "interpretation": "Sin cloro detectable; se interpreta junto con microbiología negativa."}, {"id": "cloro_libre", "category": "Desinfección", "name": "Cloro residual libre", "awa": "0.0", "value": 0, "unit": "mg/L", "lmp": "0.5", "lma": "1", "type": "max", "limit": 1, "interpretation": "No hay residual de protección. La microbiología negativa es clave."}, {"id": "cloruros", "category": "Sales", "name": "Cloruros", "awa": "62", "value": 62, "unit": "mg/L", "lmp": "100", "lma": "250", "type": "max", "limit": 250, "interpretation": "Cloruros por debajo de límite; relevante para sabor y corrosividad."}, {"id": "dureza", "category": "Mineralización", "name": "Dureza total (CaCO3)", "awa": "25", "value": 25, "unit": "mg/L", "lmp": "100", "lma": "500", "type": "max", "limit": 500, "interpretation": "Agua blanda; baja incrustación y perfil mineral ligero."}, {"id": "alcalinidad", "category": "Equilibrio químico", "name": "Alcalinidad total", "awa": "40", "value": 40, "unit": "mg/L", "lmp": "30", "lma": "400", "type": "range", "limit": [30, 400], "interpretation": "Capacidad de amortiguar cambios de pH; dentro del rango reportado."}, {"id": "arsenico", "category": "Metales críticos", "name": "Arsénico", "awa": "0.0", "value": 0, "unit": "mg/L", "lmp": "0.005", "lma": "0.010", "type": "max", "limit": 0.01, "interpretation": "Contaminante crítico. El lote reporta 0.0 mg/L."}, {"id": "calcio", "category": "Minerales", "name": "Calcio", "awa": "100", "value": 100, "unit": "g/L", "lmp": "75.0", "lma": "150.0", "type": "range", "limit": [75, 150], "interpretation": "Cumple según el reporte, pero conviene confirmar unidad en próximos lotes."}, {"id": "cobre", "category": "Metales", "name": "Cobre", "awa": "0.021", "value": 0.021, "unit": "mg/L", "lmp": "0.050", "lma": "1.500", "type": "max", "limit": 1.5, "interpretation": "Valor bajo frente al máximo aceptable."}, {"id": "cromo", "category": "Metales", "name": "Cromo", "awa": "0.014", "value": 0.014, "unit": "mg/L", "lmp": "0.050", "lma": "1.500", "type": "max", "limit": 1.5, "interpretation": "Valor bajo frente al máximo aceptable."}, {"id": "magnesio", "category": "Minerales", "name": "Magnesio", "awa": "35.50", "value": 35.5, "unit": "mg/L", "lmp": "50.0", "lma": "100", "type": "max", "limit": 100, "interpretation": "Dentro de límite; contribuye a dureza y perfil mineral."}, {"id": "manganeso", "category": "Metales", "name": "Manganeso", "awa": "0.10", "value": 0.1, "unit": "mg/L", "lmp": "0.050", "lma": "0.40", "type": "max", "limit": 0.4, "interpretation": "Cumple LMA pero queda sobre LMP; monitorear en Lote 2 y 3."}, {"id": "sulfatos", "category": "Sales", "name": "Sulfatos", "awa": "1.00", "value": 1.0, "unit": "mg/L", "lmp": "100", "lma": "250", "type": "max", "limit": 250, "interpretation": "Muy bajo frente a límite; sin señal de carga salina relevante."}, {"id": "hierro", "category": "Metales", "name": "Hierro", "awa": "0.01", "value": 0.01, "unit": "mg/L", "lmp": "0.100", "lma": "1.0", "type": "max", "limit": 1.0, "interpretation": "Muy bajo; favorece color, claridad y sabor."}, {"id": "nitratos", "category": "Nutrientes", "name": "Nitratos", "awa": "0.02", "value": 0.02, "unit": "mg/L", "lmp": "0.00", "lma": "50.0", "type": "max", "limit": 50, "interpretation": "Casi nulo frente al máximo aceptable."}, {"id": "nitritos", "category": "Nutrientes", "name": "Nitritos", "awa": "0.006", "value": 0.006, "unit": "mg/L", "lmp": "0.00", "lma": "3.0", "type": "max", "limit": 3, "interpretation": "Muy bajo frente al máximo aceptable."}, {"id": "aerobico", "category": "Microbiológico", "name": "Recuento aeróbico en placa", "awa": "<2 Negativo", "value": 2, "unit": "UFC/ml", "lmp": "Negativo", "lma": "Negativo", "type": "micro", "limit": 2, "interpretation": "Resultado negativo; indicador general de baja carga bacteriana."}, {"id": "coliformes_totales", "category": "Microbiológico", "name": "Coliformes totales", "awa": "<2 Negativo", "value": 2, "unit": "NMP/ml", "lmp": "Negativo", "lma": "Negativo", "type": "micro", "limit": 2, "interpretation": "Negativo; indicador básico de potabilidad."}, {"id": "coliformes_fecales", "category": "Microbiológico", "name": "Coliformes fecales", "awa": "<2 Negativo", "value": 2, "unit": "NMP/ml", "lmp": "Negativo", "lma": "Negativo", "type": "micro", "limit": 2, "interpretation": "Negativo; indicador sanitario clave."}, {"id": "ecoli", "category": "Microbiológico", "name": "Escherichia coli", "awa": "<2 Negativo", "value": 2, "unit": "NMP/ml", "lmp": "Negativo", "lma": "Negativo", "type": "micro", "limit": 2, "interpretation": "Negativo; indicador principal de contaminación fecal."}, {"id": "salmonella", "category": "Microbiológico", "name": "Salmonella spp", "awa": "<2 Negativo", "value": 2, "unit": "NMP/ml", "lmp": "Negativo", "lma": "Negativo", "type": "micro", "limit": 2, "interpretation": "Negativo; lectura sanitaria favorable."}, {"id": "vibrio", "category": "Microbiológico", "name": "Vibrio cholerae", "awa": "<2 Negativo", "value": 2, "unit": "NMP/ml", "lmp": "Negativo", "lma": "Negativo", "type": "micro", "limit": 2, "interpretation": "Negativo; relevante para seguridad microbiológica."}, {"id": "enterobacter", "category": "Microbiológico", "name": "Enterobacter cloacae", "awa": "<2 Negativo", "value": 2, "unit": "NMP/ml", "lmp": "Negativo", "lma": "Negativo", "type": "micro", "limit": 2, "interpretation": "Negativo; complementa evidencia microbiológica."}], "providers": [{"id": "awa", "name": "AWA05 Lote 1", "kind": "Agua atmosférica medida por laboratorio", "evidence": "Valores de laboratorio parámetro por parámetro en muestra puntual.", "strength": "Comparación analítica alta", "limits": "Faltan Lote 2 y Lote 3 para estabilidad."}, {"id": "salvavidas", "name": "Agua Pura Salvavidas", "kind": "Agua embotellada comercial", "evidence": "Control de calidad, aval externo y certificaciones institucionales publicadas.", "strength": "Comparación institucional media", "limits": "No se encontró tabla pública de parámetros por lote."}, {"id": "ecofiltro", "name": "Ecofiltro", "kind": "Sistema de filtración", "evidence": "Resultados microbiológicos y ficha de efectividad publicados.", "strength": "Comparación microbiológica/funcional", "limits": "No es agua embotellada; depende del agua de entrada."}]};
-    const $=id=>document.getElementById(id);
-    const fmt={num(v,d=2){if(v===null||v===undefined||Number.isNaN(Number(v)))return '—';return Number(v).toLocaleString('es-GT',{maximumFractionDigits:d,minimumFractionDigits:d})},int(v){if(v===null||v===undefined||Number.isNaN(Number(v)))return '—';return Number(v).toLocaleString('es-GT',{maximumFractionDigits:0})}};
-    function detectDevice(){const touch=navigator.maxTouchPoints>0;const width=window.innerWidth;const coarse=window.matchMedia&&window.matchMedia('(pointer: coarse)').matches;let type='pc';if(width<=700&&(touch||coarse))type='phone';else if(width<=1180&&(touch||coarse))type='tablet';document.body.classList.remove('device-phone','device-tablet','device-pc');document.body.classList.add('device-'+type);$('deviceFlag').textContent=type==='phone'?'Teléfono':type==='tablet'?'Tablet':'PC'}
-    function setLens(title,text,meta='Comparativo de calidad'){$('lensTitle').textContent=title;$('lensText').innerHTML=text;$('lensMeta').textContent=meta}
-    function statusFor(p){if(p.type==='text'||p.type==='micro')return 'ok';if(p.id==='manganeso'||p.id==='calcio')return 'watch';if(p.value===null)return 'ok';if(p.type==='max'&&Number(p.value)<=Number(p.limit))return 'ok';if((p.type==='range')&&Array.isArray(p.limit)&&p.value>=p.limit[0]&&p.value<=p.limit[1])return 'ok';return 'watch'}
-    function statusLabel(st){if(st==='ok')return '<span class="status-pill status-ok">Cumple</span>';if(st==='watch')return '<span class="status-pill status-watch">Monitorear</span>';if(st==='missing')return '<span class="status-pill status-missing">No publicado</span>';return '<span class="status-pill status-bad">Revisar</span>'}
-    function marginPercent(p){if(p.value===null)return 100;if(p.type==='max'&&p.limit)return Math.max(0,Math.min(100,(1-Number(p.value)/Number(p.limit))*100));if(p.type==='range'&&Array.isArray(p.limit)){const mid=(p.limit[0]+p.limit[1])/2;const half=(p.limit[1]-p.limit[0])/2;return Math.max(0,Math.min(100,(1-Math.abs(Number(p.value)-mid)/half)*100))}if(p.type==='micro')return 100;return 90}
-    function marginLabel(p){const m=marginPercent(p);if(p.type==='text')return 'Aceptado';if(p.type==='micro')return 'Negativo';if(p.id==='calcio')return 'Confirmar unidad';if(p.id==='manganeso')return 'Vigilar LMP';return fmt.num(m,0)+'% margen'}
-    function comparable(p){return p.category!=='Sensorial'&&p.id!=='calcio'}
-    function categoryList(){const cats=[...new Set(DATA.parameters.map(p=>p.category))].sort();$('categoryFilter').innerHTML='<option value="all">Todas las categorías</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');$('builderParam').innerHTML=DATA.parameters.filter(comparable).map(p=>`<option value="${p.id}">${p.name} · ${p.unit}</option>`).join('')}
-    function calcScore(){const weights={'Microbiológico':35,'Claridad':12,'Mineralización':16,'Metales':14,'Metales críticos':10,'Nutrientes':8,'Equilibrio químico':5};let tw=0,sc=0;DATA.parameters.forEach(p=>{const w=weights[p.category]||2;tw+=w;let s=100;if(statusFor(p)==='watch')s=78;if(p.type==='max'&&p.limit)s=Math.max(72,Math.min(100,marginPercent(p)));if(p.type==='range')s=Math.max(75,Math.min(100,marginPercent(p)));sc+=s*w});return sc/tw}
-    function renderKPIs(){const total=DATA.parameters.length;const micro=DATA.parameters.filter(p=>p.category==='Microbiológico').length;const ok=DATA.parameters.filter(p=>statusFor(p)==='ok').length;const watch=DATA.parameters.filter(p=>statusFor(p)==='watch').length;const score=calcScore();const kpis=[['Potabilidad','Sí','El laboratorio reportó cumplimiento de COGUANOR.','Resultado Lote 1'],['Parámetros',total,'Fisicoquímicos, metales, nutrientes y microbiología.','Cobertura'],['Microbiología','Negativa',micro+' indicadores microbiológicos sin detección reportada.','Sanitario'],['Cumplimiento',fmt.num(ok/total*100,0)+'%',ok+' parámetros favorables; '+watch+' en monitoreo.','Lectura interna'],['Score',fmt.num(score,0),'Índice interno para resumir el lote.','No sustituye certificado'],['Avance','1/3','Faltan dos análisis para evaluar estabilidad.','Plan']];$('kpiGrid').innerHTML=kpis.map(k=>`<div class="kpi-card" data-title="${k[0]}" data-text="${k[2]}" data-meta="${k[3]}"><div class="kpi-label">${k[0]}</div><div class="kpi-value">${k[1]}${k[0]==='Score'?'<span class="kpi-unit">/100</span>':''}</div><div class="kpi-note">${k[2]}</div></div>`).join('');document.querySelectorAll('.kpi-card').forEach(card=>card.addEventListener('click',()=>setLens(card.dataset.title,card.dataset.text,card.dataset.meta)))}
-    function renderProviders(){const extra={awa:[['Valores por parámetro','Sí'],['Microbiología','Negativa'],['Comparabilidad','Alta'],['Pendiente','2 lotes']],salvavidas:[['Valores por parámetro','No publicados'],['Respaldo','Certificaciones'],['Comparabilidad','Media'],['Requiere','Ficha/lote']],ecofiltro:[['Valores por parámetro','Depende entrada'],['Respaldo','Microbiología'],['Comparabilidad','Condicional'],['Requiere','Antes/después']]};$('providerGrid').innerHTML=DATA.providers.map(p=>`<div class="provider-card" data-id="${p.id}"><div class="provider-inner"><div class="provider-label">${p.strength}</div><div class="provider-name">${p.name}</div><div class="provider-type">${p.kind}</div><div class="provider-metric-row">${extra[p.id].map(row=>`<div class="provider-metric"><span>${row[0]}</span><strong>${row[1]}</strong></div>`).join('')}</div><div class="provider-status">${p.evidence}</div></div></div>`).join('');document.querySelectorAll('.provider-card').forEach(card=>card.addEventListener('click',()=>{const p=DATA.providers.find(x=>x.id===card.dataset.id);setLens(p.name,`<p>${p.evidence}</p><p style="margin-top:10px;">${p.limits}</p>`,p.kind)}))}
-    function renderScore(){const score=calcScore();$('scoreValue').textContent=fmt.num(score,0);$('scoreRing').style.setProperty('--angle',(score*3.6)+'deg');const comps=[['Microbiología',100,'Indicadores negativos en Lote 1'],['Claridad',94,'Turbidez 0.85 UNT y color 0'],['Mineralización',96,'Conductividad y TDS bajos'],['Metales',88,'Cumple; manganeso requiere seguimiento'],['Nutrientes',99,'Nitratos y nitritos muy bajos'],['Trazabilidad',67,'Un lote completo, faltan dos']];$('scoreComponents').innerHTML=comps.map(c=>`<div class="component" data-title="${c[0]}" data-text="${c[2]}"><div class="component-label">${c[0]}</div><div class="component-track"><div class="component-fill" style="width:${c[1]}%"></div></div><div class="component-value">${c[1]}/100</div></div>`).join('');document.querySelectorAll('.component').forEach(el=>el.addEventListener('click',()=>setLens(el.dataset.title,el.dataset.text,'Score interno AWA05')))}
-    function renderParameterTable(){const search=$('searchInput').value.trim().toLowerCase();const cat=$('categoryFilter').value;const status=$('statusFilter').value;const only=$('comparableOnly').checked;const rows=DATA.parameters.filter(p=>{const st=statusFor(p);return(!search||[p.name,p.category,p.unit].join(' ').toLowerCase().includes(search))&&(cat==='all'||p.category===cat)&&(status==='all'||st===status)&&(!only||comparable(p))});$('parameterBody').innerHTML=rows.map(p=>{const m=marginPercent(p);const st=statusFor(p);return `<tr class="click-row" data-id="${p.id}"><td><div class="td-name">${p.name}</div><div class="td-small">${p.interpretation.slice(0,65)}...</div></td><td>${p.category}</td><td><strong>${p.awa}</strong></td><td>${p.lmp}</td><td>${p.lma}</td><td>${p.unit||'—'}</td><td><div class="mini-bar"><div class="mini-fill" style="width:${m}%"></div></div><div class="td-small">${marginLabel(p)}</div></td><td>${statusLabel(st)}</td><td>${comparable(p)?'Comparable con certificado':'Comparación limitada'}</td></tr>`}).join('');document.querySelectorAll('#parameterBody .click-row').forEach(row=>row.addEventListener('click',()=>selectParameter(row.dataset.id,row)))}
-    function selectParameter(id,rowEl=null){const p=DATA.parameters.find(x=>x.id===id);if(!p)return;document.querySelectorAll('.click-row').forEach(r=>r.classList.remove('selected'));if(rowEl)rowEl.classList.add('selected');const st=statusFor(p);const comp=comparable(p)?'Puede contrastarse si la otra fuente publica el mismo parámetro con unidad compatible.':'No es ideal para comparación directa.';setLens(p.name,`<p><strong>Resultado AWA05:</strong> ${p.awa} ${p.unit||''}.</p><p style="margin-top:10px;"><strong>Límites del informe:</strong> LMP ${p.lmp}, LMA ${p.lma}.</p><p style="margin-top:10px;">${p.interpretation}</p><p style="margin-top:10px;"><strong>Comparación comercial:</strong> ${comp}</p><p style="margin-top:10px;"><strong>Estado:</strong> ${st==='ok'?'cumple la lectura del lote':'cumple LMA, pero conviene monitoreo'}.</p>`,p.category);$('builderParam').value=p.id;updateComparePanel()}
-    function benchmarkKey(){return'awa05_water_quality_benchmark_v3'} function loadBenchmarks(){try{return JSON.parse(localStorage.getItem(benchmarkKey())||'{}')}catch(e){return{}}} function saveBenchmarks(obj){localStorage.setItem(benchmarkKey(),JSON.stringify(obj))} function getBench(provider,param){const b=loadBenchmarks();return b[provider+':'+param]||null}
-    function saveBuilderValue(){const provider=$('builderProvider').value;const param=$('builderParam').value;const value=Number($('builderValue').value);const source=$('builderSource').value.trim();if(!Number.isFinite(value)){setLens('Valor faltante','Ingrese un número válido para guardar la comparación.','Comparador editable');return}const b=loadBenchmarks();b[provider+':'+param]={value,source:source||'Valor cargado manualmente',savedAt:new Date().toISOString()};saveBenchmarks(b);updateComparePanel();renderMatrix();setLens('Comparación guardada','El valor quedó guardado localmente en este navegador.','Comparador editable')}
-    function clearBenchmarks(){localStorage.removeItem(benchmarkKey());$('builderValue').value='';$('builderSource').value='';updateComparePanel();renderMatrix();setLens('Valores eliminados','Se limpiaron los valores comerciales cargados manualmente.','Comparador editable')}
-    function normalizeForBar(p,v){if(v===null||v===undefined||!Number.isFinite(Number(v)))return 0;if(p.type==='max'&&p.limit)return Math.min(100,Number(v)/Number(p.limit)*100);if(p.type==='range'&&Array.isArray(p.limit))return Math.min(100,(Number(v)-p.limit[0])/(p.limit[1]-p.limit[0])*100);return Math.min(100,Number(v))}
-    function updateComparePanel(){const provider=$('builderProvider').value;const param=$('builderParam').value;const p=DATA.parameters.find(x=>x.id===param);const bench=getBench(provider,param);if(!p)return;const providerName=provider==='salvavidas'?'Agua Pura Salvavidas':provider==='ecofiltro'?'Ecofiltro':'Otra fuente';$('comparePanelTitle').textContent=p.name;const published=bench?`${providerName}: ${fmt.num(bench.value,4)} ${p.unit||''}. Fuente: ${bench.source}.`:`${providerName} no tiene todavía un valor cargado para este parámetro.`;$('comparePanelText').innerHTML=`<strong>AWA05:</strong> ${p.awa} ${p.unit||''}.<br>${published}<br><br>La comparación se vuelve sólida cuando ambos valores provienen de muestras, unidades y métodos compatibles.`;const awaVal=Number(p.value);const providerVal=bench?Number(bench.value):null;const limitVal=Array.isArray(p.limit)?p.limit[1]:p.limit;const bars=[['AWA05',awaVal,p.awa], [providerName,providerVal,bench?fmt.num(providerVal,4)+' '+(p.unit||''):'No cargado'], ['LMA / referencia',Number(limitVal),limitVal?String(limitVal)+' '+(p.unit||''):'—']];$('compareBars').innerHTML=bars.map(row=>`<div class="compare-bar-row"><div class="compare-label">${row[0]}</div><div class="compare-track"><div class="compare-fill" style="width:${normalizeForBar(p,row[1])}%"></div></div><div class="compare-number">${row[2]||'—'}</div></div>`).join('')}
-    function renderMatrix(){$('matrixBody').innerHTML=DATA.parameters.map(p=>{const sv=getBench('salvavidas',p.id);const eco=getBench('ecofiltro',p.id);const salvText=sv?`<strong>${fmt.num(sv.value,4)} ${p.unit||''}</strong><br><span class="td-small">${sv.source}</span>`:`<span class="status-pill status-missing">No publicado</span><br><span class="td-small">Certificaciones/proceso, sin valor de lote</span>`;const ecoText=eco?`<strong>${fmt.num(eco.value,4)} ${p.unit||''}</strong><br><span class="td-small">${eco.source}</span>`:(p.category==='Microbiológico'?`<span class="status-pill status-ok">Evidencia pública</span><br><span class="td-small">Resultados microbiológicos / efectividad</span>`:`<span class="status-pill status-missing">No comparable</span><br><span class="td-small">Depende del agua de entrada</span>`);return `<tr class="click-row" data-id="${p.id}"><td><div class="td-name">${p.name}</div><div class="td-small">${p.category}</div></td><td><strong>${p.awa}</strong> ${p.unit||''}</td><td>${salvText}</td><td>${ecoText}</td><td>LMP ${p.lmp} · LMA ${p.lma}</td><td>${comparable(p)?'Comparable con certificado o valor cargado':'Comparación limitada'}</td></tr>`}).join('');document.querySelectorAll('#matrixBody .click-row').forEach(row=>row.addEventListener('click',()=>selectParameter(row.dataset.id)))}
-    function exportCSV(){const headers=['Parametro','Categoria','AWA05','Unidad','LMP','LMA','Estado','Comparacion'];const rows=DATA.parameters.map(p=>[p.name,p.category,p.awa,p.unit||'',p.lmp,p.lma,statusFor(p),comparable(p)?'comparable':'limitada']);const csv=[headers,...rows].map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='awa05_calidad_agua_lote1.csv';a.click();URL.revokeObjectURL(url)}
-    function installEvents(){['searchInput','categoryFilter','statusFilter','comparableOnly'].forEach(id=>$(id).addEventListener(id==='comparableOnly'?'change':'input',renderParameterTable));$('downloadCsv').addEventListener('click',exportCSV);$('builderProvider').addEventListener('change',updateComparePanel);$('builderParam').addEventListener('change',updateComparePanel);$('builderValue').addEventListener('input',updateComparePanel);$('saveBenchmark').addEventListener('click',saveBuilderValue);$('clearBenchmark').addEventListener('click',clearBenchmarks);$('mobileBtn').addEventListener('click',()=>$('mobileMenu').classList.toggle('is-open'));window.addEventListener('resize',detectDevice);window.addEventListener('orientationchange',()=>setTimeout(detectDevice,160))}
-    function boot(){detectDevice();categoryList();renderKPIs();renderProviders();renderScore();renderParameterTable();renderMatrix();updateComparePanel();installEvents();selectParameter('turbidez')}
-    boot();
-  </script>
+
+  <footer class="dash-footer">
+    <div class="footer-left">AWA05 · Calidad de agua · Lote 1</div>
+    <div class="footer-center">Asociación Amigos del Lago de Atitlán · 2026</div>
+    <div class="footer-right">COGUANOR NTG 290001</div>
+  </footer>
+
+<script>
+const PARAMS = [
+  {
+    id: 'ph',
+    name: 'pH',
+    category: 'Fisicoquímico',
+    unit: 'pH',
+    min: 6.5,
+    max: 8.5,
+    ideal: '6.5–8.5',
+    explain: 'El pH indica acidez o alcalinidad. Para agua potable se busca un rango que no sea corrosivo ni excesivamente alcalino.',
+    weight: 7
+  },
+  {
+    id: 'tds',
+    name: 'Sólidos totales disueltos',
+    short: 'TDS',
+    category: 'Fisicoquímico',
+    unit: 'mg/L',
+    max: 1000,
+    guide: 500,
+    explain: 'TDS resume la mineralización total. Valores bajos indican agua de baja carga mineral; valores altos indican agua más mineralizada.',
+    weight: 7
+  },
+  {
+    id: 'conductivity',
+    name: 'Conductividad eléctrica',
+    short: 'Conductividad',
+    category: 'Fisicoquímico',
+    unit: 'µS/cm',
+    max: 1500,
+    guide: 750,
+    explain: 'La conductividad aumenta con sales disueltas. Es una forma rápida de ver la carga iónica del agua.',
+    weight: 6
+  },
+  {
+    id: 'turbidity',
+    name: 'Turbidez',
+    category: 'Fisicoquímico',
+    unit: 'NTU',
+    max: 15,
+    guide: 5,
+    explain: 'La turbidez mide partículas suspendidas. Menor turbidez suele indicar mayor claridad y mejor control físico.',
+    weight: 8
+  },
+  {
+    id: 'color',
+    name: 'Color real',
+    category: 'Fisicoquímico',
+    unit: 'UPtCo / ACU',
+    max: 35,
+    guide: 5,
+    explain: 'El color real evalúa apariencia del agua sin influencia de partículas suspendidas.',
+    weight: 3
+  },
+  {
+    id: 'temperature',
+    name: 'Temperatura',
+    category: 'Operativo',
+    unit: '°C',
+    min: 15,
+    max: 34,
+    guide: 25,
+    explain: 'La temperatura no define por sí sola la potabilidad, pero afecta percepción, química y actividad microbiológica.',
+    weight: 2
+  },
+  {
+    id: 'hardness',
+    name: 'Dureza total',
+    category: 'Minerales',
+    unit: 'mg/L CaCO3',
+    max: 500,
+    guide: 100,
+    explain: 'La dureza proviene principalmente de calcio y magnesio. Afecta sabor, incrustaciones y sensación en boca.',
+    weight: 4
+  },
+  {
+    id: 'alkalinity',
+    name: 'Alcalinidad total',
+    category: 'Minerales',
+    unit: 'mg/L CaCO3',
+    min: 30,
+    max: 400,
+    explain: 'La alcalinidad expresa capacidad buffer. Ayuda a estabilizar pH frente a cambios químicos.',
+    weight: 3
+  },
+  {
+    id: 'calcium',
+    name: 'Calcio',
+    category: 'Minerales',
+    unit: 'mg/L',
+    max: 150,
+    guide: 75,
+    explain: 'El calcio aporta mineralización y dureza. En AWA05 la unidad del reporte debe confirmarse antes de concluir fuerte.',
+    weight: 3
+  },
+  {
+    id: 'magnesium',
+    name: 'Magnesio',
+    category: 'Minerales',
+    unit: 'mg/L',
+    max: 100,
+    guide: 50,
+    explain: 'El magnesio contribuye a dureza y sabor mineral.',
+    weight: 3
+  },
+  {
+    id: 'sodium',
+    name: 'Sodio',
+    category: 'Minerales',
+    unit: 'mg/L',
+    explain: 'Sodio bajo puede ser relevante para perfiles de agua suave o dietas restringidas.',
+    weight: 2
+  },
+  {
+    id: 'potassium',
+    name: 'Potasio',
+    category: 'Minerales',
+    unit: 'mg/L',
+    explain: 'Mineral usualmente bajo en aguas potables; aporta poco a la lectura sanitaria general.',
+    weight: 1
+  },
+  {
+    id: 'chloride',
+    name: 'Cloruros',
+    category: 'Aniones',
+    unit: 'mg/L',
+    max: 250,
+    guide: 100,
+    explain: 'Cloruros altos pueden afectar sabor y corrosividad. AWA05 se mantiene muy por debajo del máximo aceptable.',
+    weight: 4
+  },
+  {
+    id: 'sulfate',
+    name: 'Sulfatos',
+    category: 'Aniones',
+    unit: 'mg/L',
+    max: 250,
+    guide: 100,
+    explain: 'Sulfatos altos pueden modificar sabor y tener efecto laxante en concentraciones elevadas.',
+    weight: 4
+  },
+  {
+    id: 'nitrate',
+    name: 'Nitratos',
+    category: 'Nutrientes',
+    unit: 'mg/L',
+    max: 50,
+    explain: 'Nitratos elevados pueden indicar contaminación agrícola o sanitaria. En AWA05 el valor reportado es muy bajo.',
+    weight: 8
+  },
+  {
+    id: 'nitrite',
+    name: 'Nitritos',
+    category: 'Nutrientes',
+    unit: 'mg/L',
+    max: 3,
+    explain: 'Nitritos son indicadores sensibles de contaminación reciente o procesos redox; deben mantenerse muy bajos.',
+    weight: 8
+  },
+  {
+    id: 'arsenic',
+    name: 'Arsénico',
+    category: 'Metales',
+    unit: 'mg/L',
+    max: 0.010,
+    guide: 0.005,
+    explain: 'Arsénico es un contaminante crítico. Resultado no detectado o cero es favorable.',
+    weight: 10
+  },
+  {
+    id: 'copper',
+    name: 'Cobre',
+    category: 'Metales',
+    unit: 'mg/L',
+    max: 1.5,
+    guide: 0.05,
+    explain: 'El cobre puede venir de tuberías o contacto con materiales. AWA05 está muy por debajo del límite aceptable.',
+    weight: 5
+  },
+  {
+    id: 'chromium',
+    name: 'Cromo',
+    category: 'Metales',
+    unit: 'mg/L',
+    max: 1.5,
+    guide: 0.05,
+    explain: 'Cromo es un parámetro de metales. El resultado AWA05 está por debajo del máximo aceptable reportado.',
+    weight: 6
+  },
+  {
+    id: 'manganese',
+    name: 'Manganeso',
+    category: 'Metales',
+    unit: 'mg/L',
+    max: 0.40,
+    guide: 0.05,
+    explain: 'Manganeso puede afectar color, sabor y depósitos. AWA05 cumple el máximo aceptable.',
+    weight: 5
+  },
+  {
+    id: 'iron',
+    name: 'Hierro',
+    category: 'Metales',
+    unit: 'mg/L',
+    max: 1.0,
+    guide: 0.1,
+    explain: 'Hierro alto puede producir color, sabor metálico y depósitos. AWA05 está bajo.',
+    weight: 5
+  },
+  {
+    id: 'total_chlorine',
+    name: 'Cloro total',
+    category: 'Desinfección',
+    unit: 'mg/L',
+    max: 1,
+    guide: 0.5,
+    explain: 'El cloro total indica residual de desinfección. En AWA05 aparece 0.0 mg/L; debe interpretarse junto con microbiología negativa.',
+    weight: 4
+  },
+  {
+    id: 'free_chlorine',
+    name: 'Cloro residual libre',
+    category: 'Desinfección',
+    unit: 'mg/L',
+    max: 1,
+    guide: 0.5,
+    explain: 'El cloro libre protege contra recontaminación en redes. En sistemas cerrados y recién muestreados puede ser 0 si microbiología es negativa.',
+    weight: 4
+  },
+  {
+    id: 'plate_count',
+    name: 'Recuento aeróbico en placa',
+    category: 'Microbiología',
+    unit: 'UFC/mL',
+    max: 500,
+    explain: 'Indicador general de carga bacteriana heterotrófica.',
+    weight: 10
+  },
+  {
+    id: 'total_coliforms',
+    name: 'Coliformes totales',
+    category: 'Microbiología',
+    unit: 'NMP',
+    max: 2,
+    explain: 'Indicador microbiológico de contaminación ambiental o tratamiento insuficiente. Resultado menor al umbral es favorable.',
+    weight: 12
+  },
+  {
+    id: 'fecal_coliforms',
+    name: 'Coliformes fecales',
+    category: 'Microbiología',
+    unit: 'NMP',
+    max: 2,
+    explain: 'Indicador de contaminación fecal. Debe ser negativo o menor al umbral del método.',
+    weight: 12
+  },
+  {
+    id: 'ecoli',
+    name: 'Escherichia coli',
+    category: 'Microbiología',
+    unit: 'NMP',
+    max: 2,
+    explain: 'E. coli es indicador sanitario crítico. Su ausencia fortalece el dictamen de potabilidad.',
+    weight: 14
+  },
+  {
+    id: 'salmonella',
+    name: 'Salmonella spp',
+    category: 'Microbiología',
+    unit: 'NMP/mL',
+    max: 2,
+    explain: 'Patógeno que no debe detectarse en agua potable.',
+    weight: 12
+  },
+  {
+    id: 'vibrio',
+    name: 'Vibrio cholerae',
+    category: 'Microbiología',
+    unit: 'NMP/mL',
+    max: 2,
+    explain: 'Patógeno asociado a cólera; resultado menor al límite es favorable.',
+    weight: 12
+  },
+  {
+    id: 'enterobacter',
+    name: 'Enterobacter cloacae',
+    category: 'Microbiología',
+    unit: 'NMP/mL',
+    max: 2,
+    explain: 'Indicador bacteriano adicional reportado por el laboratorio.',
+    weight: 8
+  }
+];
+
+const SOURCES = [
+  {
+    id: 'awa05',
+    name: 'AWA05 Lote 1',
+    type: 'Agua atmosférica generada localmente',
+    profile: 'Laboratorio Atitlab · COGUANOR NTG 290001',
+    description: 'Muestra tomada en Santa Catarina Palopó. Es la única fuente del comparativo con tabla completa del lote actual.',
+    evidence: 'laboratorio',
+    sourceLabel: 'Atitlab · Lote 1 · 3 mayo 2026',
+    values: {
+      ph: { value: 7.22, display: '7.22', unit: 'pH', note: 'Dentro de 6.5–8.5' },
+      tds: { value: 20.2, display: '20.2', unit: 'mg/L', note: 'Muy baja mineralización' },
+      conductivity: { value: 14.4, display: '14.4', unit: 'µS/cm', note: 'Muy baja conductividad' },
+      turbidity: { value: 0.85, display: '0.85', unit: 'NTU', note: 'Muy bajo frente al LMA' },
+      color: { value: 0, display: '0', unit: 'UPtCo', note: 'Sin color real reportado' },
+      temperature: { value: 23.1, display: '23.1', unit: '°C' },
+      hardness: { value: 25, display: '25', unit: 'mg/L CaCO3' },
+      alkalinity: { value: 40, display: '40', unit: 'mg/L CaCO3' },
+      calcium: { value: 100, display: '100†', unit: 'mg/L', note: 'La unidad del PDF aparece inconsistente; revisar contra laboratorio antes de conclusión fuerte.' },
+      magnesium: { value: 35.50, display: '35.50', unit: 'mg/L' },
+      chloride: { value: 62, display: '62', unit: 'mg/L' },
+      sulfate: { value: 1.00, display: '1.00', unit: 'mg/L' },
+      nitrate: { value: 0.02, display: '0.02', unit: 'mg/L' },
+      nitrite: { value: 0.006, display: '0.006', unit: 'mg/L' },
+      arsenic: { value: 0, display: '0.0', unit: 'mg/L' },
+      copper: { value: 0.021, display: '0.021', unit: 'mg/L' },
+      chromium: { value: 0.014, display: '0.014', unit: 'mg/L' },
+      manganese: { value: 0.10, display: '0.10', unit: 'mg/L' },
+      iron: { value: 0.01, display: '0.01', unit: 'mg/L' },
+      total_chlorine: { value: 0, display: '0.0', unit: 'mg/L' },
+      free_chlorine: { value: 0, display: '0.0', unit: 'mg/L' },
+      plate_count: { value: 2, display: '<2', unit: 'UFC/mL', qualitative: 'negativo' },
+      total_coliforms: { value: 2, display: '<2', unit: 'NMP/mL', qualitative: 'negativo' },
+      fecal_coliforms: { value: 2, display: '<2', unit: 'NMP/mL', qualitative: 'negativo' },
+      ecoli: { value: 2, display: '<2', unit: 'NMP/mL', qualitative: 'negativo' },
+      salmonella: { value: 2, display: '<2', unit: 'NMP/mL', qualitative: 'negativo' },
+      vibrio: { value: 2, display: '<2', unit: 'NMP/mL', qualitative: 'negativo' },
+      enterobacter: { value: 2, display: '<2', unit: 'NMP/mL', qualitative: 'negativo' }
+    }
+  },
+  {
+    id: 'voss',
+    name: 'VOSS Still',
+    type: 'Agua embotellada baja mineralización',
+    profile: 'Reporte público VOSS Still',
+    description: 'Referencia internacional de agua con baja mineralización. Útil para comparar TDS, conductividad y minerales principales.',
+    evidence: 'publico',
+    sourceLabel: 'VOSS Water Quality Report',
+    values: {
+      ph: { value: 6.2, display: '6.2', unit: 'pH' },
+      tds: { value: 26, display: '26', unit: 'mg/L' },
+      conductivity: { value: 38, display: '38', unit: 'µS/cm' },
+      calcium: { value: 3.4, display: '3.4', unit: 'mg/L' },
+      magnesium: { value: 0.69, display: '0.69', unit: 'mg/L' },
+      chloride: { value: 4.0, display: '4.0', unit: 'mg/L' },
+      sulfate: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      sodium: { value: 4, display: '4', unit: 'mg/L' },
+      potassium: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' }
+    }
+  },
+  {
+    id: 'acqua_panna',
+    name: 'Acqua Panna',
+    type: 'Agua mineral natural moderada',
+    profile: 'Reporte de análisis 2023',
+    description: 'Referencia mineral natural con pH neutro-alcalino suave y TDS moderado. Buena comparación frente a AWA05 por pH, TDS y dureza.',
+    evidence: 'publico',
+    sourceLabel: 'Acqua Panna Water Analysis Report 2023',
+    values: {
+      ph: { value: 7.66, display: '7.66', unit: 'pH' },
+      tds: { value: 138, display: '138', unit: 'mg/L' },
+      conductivity: { value: 237, display: '237', unit: 'µS/cm' },
+      calcium: { value: 33.1, display: '33.1', unit: 'mg/L' },
+      magnesium: { value: 6.6, display: '6.6', unit: 'mg/L' },
+      sodium: { value: 6.5, display: '6.5', unit: 'mg/L' },
+      chloride: { value: 8.3, display: '8.3', unit: 'mg/L' },
+      sulfate: { value: 20.8, display: '20.8', unit: 'mg/L' },
+      hardness: { value: 110, display: '110', unit: 'mg/L CaCO3' },
+      alkalinity: { value: 90, display: '90', unit: 'mg/L CaCO3' },
+      copper: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      iron: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      manganese: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' }
+    }
+  },
+  {
+    id: 'fiji',
+    name: 'FIJI Water',
+    type: 'Agua artesiana premium',
+    profile: 'Reporte mineral típico',
+    description: 'Referencia artesiana con mineralización media y sílice alta. Compara bien en TDS, pH, calcio, magnesio y conductividad.',
+    evidence: 'publico',
+    sourceLabel: 'FIJI Water Quality Report',
+    values: {
+      ph: { value: 7.8, display: '7.8', unit: 'pH' },
+      tds: { value: 230, display: '230', unit: 'mg/L' },
+      conductivity: { value: 290, display: '290', unit: 'µS/cm' },
+      turbidity: { value: 0, display: 'ND', unit: 'NTU', qualitative: 'no detectado' },
+      color: { value: 0, display: 'ND', unit: 'ACU', qualitative: 'no detectado' },
+      calcium: { value: 19, display: '19', unit: 'mg/L' },
+      magnesium: { value: 14, display: '14', unit: 'mg/L' },
+      sodium: { value: 18, display: '18', unit: 'mg/L' },
+      chloride: { value: 10, display: '10', unit: 'mg/L' },
+      sulfate: { value: 0.97, display: '0.97', unit: 'mg/L' },
+      alkalinity: { value: 130, display: '130', unit: 'mg/L' },
+      arsenic: { value: 0.001, display: '0.001', unit: 'mg/L' }
+    }
+  },
+  {
+    id: 'essentia',
+    name: 'Essentia',
+    type: 'Agua purificada alcalina',
+    profile: 'Reporte de calidad 2024',
+    description: 'Agua purificada con minerales añadidos. Destaca por pH alto, TDS moderado y baja turbidez reportada como no detectada.',
+    evidence: 'publico',
+    sourceLabel: 'Essentia Water Quality Report 2024',
+    values: {
+      ph: { value: 9.8, display: '9.8', unit: 'pH' },
+      tds: { value: 58.3, display: '58.3', unit: 'mg/L' },
+      conductivity: { value: 111, display: '111', unit: 'µS/cm' },
+      turbidity: { value: 0, display: 'ND', unit: 'NTU', qualitative: 'no detectado' },
+      hardness: { value: 6.46, display: '6.46', unit: 'mg/L CaCO3' },
+      alkalinity: { value: 41.82, display: '41.82', unit: 'mg/L CaCO3' },
+      magnesium: { value: 1.48, display: '1.48', unit: 'mg/L' },
+      sodium: { value: 14.66, display: '14.66', unit: 'mg/L' },
+      potassium: { value: 7.03, display: '7.03', unit: 'mg/L' },
+      chloride: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      sulfate: { value: 3.5, display: '3.5', unit: 'mg/L' },
+      arsenic: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      copper: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      chromium: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      iron: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      manganese: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      nitrate: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      nitrite: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' }
+    }
+  },
+  {
+    id: 'spellegrino',
+    name: 'S.Pellegrino',
+    type: 'Agua mineral alta',
+    profile: 'Reporte de análisis 2022',
+    description: 'Agua mineral con TDS, conductividad, sulfatos y dureza altos. Sirve para contrastar AWA05 contra un perfil mineral intenso.',
+    evidence: 'publico',
+    sourceLabel: 'S.Pellegrino Water Analysis Report 2022',
+    values: {
+      ph: { value: 5.7, display: '5.7', unit: 'pH', note: 'Agua carbonatada; el CO2 reduce pH.' },
+      tds: { value: 900, display: '900', unit: 'mg/L' },
+      conductivity: { value: 1200, display: '1200', unit: 'µS/cm' },
+      turbidity: { value: 0, display: 'ND', unit: 'NTU', qualitative: 'no detectado' },
+      color: { value: 0, display: 'ND', unit: 'ACU', qualitative: 'no detectado' },
+      calcium: { value: 150, display: '150', unit: 'mg/L' },
+      magnesium: { value: 41, display: '41', unit: 'mg/L' },
+      sodium: { value: 27, display: '27', unit: 'mg/L' },
+      potassium: { value: 2, display: '2', unit: 'mg/L' },
+      chloride: { value: 55, display: '55', unit: 'mg/L' },
+      sulfate: { value: 430, display: '430', unit: 'mg/L' },
+      hardness: { value: 540, display: '540', unit: 'mg/L CaCO3' },
+      alkalinity: { value: 170, display: '170', unit: 'mg/L CaCO3' },
+      iron: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      manganese: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      copper: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' }
+    }
+  },
+  {
+    id: 'evian',
+    name: 'Evian',
+    type: 'Agua mineral natural',
+    profile: 'Composición mineral oficial',
+    description: 'Referencia de agua mineral natural de mineralización media. Útil para pH, TDS, calcio, magnesio, sulfatos, cloruros y nitratos.',
+    evidence: 'publico',
+    sourceLabel: 'Evian Water Quality',
+    values: {
+      ph: { value: 7.2, display: '7.2', unit: 'pH' },
+      tds: { value: 345, display: '345', unit: 'mg/L' },
+      calcium: { value: 80, display: '80', unit: 'mg/L' },
+      magnesium: { value: 26, display: '26', unit: 'mg/L' },
+      sodium: { value: 6.5, display: '6.5', unit: 'mg/L' },
+      potassium: { value: 1, display: '1', unit: 'mg/L' },
+      chloride: { value: 10, display: '10', unit: 'mg/L' },
+      sulfate: { value: 15, display: '15', unit: 'mg/L' },
+      nitrate: { value: 3.8, display: '3.8', unit: 'mg/L' }
+    }
+  },
+  {
+    id: 'ecofiltro',
+    name: 'Ecofiltro',
+    type: 'Agua filtrada / fuente local comparable',
+    profile: 'Resultados microbiológicos públicos',
+    description: 'Se incluye como fuente de agua filtrada. Tiene datos públicos fuertes en microbiología, pero no una tabla fisicoquímica completa comparable.',
+    evidence: 'publico parcial',
+    sourceLabel: 'Ecofiltro · Analisa 2025',
+    values: {
+      total_coliforms: { value: 1.1, display: '<1.1', unit: 'NMP/100 mL', qualitative: 'negativo' },
+      fecal_coliforms: { value: 1.1, display: '<1.1', unit: 'NMP/100 mL', qualitative: 'negativo' },
+      ecoli: { value: 1.1, display: '<1.1', unit: 'NMP/100 mL', qualitative: 'negativo' }
+    }
+  },
+  {
+    id: 'salvavidas',
+    name: 'Salvavidas',
+    type: 'Agua comercial guatemalteca',
+    profile: 'Certificaciones públicas; parámetros no publicados',
+    description: 'Referencia local importante. Se deja en la matriz porque comercialmente importa, pero sus valores parámetro por parámetro deben cargarse cuando se consiga certificado.',
+    evidence: 'institucional',
+    sourceLabel: 'Sitio público Salvavidas',
+    values: {}
+  },
+  {
+    id: 'smartwater',
+    name: 'Smartwater',
+    type: 'Agua purificada vapor destilada',
+    profile: 'Análisis anual 2025',
+    description: 'Publica resultados anuales con muchos parámetros como ND o PASS. Se incluye como referencia de purificada comercial con baja comparabilidad numérica.',
+    evidence: 'publico parcial',
+    sourceLabel: 'Coca-Cola Smartwater Annual Analysis 2025',
+    values: {
+      chloride: { display: 'PASS', unit: 'mg/L', qualitative: 'cumple' },
+      sulfate: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      arsenic: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      chromium: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      copper: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      iron: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      manganese: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      nitrate: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' },
+      nitrite: { value: 0, display: 'ND', unit: 'mg/L', qualitative: 'no detectado' }
+    }
+  }
+];
+
+const SOURCE_ORDER = SOURCES.map(s => s.id);
+const MATRIX_DEFAULT_SOURCES = ['awa05','voss','acqua_panna','fiji','essentia','spellegrino','evian','ecofiltro','salvavidas'];
+const STORAGE_KEY = 'awa05-water-quality-manual-values-v3';
+let manualValues = loadManualValues();
+let selectedSource = 'awa05';
+let charts = {};
+
+const $ = id => document.getElementById(id);
+const fmt = {
+  num(value, digits = 2) {
+    if (value === null || value === undefined || Number.isNaN(Number(value))) return '—';
+    return Number(value).toLocaleString('es-GT', { maximumFractionDigits: digits, minimumFractionDigits: digits });
+  },
+  int(value) {
+    if (value === null || value === undefined || Number.isNaN(Number(value))) return '—';
+    return Number(value).toLocaleString('es-GT', { maximumFractionDigits: 0 });
+  }
+};
+
+function normalize(text) {
+  return String(text || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+function loadManualValues() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function saveManualValues() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(manualValues));
+}
+
+function sourceById(id) {
+  return SOURCES.find(s => s.id === id);
+}
+
+function paramById(id) {
+  return PARAMS.find(p => p.id === id);
+}
+
+function manualKey(sourceId, paramId) {
+  return `${sourceId}::${paramId}`;
+}
+
+function getValue(sourceId, paramId) {
+  const manual = manualValues[manualKey(sourceId, paramId)];
+  if (manual) return { ...manual, manual: true };
+  const source = sourceById(sourceId);
+  return source?.values?.[paramId] || null;
+}
+
+function numericValue(sourceId, paramId) {
+  const value = getValue(sourceId, paramId);
+  if (!value || value.value === undefined || value.value === null || Number.isNaN(Number(value.value))) return null;
+  return Number(value.value);
+}
+
+function displayValue(sourceId, paramId) {
+  const p = paramById(paramId);
+  const value = getValue(sourceId, paramId);
+  if (!value) {
+    return `<span class="value-chip empty">No publicado</span>`;
+  }
+  const state = evaluateValue(p, value);
+  const cls = state === 'ok' ? 'ok' : state === 'warn' ? 'warn' : state === 'bad' ? 'red' : '';
+  const unit = value.unit || p.unit || '';
+  const manual = value.manual ? ' *' : '';
+  return `<span class="value-chip ${cls}" data-source="${sourceId}" data-param="${paramId}">${value.display ?? value.value}${manual} ${unit}</span>`;
+}
+
+function evaluateValue(param, value) {
+  if (!value) return 'empty';
+  if (value.qualitative && ['negativo','no detectado','cumple'].includes(value.qualitative)) return 'ok';
+  if (value.value === undefined || value.value === null || Number.isNaN(Number(value.value))) return 'info';
+  const v = Number(value.value);
+  if (param.min !== undefined && v < param.min) return param.id === 'ph' ? 'warn' : 'bad';
+  if (param.max !== undefined && v > param.max) return param.id === 'ph' ? 'warn' : 'bad';
+  if (param.guide !== undefined && v > param.guide && param.max !== undefined) return 'warn';
+  return 'ok';
+}
+
+function stateLabel(state) {
+  if (state === 'ok') return 'Cumple';
+  if (state === 'warn') return 'Atención';
+  if (state === 'bad') return 'Fuera de rango';
+  if (state === 'empty') return 'Sin dato';
+  return 'Informativo';
+}
+
+function valueCoverage(sourceId) {
+  const ids = new Set(Object.keys(sourceById(sourceId)?.values || {}));
+  Object.keys(manualValues).forEach(k => {
+    if (k.startsWith(`${sourceId}::`)) ids.add(k.split('::')[1]);
+  });
+  return ids.size;
+}
+
+function numericCoverage(sourceId) {
+  return PARAMS.filter(p => numericValue(sourceId, p.id) !== null).length;
+}
+
+function microCoverage(sourceId) {
+  return ['total_coliforms','fecal_coliforms','ecoli','salmonella','vibrio','enterobacter','plate_count']
+    .filter(id => getValue(sourceId, id)).length;
+}
+
+function sourceScore(sourceId) {
+  let score = 0;
+  let total = 0;
+  PARAMS.forEach(p => {
+    const value = getValue(sourceId, p.id);
+    if (!value) return;
+    const state = evaluateValue(p, value);
+    const w = p.weight || 1;
+    total += w;
+    if (state === 'ok') score += w;
+    else if (state === 'warn') score += w * 0.65;
+    else if (state === 'info') score += w * 0.45;
+  });
+  return total ? Math.round((score / total) * 100) : null;
+}
+
+function setLens(title, body, kicker = 'Lente interpretativa', items = []) {
+  $('lens-kicker').textContent = kicker;
+  $('lens-title').textContent = title;
+  $('lens-body').innerHTML = body;
+  $('lens-list').innerHTML = items.map(item => `
+    <div class="lens-item">
+      <div class="lens-item-label">${item.label}</div>
+      <div class="lens-item-value">${item.value}</div>
+    </div>
+  `).join('');
+}
+
+function renderKPIs() {
+  const sources = SOURCES.length;
+  const params = PARAMS.length;
+  const awaScore = sourceScore('awa05');
+  const numericSources = SOURCES.filter(s => numericCoverage(s.id) >= 5).length;
+  const microSources = SOURCES.filter(s => microCoverage(s.id) >= 2).length;
+
+  $('h-sources').textContent = sources;
+  $('h-params').textContent = params;
+  $('h-comparable').textContent = numericSources;
+
+  const kpis = [
+    ['Dictamen AWA05', 'Potable', 'El Lote 1 cumple COGUANOR según el informe del laboratorio.'],
+    ['Score interno AWA05', `${awaScore}/100`, 'Índice propio basado en parámetros disponibles y cumplimiento.'],
+    ['Fuentes evaluadas', sources, 'Incluye AWA05, marcas internacionales, Ecofiltro y Salvavidas.'],
+    ['Con tabla numérica', numericSources, 'Fuentes con al menos cinco parámetros numéricos comparables.'],
+    ['Microbiología disponible', microSources, 'Fuentes con indicadores microbiológicos públicos o de laboratorio.']
+  ];
+
+  $('kpi-grid').innerHTML = kpis.map(k => `
+    <div class="kpi-card" data-title="${k[0]}" data-body="${k[2]}">
+      <div class="kpi-label">${k[0]}</div>
+      <div class="kpi-value">${k[1]}</div>
+      <div class="kpi-meta">${k[2]}</div>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.kpi-card').forEach(card => {
+    card.addEventListener('click', () => setLens(card.dataset.title, card.dataset.body, 'Indicador'));
+  });
+}
+
+function renderSourceCards() {
+  $('source-grid').innerHTML = SOURCES.map(s => {
+    const score = sourceScore(s.id);
+    const pH = getValue(s.id, 'ph')?.display || '—';
+    const tds = getValue(s.id, 'tds')?.display || '—';
+    const coverage = valueCoverage(s.id);
+    const badge = score === null ? 'Pendiente' : `${score}/100`;
+    return `
+      <article class="source-card ${s.id === selectedSource ? 'selected' : ''}" data-source="${s.id}">
+        <div class="source-inner">
+          <div class="source-type">${s.type}</div>
+          <div class="source-name">${s.name}</div>
+          <p class="source-desc">${s.description}</p>
+          <div class="source-metrics">
+            <div class="source-metric"><div class="source-metric-label">pH</div><div class="source-metric-value">${pH}</div></div>
+            <div class="source-metric"><div class="source-metric-label">TDS</div><div class="source-metric-value">${tds}</div></div>
+            <div class="source-metric"><div class="source-metric-label">Datos</div><div class="source-metric-value">${coverage}</div></div>
+          </div>
+        </div>
+        <div class="source-foot">
+          <span>${s.evidence}</span>
+          <span>${badge}</span>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  document.querySelectorAll('.source-card').forEach(card => {
+    card.addEventListener('click', () => {
+      selectedSource = card.dataset.source;
+      renderSourceCards();
+      renderCharts();
+      const s = sourceById(selectedSource);
+      const score = sourceScore(selectedSource);
+      setLens(
+        s.name,
+        `<strong>${s.type}.</strong> ${s.description} <br><br>Esta fuente tiene ${valueCoverage(s.id)} parámetros cargados y ${numericCoverage(s.id)} valores numéricos. ${score === null ? 'No tiene suficiente tabla numérica para score.' : `Score interno aproximado: <strong>${score}/100</strong>.`}`,
+        'Fuente seleccionada',
+        [
+          { label: 'Evidencia', value: s.evidence },
+          { label: 'Fuente', value: s.sourceLabel },
+          { label: 'Perfil', value: s.profile }
+        ]
+      );
+    });
+  });
+}
+
+function renderFilters() {
+  const categories = ['all', ...new Set(PARAMS.map(p => p.category))];
+  $('cat-filter').innerHTML = categories.map(c => `<option value="${c}">${c === 'all' ? 'Todas' : c}</option>`).join('');
+  $('source-filter').innerHTML = ['all', ...MATRIX_DEFAULT_SOURCES].map(id => `<option value="${id}">${id === 'all' ? 'Todas' : sourceById(id).name}</option>`).join('');
+  $('edit-source').innerHTML = SOURCES.filter(s => s.id !== 'awa05').map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+  $('edit-param').innerHTML = PARAMS.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+  $('compare-a').innerHTML = SOURCES.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+  $('compare-b').innerHTML = SOURCES.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+  $('compare-a').value = 'awa05';
+  $('compare-b').value = 'fiji';
+}
+
+function filteredParams() {
+  const q = normalize($('search').value);
+  const cat = $('cat-filter').value;
+  const evidence = $('evidence-filter').value;
+  return PARAMS.filter(p => {
+    const txt = normalize(`${p.name} ${p.short || ''} ${p.category}`);
+    if (q && !txt.includes(q)) return false;
+    if (cat !== 'all' && p.category !== cat) return false;
+    if (evidence === 'numeric') {
+      return MATRIX_DEFAULT_SOURCES.some(id => numericValue(id, p.id) !== null);
+    }
+    if (evidence === 'micro') return p.category === 'Microbiología';
+    if (evidence === 'missing') {
+      return MATRIX_DEFAULT_SOURCES.some(id => !getValue(id, p.id));
+    }
+    return true;
+  });
+}
+
+function visibleSources() {
+  const sourceFilter = $('source-filter').value;
+  if (sourceFilter !== 'all') return ['awa05', sourceFilter].filter((x, i, arr) => arr.indexOf(x) === i);
+  return MATRIX_DEFAULT_SOURCES;
+}
+
+function lmaText(p) {
+  if (p.min !== undefined && p.max !== undefined) return `${p.min}–${p.max} ${p.unit}`;
+  if (p.max !== undefined) return `≤ ${p.max} ${p.unit}`;
+  if (p.min !== undefined) return `≥ ${p.min} ${p.unit}`;
+  return 'Sin límite en matriz';
+}
+
+function renderMatrix() {
+  const sources = visibleSources();
+  const params = filteredParams();
+  $('matrix-count').textContent = `${params.length} filas`;
+  const head = `
+    <thead>
+      <tr>
+        <th>Parámetro</th>
+        <th>COGUANOR / referencia</th>
+        ${sources.map(id => `<th>${sourceById(id).name}</th>`).join('')}
+        <th>Lectura</th>
+      </tr>
+    </thead>
+  `;
+  const body = params.map(p => {
+    const cells = sources.map(id => `<td class="matrix-cell" data-source="${id}" data-param="${p.id}">${displayValue(id, p.id)}</td>`).join('');
+    const awa = getValue('awa05', p.id);
+    const state = evaluateValue(p, awa);
+    return `
+      <tr data-param="${p.id}">
+        <td>
+          <div class="param-cell">
+            <span class="param-name">${p.name}</span>
+            <span class="param-meta">${p.category} · ${p.unit}</span>
+          </div>
+        </td>
+        <td><span class="value-chip">${lmaText(p)}</span></td>
+        ${cells}
+        <td><span class="value-chip ${state === 'ok' ? 'ok' : state === 'warn' ? 'warn' : state === 'bad' ? 'red' : ''}">${stateLabel(state)}</span></td>
+      </tr>
+    `;
+  }).join('');
+  $('matrix-table').innerHTML = head + `<tbody>${body}</tbody>`;
+
+  $('matrix-table').querySelectorAll('tr[data-param]').forEach(row => {
+    row.addEventListener('click', event => {
+      const paramId = row.dataset.param;
+      const cell = event.target.closest('[data-source]');
+      if (cell) {
+        explainCell(cell.dataset.source, paramId);
+      } else {
+        explainParam(paramId);
+      }
+      $('matrix-table').querySelectorAll('tr').forEach(r => r.classList.remove('selected-row'));
+      row.classList.add('selected-row');
+    });
+  });
+}
+
+function explainParam(paramId) {
+  const p = paramById(paramId);
+  const available = MATRIX_DEFAULT_SOURCES.filter(id => getValue(id, paramId)).map(id => sourceById(id).name).join(', ') || 'Sin valores publicados en fuentes visibles';
+  setLens(
+    p.name,
+    `${p.explain}<br><br><strong>Rango usado en la matriz:</strong> ${lmaText(p)}.<br><strong>Fuentes con dato:</strong> ${available}.`,
+    'Parámetro',
+    [
+      { label: 'Categoría', value: p.category },
+      { label: 'Unidad', value: p.unit },
+      { label: 'Peso en score', value: p.weight || 1 }
+    ]
+  );
+}
+
+function explainCell(sourceId, paramId) {
+  const s = sourceById(sourceId);
+  const p = paramById(paramId);
+  const value = getValue(sourceId, paramId);
+  if (!value) {
+    setLens(
+      `${s.name} · ${p.name}`,
+      `No hay valor público cargado para este parámetro. Esto no equivale a incumplimiento; solo indica que la fuente no publicó ese dato o que falta cargar un certificado.`,
+      'Dato pendiente',
+      [
+        { label: 'Fuente', value: s.name },
+        { label: 'Parámetro', value: p.name },
+        { label: 'Acción', value: 'Cargar resultado en el editor si se consigue certificado' }
+      ]
+    );
+    return;
+  }
+  const state = evaluateValue(p, value);
+  const sourceText = value.manual ? 'Valor cargado manualmente en este navegador' : s.sourceLabel;
+  setLens(
+    `${s.name} · ${p.name}`,
+    `<strong>Resultado:</strong> ${value.display ?? value.value} ${value.unit || p.unit || ''}.<br><br>${p.explain}<br><br><strong>Lectura:</strong> ${stateLabel(state)} dentro de la referencia disponible. ${value.note || ''}`,
+    'Celda seleccionada',
+    [
+      { label: 'Fuente', value: s.name },
+      { label: 'Evidencia', value: sourceText },
+      { label: 'Referencia', value: lmaText(p) }
+    ]
+  );
+}
+
+function renderAwaTable() {
+  const rows = PARAMS.filter(p => getValue('awa05', p.id)).map(p => {
+    const v = getValue('awa05', p.id);
+    const state = evaluateValue(p, v);
+    return `
+      <tr data-param="${p.id}">
+        <td>${p.name}</td>
+        <td>${v.display ?? v.value}</td>
+        <td>${v.unit || p.unit}</td>
+        <td>${lmaText(p)}</td>
+        <td><span class="value-chip ${state === 'ok' ? 'ok' : state === 'warn' ? 'warn' : state === 'bad' ? 'red' : ''}">${stateLabel(state)}</span></td>
+      </tr>
+    `;
+  }).join('');
+  $('awa-table').innerHTML = `
+    <thead><tr><th>Parámetro</th><th>Resultado</th><th>Unidad</th><th>Referencia</th><th>Estado</th></tr></thead>
+    <tbody>${rows}</tbody>
+  `;
+  $('awa-table').querySelectorAll('tr[data-param]').forEach(row => {
+    row.addEventListener('click', () => explainCell('awa05', row.dataset.param));
+  });
+}
+
+function renderComparator() {
+  const a = $('compare-a').value;
+  const b = $('compare-b').value;
+  const shared = PARAMS.filter(p => numericValue(a, p.id) !== null && numericValue(b, p.id) !== null);
+  const aScore = sourceScore(a);
+  const bScore = sourceScore(b);
+  $('compare-kpis').innerHTML = [
+    ['Compartidos', shared.length, 'parámetros con valor en ambas fuentes'],
+    [sourceById(a).name, aScore === null ? '—' : `${aScore}`, 'score interno'],
+    [sourceById(b).name, bScore === null ? '—' : `${bScore}`, 'score interno']
+  ].map(k => `
+    <div class="compare-kpi">
+      <div class="compare-kpi-label">${k[0]}</div>
+      <div class="compare-kpi-value">${k[1]}</div>
+      <div class="small muted">${k[2]}</div>
+    </div>
+  `).join('');
+
+  const rows = shared.map(p => {
+    const va = numericValue(a, p.id);
+    const vb = numericValue(b, p.id);
+    const delta = va - vb;
+    const pct = vb !== 0 ? (delta / Math.abs(vb)) * 100 : null;
+    return `
+      <tr data-param="${p.id}">
+        <td>${p.name}</td>
+        <td>${getValue(a, p.id).display ?? va} ${getValue(a, p.id).unit || p.unit}</td>
+        <td>${getValue(b, p.id).display ?? vb} ${getValue(b, p.id).unit || p.unit}</td>
+        <td>${delta >= 0 ? '+' : ''}${fmt.num(delta, 3)} ${p.unit}</td>
+        <td>${pct === null ? '—' : `${delta >= 0 ? '+' : ''}${fmt.num(pct, 1)}%`}</td>
+      </tr>
+    `;
+  }).join('');
+  $('compare-table').innerHTML = `
+    <thead><tr><th>Parámetro</th><th>${sourceById(a).name}</th><th>${sourceById(b).name}</th><th>Diferencia</th><th>%</th></tr></thead>
+    <tbody>${rows || '<tr><td colspan="5">No hay suficientes parámetros compartidos.</td></tr>'}</tbody>
+  `;
+
+  setLens(
+    `${sourceById(a).name} vs ${sourceById(b).name}`,
+    `Hay <strong>${shared.length}</strong> parámetros numéricos compartidos. Si quieres comparar una fuente local con pocos datos públicos, carga el certificado en el editor y vuelve a esta sección.`,
+    'Comparador directo',
+    [
+      { label: 'Fuente A', value: sourceById(a).type },
+      { label: 'Fuente B', value: sourceById(b).type }
+    ]
+  );
+}
+
+function chartDatasetFor(paramId) {
+  return SOURCES
+    .map(s => ({ source: s.name, id: s.id, value: numericValue(s.id, paramId) }))
+    .filter(x => x.value !== null);
+}
+
+function aquaColors(n) {
+  const palette = ['#10a8d0','#087fa5','#1c3f6e','#18a978','#6957b0','#5abbd5','#0b5d7d','#79d1e4','#2d9cc6','#0d7451'];
+  return Array.from({ length: n }, (_, i) => palette[i % palette.length]);
+}
+
+function baseChartOptions(title) {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: { boxWidth: 12, font: { family: 'JetBrains Mono', size: 10 } }
+      },
+      tooltip: {
+        callbacks: {
+          label(ctx) {
+            const label = ctx.dataset.label ? `${ctx.dataset.label}: ` : '';
+            const y = ctx.parsed.y ?? ctx.parsed.x;
+            return `${label}${y}`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { font: { family: 'JetBrains Mono', size: 9 }, color: '#61706d' }
+      },
+      y: {
+        beginAtZero: true,
+        grid: { color: 'rgba(14,35,34,.08)' },
+        ticks: { font: { family: 'JetBrains Mono', size: 9 }, color: '#61706d' }
+      }
+    }
+  };
+}
+
+function destroyChart(id) {
+  if (charts[id]) {
+    charts[id].destroy();
+    delete charts[id];
+  }
+}
+
+function renderBarChart(canvasId, paramId, label, unit) {
+  const data = chartDatasetFor(paramId);
+  destroyChart(canvasId);
+  charts[canvasId] = new Chart($(canvasId), {
+    type: 'bar',
+    data: {
+      labels: data.map(x => x.source),
+      datasets: [{
+        label,
+        data: data.map(x => x.value),
+        backgroundColor: aquaColors(data.length).map(c => `${c}cc`),
+        borderColor: aquaColors(data.length),
+        borderWidth: 1.4,
+        borderRadius: 8
+      }]
+    },
+    options: baseChartOptions(`${label} (${unit})`)
+  });
+}
+
+function renderMineralChart() {
+  const selected = selectedSource;
+  const mineralIds = ['calcium','magnesium','chloride','sulfate','sodium','potassium'];
+  const labels = mineralIds.map(id => paramById(id).name);
+  const data = mineralIds.map(id => numericValue(selected, id) || 0);
+  destroyChart('chart-minerals');
+  charts['chart-minerals'] = new Chart($('chart-minerals'), {
+    type: 'radar',
+    data: {
+      labels,
+      datasets: [{
+        label: sourceById(selected).name,
+        data,
+        fill: true,
+        backgroundColor: 'rgba(16,168,208,.18)',
+        borderColor: '#087fa5',
+        pointBackgroundColor: '#1c3f6e',
+        pointBorderColor: '#fff',
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: 'JetBrains Mono', size: 10 } } }
+      },
+      scales: {
+        r: {
+          beginAtZero: true,
+          angleLines: { color: 'rgba(14,35,34,.10)' },
+          grid: { color: 'rgba(14,35,34,.09)' },
+          pointLabels: { color: '#61706d', font: { family: 'JetBrains Mono', size: 9 } },
+          ticks: { color: '#99a7a4', backdropColor: 'transparent', font: { family: 'JetBrains Mono', size: 8 } }
+        }
+      }
+    }
+  });
+}
+
+function renderMapChart() {
+  const points = SOURCES.map(s => {
+    const ph = numericValue(s.id, 'ph');
+    const tds = numericValue(s.id, 'tds');
+    if (ph === null || tds === null) return null;
+    return { x: ph, y: tds, source: s.name };
+  }).filter(Boolean);
+  destroyChart('chart-map');
+  charts['chart-map'] = new Chart($('chart-map'), {
+    type: 'scatter',
+    data: {
+      datasets: points.map((p, i) => ({
+        label: p.source,
+        data: [{ x: p.x, y: p.y }],
+        backgroundColor: aquaColors(points.length)[i],
+        borderColor: '#fff',
+        borderWidth: 2,
+        pointRadius: p.source.includes('AWA05') ? 8 : 6,
+        pointHoverRadius: 10
+      }))
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: 'JetBrains Mono', size: 9 }, boxWidth: 9 } },
+        tooltip: {
+          callbacks: {
+            label(ctx) {
+              return `${ctx.dataset.label}: pH ${ctx.parsed.x}, TDS ${ctx.parsed.y} mg/L`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { title: { display: true, text: 'pH' }, min: 5, max: 10.2, grid: { color: 'rgba(14,35,34,.08)' } },
+        y: { title: { display: true, text: 'TDS mg/L' }, beginAtZero: true, grid: { color: 'rgba(14,35,34,.08)' } }
+      }
+    }
+  });
+}
+
+function renderMicroChart() {
+  const labels = ['Coliformes totales','Coliformes fecales','E. coli'];
+  const sourceIds = ['awa05','ecofiltro'];
+  const datasets = sourceIds.map((id, i) => ({
+    label: sourceById(id).name,
+    data: ['total_coliforms','fecal_coliforms','ecoli'].map(p => numericValue(id, p) || 0),
+    backgroundColor: aquaColors(sourceIds.length)[i] + 'cc',
+    borderColor: aquaColors(sourceIds.length)[i],
+    borderWidth: 1.4,
+    borderRadius: 8
+  }));
+  destroyChart('chart-micro');
+  charts['chart-micro'] = new Chart($('chart-micro'), {
+    type: 'bar',
+    data: { labels, datasets },
+    options: baseChartOptions('Microbiología')
+  });
+}
+
+function renderCharts() {
+  renderBarChart('chart-tds', 'tds', 'TDS', 'mg/L');
+  renderBarChart('chart-ph', 'ph', 'pH', 'pH');
+  renderBarChart('chart-conductivity', 'conductivity', 'Conductividad', 'µS/cm');
+  renderMineralChart();
+  renderMapChart();
+  renderMicroChart();
+}
+
+function saveEditorValue() {
+  const sourceId = $('edit-source').value;
+  const paramId = $('edit-param').value;
+  const raw = $('edit-value').value.trim();
+  const unit = $('edit-unit').value.trim() || paramById(paramId).unit;
+  if (!raw) return;
+  const numeric = parseFloat(raw.replace(',', '.').replace(/[<>]/g, ''));
+  manualValues[manualKey(sourceId, paramId)] = {
+    value: Number.isFinite(numeric) ? numeric : null,
+    display: raw,
+    unit,
+    source: 'Carga manual',
+    note: 'Valor ingresado por usuario desde el HTML.'
+  };
+  saveManualValues();
+  renderAll();
+  explainCell(sourceId, paramId);
+}
+
+function applyPastedValues() {
+  const raw = $('paste-area').value.trim();
+  if (!raw) return;
+  let applied = 0;
+  raw.split(/\n+/).forEach(line => {
+    const parts = line.split(',').map(x => x.trim());
+    if (parts.length < 3) return;
+    const [sourceText, paramText, valueText, unitText] = parts;
+    const source = SOURCES.find(s => normalize(s.name).includes(normalize(sourceText)) || normalize(sourceText).includes(normalize(s.name)) || s.id === normalize(sourceText).replace(/ /g, '_'));
+    const param = PARAMS.find(p => normalize(p.name).includes(normalize(paramText)) || normalize(paramText).includes(normalize(p.name)) || normalize(p.short || '') === normalize(paramText));
+    if (!source || !param || source.id === 'awa05') return;
+    const numeric = parseFloat(valueText.replace(',', '.').replace(/[<>]/g, ''));
+    manualValues[manualKey(source.id, param.id)] = {
+      value: Number.isFinite(numeric) ? numeric : null,
+      display: valueText,
+      unit: unitText || param.unit,
+      source: 'Pegado manual',
+      note: 'Valor cargado por lote desde el HTML.'
+    };
+    applied++;
+  });
+  saveManualValues();
+  renderAll();
+  setLens('Valores cargados', `Se integraron <strong>${applied}</strong> valores a la matriz.`, 'Carga por lote');
+}
+
+function resetManualValues() {
+  if (!confirm('¿Eliminar valores manuales guardados en este navegador?')) return;
+  manualValues = {};
+  saveManualValues();
+  renderAll();
+  setLens('Valores manuales eliminados', 'La matriz vuelve a mostrar únicamente datos precargados y fuentes públicas.', 'Restablecido');
+}
+
+function exportCSV() {
+  const sources = MATRIX_DEFAULT_SOURCES;
+  const header = ['Parametro','Categoria','Unidad','Referencia', ...sources.map(id => sourceById(id).name)];
+  const rows = PARAMS.map(p => [
+    p.name,
+    p.category,
+    p.unit,
+    lmaText(p),
+    ...sources.map(id => {
+      const v = getValue(id, p.id);
+      return v ? `${v.display ?? v.value} ${v.unit || p.unit || ''}` : '';
+    })
+  ]);
+  downloadText('comparativo-calidad-agua.csv', [header, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n'));
+}
+
+function exportJSON() {
+  const payload = {
+    generated_at: new Date().toISOString(),
+    params: PARAMS,
+    sources: SOURCES,
+    manual_values: manualValues
+  };
+  downloadText('comparativo-calidad-agua.json', JSON.stringify(payload, null, 2));
+}
+
+function downloadText(filename, text) {
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function renderAll() {
+  renderKPIs();
+  renderSourceCards();
+  renderMatrix();
+  renderAwaTable();
+  renderComparator();
+  renderCharts();
+}
+
+function installEvents() {
+  ['search','cat-filter','source-filter','evidence-filter'].forEach(id => $(id).addEventListener('input', renderMatrix));
+  ['compare-a','compare-b'].forEach(id => $(id).addEventListener('input', renderComparator));
+  $('btn-save-value').addEventListener('click', saveEditorValue);
+  $('btn-apply-paste').addEventListener('click', applyPastedValues);
+  $('btn-reset-manual').addEventListener('click', resetManualValues);
+  $('btn-export-csv').addEventListener('click', exportCSV);
+  $('btn-export-json').addEventListener('click', exportJSON);
+  $('mobile-btn').addEventListener('click', () => $('mobile-menu').classList.toggle('open'));
+}
+
+function detectDevice() {
+  const width = window.innerWidth;
+  document.body.classList.toggle('is-mobile', width <= 760);
+  document.body.classList.toggle('is-tablet', width > 760 && width <= 1180);
+  document.body.classList.toggle('is-desktop', width > 1180);
+}
+
+window.addEventListener('resize', detectDevice);
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderFilters();
+  detectDevice();
+  renderAll();
+  installEvents();
+  setLens(
+    'Benchmark listo para análisis',
+    'AWA05 aparece como la fuente con mayor profundidad de laboratorio en esta página. VOSS, Acqua Panna, FIJI, Essentia, S.Pellegrino y Evian aportan perfiles minerales públicos. Ecofiltro aporta evidencia microbiológica. Salvavidas se mantiene como referencia local pendiente de valores por parámetro.',
+    'Inicio',
+    [
+      { label: 'Dato base', value: 'AWA05 Lote 1 · Atitlab' },
+      { label: 'Comparación fuerte', value: 'pH, TDS, conductividad, minerales, microbiología' },
+      { label: 'Carga manual', value: 'Disponible para certificados locales' }
+    ]
+  );
+});
+</script>
 </body>
 </html>
