@@ -246,6 +246,46 @@
     .nav-btn-primary { background:rgba(255,255,255,0.92);color:#1c3f6e;border-color:transparent;font-weight:600 }
     .nav-btn-primary:hover { background:#fff;color:#0f2a50 }
 
+
+    /* Menú desplegable de navegación */
+    .nav-menu { position:relative; z-index:5 }
+    .nav-menu-button {
+      display:inline-flex;align-items:center;gap:8px;
+      padding:7px 16px;border-radius:var(--radius);
+      border:1px solid rgba(255,255,255,0.22);
+      background:rgba(255,255,255,0.92);
+      color:#1c3f6e;
+      font-family:var(--mono);font-size:9px;font-weight:700;
+      letter-spacing:0.10em;text-transform:uppercase;
+      cursor:pointer;transition:all 0.15s;backdrop-filter:blur(4px);
+    }
+    .nav-menu-button:hover,
+    .nav-menu.open .nav-menu-button { background:#fff;color:#0f2a50;transform:translateY(-1px) }
+    .nav-menu-chevron { font-size:10px;line-height:1;transition:transform .18s ease }
+    .nav-menu.open .nav-menu-chevron { transform:rotate(180deg) }
+    .nav-menu-panel {
+      position:fixed;top:58px;right:36px;z-index:600;
+      width:min(320px,calc(100vw - 32px));
+      display:none;gap:8px;padding:12px;
+      border:1px solid var(--rule-strong);border-radius:var(--radius);
+      background:rgba(255,255,255,0.98);
+      box-shadow:var(--shadow-lg);backdrop-filter:blur(18px);
+    }
+    .nav-menu.open .nav-menu-panel { display:grid;animation:fadeUp .18s ease both }
+    .nav-menu-item {
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      min-height:42px;padding:10px 12px;border-radius:var(--radius);
+      border:1px solid var(--rule);background:var(--surface2);
+      color:var(--ink-mid);font-family:var(--mono);font-size:9px;font-weight:600;
+      letter-spacing:.09em;text-decoration:none;text-transform:uppercase;
+      transition:all .15s ease;
+    }
+    .nav-menu-item:hover { border-color:var(--cobalt-rim);background:var(--cobalt-pale);color:var(--cobalt);transform:translateY(-1px) }
+    .nav-menu-item.primary { background:var(--cobalt);border-color:var(--cobalt);color:#fff }
+    .nav-menu-item.primary:hover { background:var(--cobalt-mid);color:#fff }
+    .nav-menu-item span:last-child { color:currentColor;opacity:.62;font-size:11px }
+    .nav-menu-divider { height:1px;background:var(--rule);margin:2px 0 }
+
     /* ═══════════════════════════════════════════════════════════
        KPI STRIP
     ═══════════════════════════════════════════════════════════ */
@@ -484,10 +524,18 @@
     <div class="nav-subtitle">Telemetría Ambiental · Atitlán</div>
   </div>
   <div class="nav-right">
-    <a href="dashboard.html" class="nav-btn nav-btn-primary">Tablero ↗</a>
-    <a href="analisis-estadistico.html" class="nav-btn">Análisis estadístico</a>
-    <a href="comparativo-calidad-agua.html" class="nav-btn">Calidad de agua</a>
-    <a href="https://github.com/geograficaaala/awa05-telemetria" target="_blank" rel="noopener" class="nav-btn">Repositorio</a>
+    <div class="nav-menu" id="nav-menu">
+      <button class="nav-menu-button" id="nav-menu-button" type="button" aria-expanded="false" aria-controls="nav-menu-panel">
+        Menú <span class="nav-menu-chevron">⌄</span>
+      </button>
+      <div class="nav-menu-panel" id="nav-menu-panel" role="menu" aria-label="Navegación principal">
+        <a href="dashboard.html" class="nav-menu-item primary" role="menuitem"><span>Tablero completo</span><span>↗</span></a>
+        <a href="analisis-estadistico.html" class="nav-menu-item" role="menuitem"><span>Análisis estadístico</span><span>→</span></a>
+        <a href="comparativo-calidad-agua.html" class="nav-menu-item" role="menuitem"><span>Calidad de agua</span><span>→</span></a>
+        <div class="nav-menu-divider"></div>
+        <a href="https://github.com/geograficaaala/awa05-telemetria" target="_blank" rel="noopener" class="nav-menu-item" role="menuitem"><span>Repositorio</span><span>↗</span></a>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -780,6 +828,31 @@
         loader.classList.add('fade-out');
         setTimeout(() => loader.classList.add('gone'), 900);
       }, 7000);
+    });
+  })();
+
+  // ── MENÚ DESPLEGABLE DE NAVEGACIÓN ───────────────────────────
+  (function() {
+    const menu = document.getElementById('nav-menu');
+    const button = document.getElementById('nav-menu-button');
+    if (!menu || !button) return;
+
+    function setOpen(open) {
+      menu.classList.toggle('open', open);
+      button.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
+      setOpen(!menu.classList.contains('open'));
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!menu.contains(event.target)) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') setOpen(false);
     });
   })();
 
