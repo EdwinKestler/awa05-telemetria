@@ -40,6 +40,150 @@
     /* Grain sutil */
     body::after{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.5}
 
+
+
+    /* ═══════════════════════════════════════════════════════════
+       LOADING SCREEN — Bienvenida AWA05
+    ═══════════════════════════════════════════════════════════ */
+    #awa-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 100000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(160deg, #0e274b 0%, #1c3f6e 45%, #087fa5 100%);
+      overflow: hidden;
+      transition: opacity 0.85s ease, transform 0.85s ease;
+    }
+
+    #awa-loader.fade-out {
+      opacity: 0;
+      transform: translateY(-18px);
+      pointer-events: none;
+    }
+
+    #awa-loader.gone {
+      display: none;
+    }
+
+    .loader-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 32px;
+    }
+
+    .loader-waves {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 300px;
+      pointer-events: none;
+    }
+
+    .lwave1 {
+      animation: waveRise1 7s cubic-bezier(.4,0,.2,1) forwards, waveSway 3.6s ease-in-out infinite alternate;
+    }
+
+    .lwave2 {
+      animation: waveRise2 7s cubic-bezier(.4,0,.2,1) forwards, waveSway2 4.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes waveRise1 {
+      from { transform: translateY(300px); }
+      to { transform: translateY(0); }
+    }
+
+    @keyframes waveRise2 {
+      0%, 15% { transform: translateY(300px); }
+      to { transform: translateY(0); }
+    }
+
+    @keyframes waveSway {
+      from { transform: translateX(-5%) scaleX(1.04); }
+      to { transform: translateX(5%) scaleX(0.97); }
+    }
+
+    @keyframes waveSway2 {
+      from { transform: translateX(4%) scaleX(0.96); }
+      to { transform: translateX(-4%) scaleX(1.03); }
+    }
+
+    .loader-drop {
+      width: 68px;
+      height: 92px;
+      margin-bottom: 16px;
+      filter: drop-shadow(0 12px 32px rgba(16,168,208,0.5));
+      animation: dropBob 2.2s ease-in-out infinite;
+    }
+
+    @keyframes dropBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .loader-wordmark {
+      color: #fff;
+      font-family: var(--display);
+      font-size: clamp(42px, 7vw, 72px);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 0.95;
+    }
+
+    .loader-wordmark span {
+      color: #7ee8f4;
+    }
+
+    .loader-greeting {
+      max-width: 760px;
+      margin-top: 18px;
+      color: rgba(255,255,255,0.88);
+      font-family: var(--display);
+      font-size: clamp(23px, 3.2vw, 40px);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.025em;
+    }
+
+    .loader-sub {
+      margin-top: 12px;
+      color: rgba(255,255,255,0.52);
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .loader-bar-wrap {
+      width: min(280px, 70vw);
+      height: 2px;
+      margin-top: 30px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.13);
+      overflow: hidden;
+    }
+
+    .loader-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #10a8d0, #fff, #18a978);
+      animation: loaderBarFill 7s cubic-bezier(.4,0,.2,1) forwards;
+    }
+
+    @keyframes loaderBarFill {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+
     /* ═══════════════════════════════════════════════════════════
        NAV — Header oscuro estilo panel AWA05
     ═══════════════════════════════════════════════════════════ */
@@ -293,6 +437,44 @@
 <body>
 
 <!-- ═══════════════════════════════════════════════════════════
+     LOADER DE BIENVENIDA
+═══════════════════════════════════════════════════════════ -->
+<div id="awa-loader" aria-live="polite" aria-label="Cargando sistema AWA05">
+  <svg class="loader-waves" viewBox="0 0 1200 300" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="loader-wave-1" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#10a8d0" stop-opacity="0.62" />
+        <stop offset="100%" stop-color="#0e274b" stop-opacity="1" />
+      </linearGradient>
+      <linearGradient id="loader-wave-2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#18a978" stop-opacity="0.44" />
+        <stop offset="100%" stop-color="#1c3f6e" stop-opacity="0.92" />
+      </linearGradient>
+    </defs>
+    <path class="lwave1" fill="url(#loader-wave-1)" d="M0,180 C200,120 400,240 600,180 C800,120 1000,240 1200,180 L1200,300 L0,300 Z" />
+    <path class="lwave2" fill="url(#loader-wave-2)" d="M0,210 C250,150 450,270 700,200 C900,140 1050,260 1200,200 L1200,300 L0,300 Z" />
+  </svg>
+
+  <div class="loader-inner">
+    <svg class="loader-drop" viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <radialGradient id="loader-drop-gradient" cx="40%" cy="30%">
+          <stop offset="0%" stop-color="#7ee8f4" />
+          <stop offset="100%" stop-color="#1c3f6e" />
+        </radialGradient>
+      </defs>
+      <path d="M30 4 C30 4 6 44 6 56 C6 69 17 76 30 76 C43 76 54 69 54 56 C54 44 30 4 30 4Z" fill="url(#loader-drop-gradient)" />
+      <ellipse cx="22" cy="42" rx="5" ry="9" fill="rgba(255,255,255,0.24)" transform="rotate(-18,22,42)" />
+    </svg>
+    <div class="loader-wordmark">AWA<span>05</span></div>
+    <div class="loader-greeting" id="loader-greeting">Bienvenido al sistema de telemetría AWA05</div>
+    <div class="loader-sub">Telemetría ambiental · Atitlán · Sistema activo</div>
+    <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
      HEADER
 ═══════════════════════════════════════════════════════════ -->
 <nav>
@@ -303,6 +485,8 @@
   </div>
   <div class="nav-right">
     <a href="dashboard.html" class="nav-btn nav-btn-primary">Tablero ↗</a>
+    <a href="analisis-estadistico.html" class="nav-btn">Análisis estadístico</a>
+    <a href="comparativo-calidad-agua.html" class="nav-btn">Calidad de agua</a>
     <a href="https://github.com/geograficaaala/awa05-telemetria" target="_blank" rel="noopener" class="nav-btn">Repositorio</a>
   </div>
 </nav>
@@ -339,6 +523,8 @@
   </p>
   <div class="hero-actions">
     <a href="dashboard.html" class="btn-hero btn-primary">Abrir tablero completo</a>
+    <a href="analisis-estadistico.html" class="btn-hero btn-secondary">Análisis estadístico</a>
+    <a href="comparativo-calidad-agua.html" class="btn-hero btn-secondary">Calidad de agua</a>
     <a href="https://github.com/geograficaaala/awa05-telemetria" target="_blank" rel="noopener" class="btn-hero btn-secondary">Ver repositorio</a>
   </div>
 </div>
@@ -573,6 +759,30 @@
 </footer>
 
 <script>
+  // ── LOADER DE BIENVENIDA — 7 segundos ─────────────────────────
+  (function() {
+    function getGreeting() {
+      const h = new Date().getHours();
+      if (h >= 5 && h < 12) return 'Buenos días';
+      if (h >= 12 && h < 19) return 'Buenas tardes';
+      return 'Buenas noches';
+    }
+
+    const greetingEl = document.getElementById('loader-greeting');
+    if (greetingEl) {
+      greetingEl.textContent = `${getGreeting()}, bienvenido al sistema de telemetría AWA05`;
+    }
+
+    window.addEventListener('load', () => {
+      const loader = document.getElementById('awa-loader');
+      if (!loader) return;
+      setTimeout(() => {
+        loader.classList.add('fade-out');
+        setTimeout(() => loader.classList.add('gone'), 900);
+      }, 7000);
+    });
+  })();
+
   // ── INTERSECTION OBSERVER — scroll animations ─────────────────
   (function() {
     const obs = new IntersectionObserver((entries) => {
