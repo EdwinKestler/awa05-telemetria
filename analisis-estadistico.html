@@ -3044,6 +3044,353 @@
       background: rgba(28,63,110,0.30);
     }
 
+  
+
+    /* ══ GARRAFON SVG ════════════════════════════════════════════ */
+    .garrafon-svg {
+      width: 160px;
+      height: 310px;
+      display: block;
+      filter: drop-shadow(0 8px 24px rgba(28,63,110,0.22));
+      overflow: visible;
+    }
+
+    .garrafon-wave {
+      animation: garrafonWave 4s ease-in-out infinite alternate;
+    }
+
+    .garrafon-wave.wave-b {
+      animation-duration: 5.5s;
+      animation-direction: alternate-reverse;
+    }
+
+    @keyframes garrafonWave {
+      from { transform: translateX(-6px) scaleX(0.96); }
+      to   { transform: translateX(6px) scaleX(1.04); }
+    }
+
+    /* JS updates the y attribute of #garrafon-fill rect */
+    .garrafon-scale-labels {
+      position: absolute;
+      left: -2px;
+      top: 90px;
+      bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 7px;
+      color: rgba(28,63,110,0.60);
+      pointer-events: none;
+    }
+
+    .garrafon-wrap {
+      position: relative;
+      width: 160px;
+      margin: 0 auto;
+    }
+
+    /* ══ LOADING SCREEN ═══════════════════════════════════════════ */
+    #awa-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      background: linear-gradient(160deg, #0f2a50 0%, #1c3f6e 45%, #0d3a6e 100%);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+      overflow: hidden;
+    }
+
+    #awa-loader.fade-out {
+      opacity: 0;
+      transform: translateY(-18px);
+      pointer-events: none;
+    }
+
+    #awa-loader.gone { display: none; }
+
+    .loader-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loader-waves {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 280px;
+      pointer-events: none;
+    }
+
+    .lwave {
+      transform-origin: center bottom;
+    }
+
+    .lwave1 {
+      animation: waveRise1 4s cubic-bezier(.4,0,.2,1) forwards,
+                 waveSway1 3s ease-in-out infinite alternate;
+    }
+
+    .lwave2 {
+      animation: waveRise2 4s cubic-bezier(.4,0,.2,1) forwards,
+                 waveSway2 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes waveRise1 {
+      from { transform: translateY(280px); }
+      to   { transform: translateY(0); }
+    }
+
+    @keyframes waveRise2 {
+      from { transform: translateY(280px); }
+      0%   { transform: translateY(280px); }
+      15%  { transform: translateY(280px); }
+      to   { transform: translateY(0); }
+    }
+
+    @keyframes waveSway1 {
+      from { d: path("M0,180 C200,120 400,240 600,180 C800,120 1000,240 1200,180 L1200,300 L0,300 Z"); }
+      to   { d: path("M0,200 C200,140 400,220 600,160 C800,100 1000,220 1200,160 L1200,300 L0,300 Z"); }
+    }
+
+    @keyframes waveSway2 {
+      from { d: path("M0,210 C250,150 450,270 700,200 C900,140 1050,260 1200,200 L1200,300 L0,300 Z"); }
+      to   { d: path("M0,190 C250,130 450,250 700,180 C900,120 1050,240 1200,180 L1200,300 L0,300 Z"); }
+    }
+
+    .loader-logo {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      animation: logoFadeIn 0.8s 0.5s both;
+    }
+
+    @keyframes logoFadeIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .loader-drop {
+      width: 64px;
+      height: 88px;
+      filter: drop-shadow(0 12px 32px rgba(91,163,224,0.5));
+      animation: dropBob 2.2s ease-in-out infinite;
+    }
+
+    @keyframes dropBob {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+
+    .loader-wordmark {
+      color: #fff;
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .loader-wordmark span {
+      color: #7ec8f4;
+    }
+
+    .loader-sub {
+      color: rgba(255,255,255,0.5);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .loader-bar-wrap {
+      position: relative;
+      z-index: 2;
+      width: 220px;
+      height: 2px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 999px;
+      margin-top: 28px;
+      overflow: hidden;
+    }
+
+    .loader-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #7ec8f4, #fff, #5ba3e0);
+      border-radius: 999px;
+      animation: barFill 3.8s cubic-bezier(.4,0,.6,1) 0.3s forwards;
+    }
+
+    @keyframes barFill {
+      from { width: 0%; }
+      to   { width: 100%; }
+    }
+
+  
+    /* ══ BLOCK EXPLAINER ══════════════════════════════════════════ */
+    .block-explainer {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 18px 20px;
+      border: 1px solid var(--cobalt-rim);
+      border-radius: 6px;
+      background: linear-gradient(135deg, rgba(28,63,110,0.055), rgba(255,255,255,0));
+      border-left: 3px solid var(--cobalt-mid);
+    }
+
+    .block-explainer-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+      color: var(--cobalt-mid);
+      margin-top: 1px;
+    }
+
+    .block-explainer-title {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cobalt);
+      margin-bottom: 7px;
+    }
+
+    .block-explainer-text {
+      font-size: 13px;
+      line-height: 1.72;
+      color: var(--ink-soft);
+      max-width: 880px;
+    }
+
+  
+    /* ══ IMPROVED ANIMATION PHYSICS ══════════════════════════════ */
+    /* Spring easing custom properties */
+    :root {
+      --spring: cubic-bezier(.175, .885, .32, 1.275);
+      --ease-out-expo: cubic-bezier(.19, 1, .22, 1);
+      --ease-in-out-back: cubic-bezier(.68, -.55, .265, 1.55);
+    }
+
+    /* Card hover — springy lift */
+    .card {
+      transition: box-shadow 0.28s var(--ease-out-expo),
+                  transform 0.28s var(--spring) !important;
+    }
+
+    .card:hover {
+      transform: translateY(-3px) scale(1.004) !important;
+      box-shadow: 0 8px 32px rgba(28,63,110,0.10), 0 2px 8px rgba(0,0,0,0.04) !important;
+    }
+
+    /* Method steps — bouncier */
+    .method-step {
+      transition: box-shadow 0.28s var(--ease-out-expo),
+                  transform 0.28s var(--spring),
+                  border-color 0.22s !important;
+    }
+
+    .method-step:hover {
+      transform: translateY(-4px) scale(1.006) !important;
+    }
+
+    /* Reveal — smoother spring */
+    .reveal {
+      transition: opacity 0.70s var(--ease-out-expo),
+                  transform 0.70s var(--spring) !important;
+    }
+
+    /* Scenario buttons */
+    .scenario-btn {
+      transition: all 0.28s var(--spring) !important;
+    }
+
+    .scenario-btn:hover {
+      transform: translateY(-3px) scale(1.02) !important;
+    }
+
+    .scenario-btn.active {
+      transform: translateY(-1px) scale(1.01) !important;
+    }
+
+    /* Hero actions */
+    .hero-action {
+      transition: all 0.28s var(--spring) !important;
+    }
+
+    .hero-action:not(.primary):hover {
+      transform: translateY(-3px) scale(1.02) !important;
+    }
+
+    .hero-action.primary:hover {
+      transform: translateY(-3px) scale(1.02) !important;
+    }
+
+    /* KPI cards hover */
+    .kpi-card {
+      transition: box-shadow 0.28s var(--ease-out-expo),
+                  transform 0.28s var(--spring);
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-3px) scale(1.005);
+      box-shadow: 0 8px 28px rgba(28,63,110,0.10);
+    }
+
+    /* Range thumb spring */
+    input[type="range"]:active::-webkit-slider-thumb {
+      transform: scale(1.18) !important;
+      transition: transform 0.18s var(--spring), box-shadow 0.18s !important;
+    }
+
+    /* Sim main pop */
+    @keyframes valuePop {
+      0%   { transform: scale(1); }
+      35%  { transform: scale(1.06); }
+      65%  { transform: scale(0.98); }
+      100% { transform: scale(1); }
+    }
+
+    /* Garrafon wave improvement */
+    @keyframes garrafonWave {
+      0%   { transform: translateX(-8px) scaleX(0.95) scaleY(0.95); }
+      50%  { transform: translateX(0px) scaleX(1.02) scaleY(1.05); }
+      100% { transform: translateX(8px) scaleX(0.97) scaleY(0.96); }
+    }
+
+    /* Section transitions */
+    .section {
+      transition: opacity 0.3s;
+    }
+
+    /* Insight card bounce in */
+    .insight-card {
+      transition: box-shadow 0.28s var(--ease-out-expo),
+                  transform 0.28s var(--spring) !important;
+    }
+
+    /* Page transition on nav click — subtle */
+    main {
+      animation: mainFadeIn 0.45s var(--ease-out-expo) both;
+    }
+
+    @keyframes mainFadeIn {
+      from { opacity: 0.4; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
   </style>
 
   <script>
@@ -3093,6 +3440,45 @@
 
 </head>
 <body>
+  
+  <div id="awa-loader" aria-hidden="true">
+    <div class="loader-inner">
+      <svg class="loader-waves" viewBox="0 0 1200 300" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="wg1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3b82c4" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#0f2a50" stop-opacity="1"/>
+          </linearGradient>
+          <linearGradient id="wg2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#5ba3e0" stop-opacity="0.45"/>
+            <stop offset="100%" stop-color="#1c3f6e" stop-opacity="0.9"/>
+          </linearGradient>
+        </defs>
+        <path class="lwave lwave1" fill="url(#wg1)"
+          d="M0,180 C200,120 400,240 600,180 C800,120 1000,240 1200,180 L1200,300 L0,300 Z"/>
+        <path class="lwave lwave2" fill="url(#wg2)"
+          d="M0,210 C250,150 450,270 700,200 C900,140 1050,260 1200,200 L1200,300 L0,300 Z"/>
+      </svg>
+      <div class="loader-logo">
+        <div class="loader-drop">
+          <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="dg" cx="40%" cy="30%">
+                <stop offset="0%" stop-color="#7ec8f4"/>
+                <stop offset="100%" stop-color="#1c3f6e"/>
+              </radialGradient>
+            </defs>
+            <path d="M30 4 C30 4 6 44 6 56 C6 69 17 76 30 76 C43 76 54 69 54 56 C54 44 30 4 30 4Z" fill="url(#dg)"/>
+            <ellipse cx="22" cy="42" rx="5" ry="9" fill="rgba(255,255,255,0.22)" transform="rotate(-18,22,42)"/>
+          </svg>
+        </div>
+        <div class="loader-wordmark">AWA<span>05</span></div>
+        <div class="loader-sub">Análisis estadístico · Bloque B01</div>
+      </div>
+      <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+    </div>
+  </div>
+
   <div id="reading-progress"></div>
   <header>
     <div class="hd-brand">
@@ -3102,22 +3488,22 @@
     </div>
 
     <div class="hd-center">
-      <div class="hd-stat insightable" data-insight="Producción total válida del bloque. Incluye solo incrementos consistentes después del filtrado de eventos físicamente sospechosos.">
+      <div class="hd-stat insightable" data-insight="Total de agua producida que el sistema contabiliza como válida. Se descartaron registros dudosos para no inflar el número.">
         <div class="hd-stat-val" id="h-production">—</div>
         <div class="hd-stat-lbl">Producción</div>
       </div>
       <div class="hd-sep"></div>
-      <div class="hd-stat insightable" data-insight="Ventanas horarias donde existe simultáneamente producción y clima. Ese es el tamaño real del análisis inferencial producción–clima.">
+      <div class="hd-stat insightable" data-insight="Número de horas donde tenemos datos de producción Y de clima al mismo tiempo. Solo esas horas se usan para el análisis estadístico.">
         <div class="hd-stat-val" id="h-windows">—</div>
         <div class="hd-stat-lbl">Ventanas</div>
       </div>
       <div class="hd-sep"></div>
-      <div class="hd-stat insightable" data-insight="Solapamiento temporal real entre nivel de agua y estación climática. La inferencia climática no usa datos fuera de este rango.">
+      <div class="hd-stat insightable" data-insight="El periodo donde los dos sensores (agua y clima) estuvieron funcionando a la vez. Es la ventana que el análisis puede usar con confianza.">
         <div class="hd-stat-val" id="h-overlap">—</div>
         <div class="hd-stat-lbl">Solapamiento</div>
       </div>
       <div class="hd-sep"></div>
-      <div class="hd-stat insightable" data-insight="La variable climática con mayor asociación monotónica, según Spearman. Es asociación, no causalidad.">
+      <div class="hd-stat insightable" data-insight="El factor climático que más se mueve junto con la producción. Ojo: que se muevan juntos no significa que uno cause al otro.">
         <div class="hd-stat-val" id="h-best-rho">—</div>
         <div class="hd-stat-lbl">Mejor ρ</div>
       </div>
@@ -3177,19 +3563,19 @@
       <div class="sb-section">
         <span class="sb-label">Bloque activo</span>
         <div class="sb-kpis">
-          <div class="sb-kpi insightable" data-insight="Identificador del bloque experimental actual. Este primer bloque contiene todos los datos disponibles hasta el momento.">
+          <div class="sb-kpi insightable" data-insight="Nombre del conjunto de datos analizado. B01 es el primer bloque — más bloques darán resultados más sólidos.">
             <div class="sb-kpi-lbl">ID</div>
             <div class="sb-kpi-val" id="sb-block">B01</div>
           </div>
-          <div class="sb-kpi insightable" data-insight="Cantidad de registros crudos de nivel de agua. No todos se convierten en eventos válidos de producción.">
+          <div class="sb-kpi insightable" data-insight="Total de mediciones del sensor de agua, incluyendo las descartadas por control de calidad.">
             <div class="sb-kpi-lbl">Agua</div>
             <div class="sb-kpi-val" id="sb-water">—</div>
           </div>
-          <div class="sb-kpi insightable" data-insight="Cantidad de registros crudos de la estación climática. Hay un registro sin timestamp según el control de calidad.">
+          <div class="sb-kpi insightable" data-insight="Total de mediciones del sensor climático. Se detectó un registro sin fecha que fue excluido del análisis.">
             <div class="sb-kpi-lbl">Clima</div>
             <div class="sb-kpi-val" id="sb-climate">—</div>
           </div>
-          <div class="sb-kpi insightable" data-insight="El R² del modelo lineal indica qué fracción de la variación horaria logra explicar el conjunto climático usado.">
+          <div class="sb-kpi insightable" data-insight="R² mide cuánto del comportamiento de la producción explica el clima. Un valor de 0.30 significa que el clima explica el 30% de lo que varía la producción hora a hora.">
             <div class="sb-kpi-lbl">R² OLS</div>
             <div class="sb-kpi-val" id="sb-r2">—</div>
           </div>
@@ -3198,7 +3584,7 @@
     </aside>
 
     <main>
-      <section id="resumen" class="hero insightable" data-insight="Resumen del informe estadístico del bloque B01: producción observada, tramo climático común y lectura del modelo microclimático.">
+      <section id="resumen" class="hero insightable" data-insight="Este informe responde: ¿cuánto produce el sistema, bajo qué condiciones climáticas produce más, y qué tan bien puede predecirse eso con un modelo estadístico?">
         <div class="hero-inner">
           <div class="eyebrow">Bloque experimental B01 · análisis estadístico avanzado</div>
           <h1>Análisis estadístico del bloque B01 — producción y clima</h1>
@@ -3213,6 +3599,21 @@
             <a class="hero-action" href="#anova">Ver pruebas de grupos</a>
             <a class="hero-action" href="#modelos">Ver modelos</a>
           </div>
+          <!-- Why blocks callout -->
+          <div class="block-explainer reveal" style="margin-top:20px;">
+            <div class="block-explainer-icon">⬡</div>
+            <div>
+              <div class="block-explainer-title">¿Por qué se analiza en bloques?</div>
+              <p class="block-explainer-text">
+                Un <strong>bloque experimental</strong> es un periodo continuo de operación con los mismos sensores activos.
+                Dividir el análisis en bloques —en lugar de acumular todo en un solo conjunto— permite detectar si el sistema
+                cambia con el tiempo, si las condiciones climáticas de una temporada difieren de otra, o si una intervención
+                operativa alteró el rendimiento. <strong>Cada bloque es evidencia independiente</strong>: cuando varios bloques
+                muestran el mismo patrón, la conclusión se vuelve más confiable.
+              </p>
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -3234,22 +3635,22 @@
         </div>
         <div class="section-rule"></div>
         <div class="methodology-grid reveal-stagger">
-          <div class="method-step insightable" data-insight="Los archivos nivel_raw.csv y clima_raw.csv se consideran fuentes crudas. Python hace la limpieza; el HTML solo muestra resultados.">
+          <div class="method-step insightable" data-insight="Los datos llegan tal como salen del campo, sin modificar. Todo el procesamiento ocurre en Python antes de llegar a esta página.">
             <div class="method-num">Paso 01</div>
             <div class="method-title">Lectura cruda</div>
             <div class="method-text">Carga de archivos de nivel (nivel_raw.csv) y estación WS-2000 sin asumir frecuencia de muestreo común.</div>
           </div>
-          <div class="method-step insightable" data-insight="Se descartan saltos de producción que pueden representar vaciados, reinicios, ruido o intervalos físicamente no comparables.">
+          <div class="method-step insightable" data-insight="Se identifican y eliminan lecturas imposibles físicamente: por ejemplo, aumentos de agua de más de 5 litros en un minuto. Cada dato eliminado queda documentado.">
             <div class="method-num">Paso 02</div>
             <div class="method-title">Control físico</div>
             <div class="method-text">Separación de eventos de producción válidos. Los incrementos sospechosos se documentan y excluyen del análisis.</div>
           </div>
-          <div class="method-step insightable" data-insight="La inferencia climática solo se ejecuta dentro del periodo donde hay simultáneamente agua y clima. Esto evita relacionar producción de mayo con clima faltante.">
+          <div class="method-step insightable" data-insight="Solo se analizan las horas donde AMBOS sensores tienen datos. Si el sensor de clima se apagó antes, esas horas de producción no se usan para el análisis climático.">
             <div class="method-num">Paso 03</div>
             <div class="method-title">Solapamiento</div>
             <div class="method-text">Se define el periodo de solapamiento real entre sensores. La inferencia climática opera únicamente dentro de ese tramo.</div>
           </div>
-          <div class="method-step insightable" data-insight="La página consume statistical_analysis.json. Esa separación permite subir un HTML liviano y volver a recalcular cuando llegue el bloque 02.">
+          <div class="method-step insightable" data-insight="Python genera un archivo con todos los resultados calculados. Esta página solo lo muestra. Cuando haya un bloque 02, basta con actualizar ese archivo.">
             <div class="method-num">Paso 04</div>
             <div class="method-title">Precarga</div>
             <div class="method-text">Python exporta estadísticas, pruebas, modelos y series a statistical_analysis.json. El HTML consume ese archivo sin procesamiento adicional.</div>
@@ -3360,20 +3761,143 @@
                 <div class="garrafon-caption">Visualización diaria equivalente</div>
                 <div class="garrafon-stage">
                   <div class="garrafon-wrap" aria-hidden="true">
-                    <div class="garrafon-cap"></div>
-                    <div class="garrafon-neck"></div>
-                    <div class="garrafon-body">
-                      <div class="garrafon-fill" id="garrafon-fill">
-                        <div class="wave one"></div>
-                        <div class="wave two"></div>
-                      </div>
-                      <div class="garrafon-scale">
-                        <div class="garrafon-mark" style="top: 0%">20 L</div>
-                        <div class="garrafon-mark" style="top: 25%">15 L</div>
-                        <div class="garrafon-mark" style="top: 50%">10 L</div>
-                        <div class="garrafon-mark" style="top: 75%">5 L</div>
-                        <div class="garrafon-mark" style="top: 92%">0</div>
-                      </div>
+                    <svg class="garrafon-svg" viewBox="0 0 160 310" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <!-- Body gradient: translucent blue plastic -->
+                        <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="0">
+                          <stop offset="0%"   stop-color="#c8e8fa" stop-opacity="0.85"/>
+                          <stop offset="12%"  stop-color="#e8f5ff" stop-opacity="0.92"/>
+                          <stop offset="45%"  stop-color="#b8d8f0" stop-opacity="0.78"/>
+                          <stop offset="80%"  stop-color="#7eb8de" stop-opacity="0.80"/>
+                          <stop offset="100%" stop-color="#5590c4" stop-opacity="0.88"/>
+                        </linearGradient>
+                        <!-- Fill water gradient -->
+                        <linearGradient id="fillGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%"   stop-color="#6ec0f0" stop-opacity="0.75"/>
+                          <stop offset="50%"  stop-color="#2a78c8" stop-opacity="0.88"/>
+                          <stop offset="100%" stop-color="#0f3d82" stop-opacity="0.95"/>
+                        </linearGradient>
+                        <!-- Rib gradient -->
+                        <linearGradient id="ribGrad" x1="0" y1="0" x2="1" y2="0">
+                          <stop offset="0%"   stop-color="#4a88c4"/>
+                          <stop offset="18%"  stop-color="#8abce0"/>
+                          <stop offset="50%"  stop-color="#5298d0"/>
+                          <stop offset="80%"  stop-color="#3870a8"/>
+                          <stop offset="100%" stop-color="#2558a0"/>
+                        </linearGradient>
+                        <!-- Cap gradient -->
+                        <linearGradient id="capGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%"   stop-color="#4090d8"/>
+                          <stop offset="100%" stop-color="#1040a0"/>
+                        </linearGradient>
+                        <!-- Clip for fill -->
+                        <clipPath id="bodyClip">
+                          <path d="M38,82 C24,92 14,108 12,128 L8,248 C8,268 20,282 80,282 C140,282 152,268 152,248 L148,128 C146,108 136,92 122,82 L116,76 C110,72 104,70 80,70 C56,70 50,72 44,76 Z"/>
+                        </clipPath>
+                        <!-- Highlight -->
+                        <linearGradient id="hlGrad" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0%"   stop-color="#fff" stop-opacity="0.55"/>
+                          <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+                        </linearGradient>
+                        <!-- Base gradient -->
+                        <linearGradient id="baseGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%"   stop-color="#4a88c8"/>
+                          <stop offset="100%" stop-color="#1c3f6e"/>
+                        </linearGradient>
+                      </defs>
+
+                      <!-- ── CAP ─────────────────────────────────────── -->
+                      <!-- Seal / straw top -->
+                      <rect x="72" y="2" width="16" height="8" rx="3" fill="#e8e8e8" opacity="0.9"/>
+                      <rect x="74" y="4" width="4" height="5" fill="#cc3333" opacity="0.7"/>
+                      <rect x="79" y="4" width="4" height="5" fill="#3366bb" opacity="0.7"/>
+
+                      <!-- Cap body -->
+                      <rect x="66" y="9" width="28" height="18" rx="4" fill="url(#capGrad)"/>
+                      <rect x="68" y="10" width="10" height="6" rx="2" fill="rgba(255,255,255,0.28)"/>
+
+                      <!-- Cap base ring -->
+                      <ellipse cx="80" cy="27" rx="15" ry="4" fill="#2050a0" opacity="0.9"/>
+
+                      <!-- ── NECK ─────────────────────────────────────── -->
+                      <path d="M58,27 C58,27 52,34 50,42 L50,72 C50,76 62,78 80,78 C98,78 110,76 110,72 L110,42 C108,34 102,27 102,27 Z"
+                            fill="url(#bodyGrad)" stroke="rgba(40,100,180,0.28)" stroke-width="1"/>
+                      <!-- Neck highlight -->
+                      <path d="M60,32 C60,32 56,40 55,52 L56,68"
+                            fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="3" stroke-linecap="round"/>
+
+                      <!-- ── BODY ─────────────────────────────────────── -->
+                      <!-- Main body shape -->
+                      <path id="garrafon-body-path"
+                            d="M38,82 C24,92 14,108 12,128 L8,248 C8,268 20,282 80,282 C140,282 152,268 152,248 L148,128 C146,108 136,92 122,82 L116,76 C110,72 104,70 80,70 C56,70 50,72 44,76 Z"
+                            fill="url(#bodyGrad)" stroke="rgba(40,100,180,0.22)" stroke-width="1"/>
+
+                      <!-- Water fill -->
+                      <g clip-path="url(#bodyClip)">
+                        <rect id="garrafon-fill" x="0" y="282" width="160" height="220"
+                              fill="url(#fillGrad)"
+                              style="transform-origin: bottom; transition: y 0.9s cubic-bezier(.2,.85,.2,1.05)"/>
+                        <!-- Wave 1 -->
+                        <ellipse class="garrafon-wave wave-a" cx="80" cy="0" rx="90" ry="12"
+                                 fill="rgba(160,210,255,0.35)"/>
+                        <!-- Wave 2 -->
+                        <ellipse class="garrafon-wave wave-b" cx="80" cy="0" rx="85" ry="9"
+                                 fill="rgba(255,255,255,0.18)"/>
+                      </g>
+
+                      <!-- ── RIBS / RINGS (3 horiz bands) ───────────────── -->
+                      <!-- Top rib ~y=108 -->
+                      <path d="M17,118 C20,112 60,106 80,106 C100,106 140,112 143,118 C140,124 100,128 80,128 C60,128 20,124 17,118 Z"
+                            fill="url(#ribGrad)" opacity="0.90"/>
+                      <path d="M17,118 C20,114 60,110 80,110 C100,110 140,114 143,118"
+                            fill="none" stroke="rgba(255,255,255,0.30)" stroke-width="1.2"/>
+
+                      <!-- Mid rib ~y=178 -->
+                      <path d="M12,178 C14,172 56,166 80,166 C104,166 146,172 148,178 C146,184 104,188 80,188 C56,188 14,184 12,178 Z"
+                            fill="url(#ribGrad)" opacity="0.90"/>
+                      <path d="M12,178 C14,174 56,168 80,168 C104,168 146,174 148,178"
+                            fill="none" stroke="rgba(255,255,255,0.30)" stroke-width="1.2"/>
+
+                      <!-- Base rib ~y=248 -->
+                      <path d="M9,248 C10,242 52,238 80,238 C108,238 150,242 151,248 C150,258 108,266 80,266 C52,266 10,258 9,248 Z"
+                            fill="url(#baseGrad)" opacity="0.85"/>
+                      <path d="M9,248 C10,244 52,240 80,240 C108,240 150,244 151,248"
+                            fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
+
+                      <!-- ── HIGHLIGHT (left reflection stripe) ──────── -->
+                      <path d="M22,92 C20,108 18,128 19,158 C20,188 22,218 26,240"
+                            fill="none" stroke="rgba(255,255,255,0.38)" stroke-width="5" stroke-linecap="round"/>
+                      <path d="M34,90 C32,106 31,130 32,158"
+                            fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2.5" stroke-linecap="round"/>
+
+                      <!-- Right edge shadow -->
+                      <path d="M134,92 C136,108 138,128 137,158 C136,188 134,218 130,240"
+                            fill="none" stroke="rgba(20,60,130,0.22)" stroke-width="4" stroke-linecap="round"/>
+
+                      <!-- ── LABEL ────────────────────────────────────── -->
+                      <rect x="32" y="192" width="96" height="38" rx="5"
+                            fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.22)" stroke-width="0.8"/>
+                      <text x="80" y="208" text-anchor="middle"
+                            font-family="Playfair Display, serif" font-size="11" font-weight="700"
+                            fill="rgba(255,255,255,0.55)" letter-spacing="1">AGUA ATMOSFÉRICA</text>
+                      <text x="80" y="225" text-anchor="middle"
+                            font-family="Playfair Display, serif" font-size="16" font-weight="900" font-style="italic"
+                            fill="rgba(255,255,255,0.90)" letter-spacing="0.5">AWA05</text>
+
+                      <!-- Scale marks -->
+                      <line x1="10" y1="108" x2="6" y2="108" stroke="rgba(28,63,110,0.45)" stroke-width="1"/>
+                      <line x1="10" y1="148" x2="6" y2="148" stroke="rgba(28,63,110,0.45)" stroke-width="1"/>
+                      <line x1="9"  y1="188" x2="5" y2="188" stroke="rgba(28,63,110,0.45)" stroke-width="1"/>
+                      <line x1="9"  y1="228" x2="5" y2="228" stroke="rgba(28,63,110,0.45)" stroke-width="1"/>
+                      <line x1="9"  y1="248" x2="5" y2="248" stroke="rgba(28,63,110,0.45)" stroke-width="1"/>
+                    </svg>
+                    <!-- Scale labels -->
+                    <div class="garrafon-scale-labels">
+                      <span>20 L</span>
+                      <span>15 L</span>
+                      <span>10 L</span>
+                      <span>5 L</span>
+                      <span>0</span>
                     </div>
                   </div>
                   <div class="garrafon-info">
@@ -3485,7 +4009,7 @@
         <div class="section-rule"></div>
 
         <div class="grid-2">
-          <div class="card insightable" data-insight="Si el clima termina antes que la producción, el análisis producción–clima solo puede usar el tramo común. Esto evita inferencia falsa.">
+          <div class="card insightable" data-insight="Aquí se ven las fechas reales de cada sensor. Si el sensor de clima terminó antes, no podemos relacionar la producción posterior con el clima — eso es honestidad estadística.">
             <div class="card-head">
               <div>
                 <div class="card-title">Ficha técnica del bloque</div>
@@ -3496,7 +4020,7 @@
             <div id="block-table" class="table-wrap"></div>
           </div>
 
-          <div class="card insightable" data-insight="El control de calidad identifica cuántos eventos de producción fueron aceptados y cuántos fueron removidos por reglas físicas.">
+          <div class="card insightable" data-insight="Resumen de cuántos datos entraron al análisis y cuántos se descartaron. La columna 'razón' explica por qué se eliminó cada grupo.">
             <div class="card-head">
               <div>
                 <div class="card-title">Control de calidad</div>
@@ -3540,7 +4064,7 @@
         <div class="section-rule"></div>
 
         <div class="grid-2">
-          <div class="card insightable" data-insight="Este gráfico separa producción diaria y clima disponible. Los días con producción pero sin clima se mantienen para producción total, pero no para inferencia climática.">
+          <div class="card insightable" data-insight="Producción diaria del sistema. Nota: los días en gris claro tienen producción pero no tienen datos de clima, por eso no se incluyen en el análisis estadístico.">
             <div class="card-head">
               <div>
                 <div class="card-title">Producción diaria + clima</div>
@@ -3552,7 +4076,7 @@
             <div id="daily-note" class="chart-note"></div>
           </div>
 
-          <div class="card insightable" data-insight="El perfil por franja horaria muestra cuándo el sistema produjo más dentro del tramo con datos climáticos. Es evidencia intra-bloque.">
+          <div class="card insightable" data-insight="Producción promedio según la parte del día. Sirve para identificar si el sistema produce más de noche, de madrugada, etc.">
             <div class="card-head">
               <div>
                 <div class="card-title">Franja horaria</div>
@@ -3564,7 +4088,7 @@
             <div id="daypart-note" class="chart-note"></div>
           </div>
 
-          <div class="card col-span-2 insightable" data-insight="La serie horaria permite ver si la producción aparece en pulsos, si hay horas de cero producción y cómo conviven humedad, VPD y radiación.">
+          <div class="card col-span-2 insightable" data-insight="Cada punto es una hora de operación. Permite ver si la producción sigue algún patrón con humedad y VPD a lo largo del tiempo.">
             <div class="card-head">
               <div>
                 <div class="card-title">Serie horaria analítica</div>
@@ -3596,7 +4120,7 @@
         <div class="section-rule"></div>
 
         <div class="grid-2">
-          <div class="card col-span-2 insightable" data-insight="Una prueba significativa no significa que el sistema falle; significa que el supuesto estadístico podría no cumplirse y conviene usar método robusto o no paramétrico.">
+          <div class="card col-span-2 insightable" data-insight="Si el p-valor es menor a 0.05 en estas pruebas, significa que los datos no se comportan de manera 'ideal' para ciertos métodos estadísticos. No es un problema del sistema — es una señal de qué herramienta usar.">
             <div class="card-head">
               <div>
                 <div class="card-title">Matriz de supuestos</div>
@@ -3696,7 +4220,7 @@
             <div id="anova-table" class="table-wrap"></div>
           </div>
 
-          <div class="card insightable" data-insight="Los tamaños de efecto indican magnitud, no solo significancia. Eta, omega y epsilon ayudan a evitar conclusiones exageradas.">
+          <div class="card insightable" data-insight="Un resultado 'estadísticamente significativo' puede ser muy pequeño en la práctica. Estos índices miden qué tan GRANDE es realmente la diferencia entre grupos.">
             <div class="card-head">
               <div>
                 <div class="card-title">Tamaños de efecto</div>
@@ -3837,7 +4361,7 @@
         <div class="section-rule"></div>
 
         <div class="grid-2">
-          <div class="card insightable" data-insight="Estas conclusiones se generan a partir del JSON y son conservadoras: separan evidencia real de interpretación exploratoria.">
+          <div class="card insightable" data-insight="Conclusiones derivadas directamente de los datos. Son conservadoras a propósito: solo se afirma lo que los números realmente muestran.">
             <div class="card-head">
               <div>
                 <div class="card-title">Producción y microclima</div>
@@ -3848,7 +4372,7 @@
             <ul id="conclusion-list" class="microcopy"></ul>
           </div>
 
-          <div class="card insightable" data-insight="Las limitaciones son parte del rigor: muestran qué falta antes de hacer afirmaciones inter-bloque o causalidad climática fuerte.">
+          <div class="card insightable" data-insight="Todo análisis tiene límites. Esta sección los documenta claramente para evitar conclusiones exageradas o decisiones basadas en evidencia incompleta.">
             <div class="card-head">
               <div>
                 <div class="card-title">Limitaciones</div>
@@ -3859,6 +4383,22 @@
             <ul id="limitation-list" class="microcopy"></ul>
           </div>
         </div>
+        <!-- ── CONCLUSIONES GENERALES ─────────────────────────────────── -->
+        <div style="margin-top:28px;">
+          <div class="section-head" style="margin-bottom:14px;">
+            <div>
+              <div class="eyebrow">Lectura para no especialistas</div>
+              <h2 class="section-title" style="font-size:24px;">Conclusiones generales</h2>
+              <p class="section-sub">
+                Lo que estos datos significan en términos prácticos, sin jerga estadística.
+              </p>
+            </div>
+            <span class="badge" style="background:var(--cobalt-pale);color:var(--cobalt);">Resumen ejecutivo</span>
+          </div>
+          <div class="section-rule"></div>
+          <div id="general-conclusions-grid" class="grid-2" style="margin-top:16px;"></div>
+        </div>
+
       </section>
     </main>
 
@@ -3867,7 +4407,7 @@
         <div class="insight-eyebrow">Lente interpretativa</div>
         <div class="insight-title" id="insight-title">Lente interpretativa</div>
         <div class="insight-text" id="insight-text">
-          Haz clic en una tarjeta, fila de tabla, ecuación o gráfica para ver aquí la lectura técnica correspondiente.
+          Haz clic en cualquier tarjeta o gráfica para ver aquí una explicación clara de lo que significa ese dato.
         </div>
         <div class="insight-meta" id="insight-meta">Modo explicación por clic</div>
       </div>
@@ -4144,7 +4684,13 @@
       return Number(row.production_mean) / overall;
     }
 
-    function plotLayout(title, options = {}) {
+    // AWA05 multi-blue palette
+    const AWA_COLORS = [
+      '#2558a0','#5ba3e0','#0f6b60','#3b82c4','#7ec8f4',
+      '#1c3f6e','#4d3d8f','#0e8a7a','#8ab4d8','#1a5c38'
+    ];
+
+        function plotLayout(title, options = {}) {
       return {
         margin: options.margin || { l: 56, r: 22, t: 34, b: 48 },
         paper_bgcolor: 'rgba(0,0,0,0)',
@@ -4165,19 +4711,22 @@
         },
         xaxis: {
           gridcolor: 'rgba(40,38,30,.08)',
-          zerolinecolor: 'rgba(40,38,30,.12)',
-          title: options.xTitle || ''
+          zerolinecolor: 'rgba(40,38,30,.10)',
+          title: options.xTitle || '',
+          showline: false
         },
         yaxis: {
-          gridcolor: 'rgba(40,38,30,.08)',
-          zerolinecolor: 'rgba(40,38,30,.12)',
-          title: options.yTitle || ''
+          gridcolor: 'rgba(40,38,30,.06)',
+          zerolinecolor: 'rgba(40,38,30,.10)',
+          title: options.yTitle || '',
+          showline: false
         },
         legend: {
           orientation: 'h',
           y: -0.23
         },
-        hovermode: options.hovermode || 'closest'
+        hovermode: options.hovermode || 'closest',
+        colorway: AWA_COLORS
       };
     }
 
@@ -4676,6 +5225,7 @@
           type: 'bar',
           name: 'Producción L',
           yaxis: 'y',
+          marker: { color: '#2558a0', line: { width: 0 } },
           hovertemplate: '<b>%{x}</b><br>Producción: %{y:.2f} L<br><i>Si falta clima ese día no entra al modelo climático.</i><extra></extra>'
         },
         {
@@ -4715,6 +5265,7 @@
           y: daypart.map(d => d.production_mean),
           type: 'bar',
           name: 'Producción media L/h',
+          marker: { color: ['#1c3f6e','#2558a0','#3b82c4','#5ba3e0','#7ec8f4'], line: { width: 0 } },
           customdata: daypart.map(d => [fmt.num(d.humidity_mean, 1), fmt.num(d.vpd_mean, 3), fmt.num(d.solar_mean, 1), fmt.int(d.n)]),
           hovertemplate: '<b>%{x}</b><br>Producción media: %{y:.2f} L/h<br>Humedad: %{customdata[0]}%<br>VPD: %{customdata[1]} kPa<br>Solar: %{customdata[2]} W/m²<br>n=%{customdata[3]}<extra></extra>'
         }
@@ -4734,6 +5285,8 @@
           mode: 'lines+markers',
           name: 'Producción L/h',
           yaxis: 'y',
+          line: { color: '#2558a0', width: 2 },
+          marker: { size: 4, color: '#2558a0', line: { width: 0 } },
           customdata: hourly.map(d => [fmt.num(d.humidity_pct, 1), fmt.num(d.temp_c, 1), fmt.num(d.vpd_kpa, 3), fmt.num(d.solar_wm2, 1), d.daypart]),
           hovertemplate: '<b>%{x}</b><br>Producción: %{y:.2f} L/h<br>Humedad: %{customdata[0]}%<br>Temp: %{customdata[1]}°C<br>VPD: %{customdata[2]} kPa<br>Solar: %{customdata[3]} W/m²<br>Franja: %{customdata[4]}<br><i>Lee producción junto con VPD y radiación.</i><extra></extra>'
         },
@@ -4807,6 +5360,7 @@
           y: importance.map(d => label(d.variable || d.feature)),
           type: 'bar',
           orientation: 'h',
+          marker: { color: importance.map((_, i) => AWA_COLORS[i % AWA_COLORS.length]), line: { width: 0 } },
           hovertemplate: '<b>%{y}</b><br>Importancia: %{x:.4f}<br><i>Importancia predictiva, no causal.</i><extra></extra>'
         }
       ], plotLayout('Importancia de variables', { margin: { l: 170, r: 16, t: 34, b: 44 } }), plotConfig());
@@ -4830,6 +5384,7 @@
           y: chart.map(d => d.observed),
           type: 'scatter',
           mode: 'markers',
+          marker: { color: '#2558a0', size: 6, opacity: 0.72, line: { width: 0 } },
           text: chart.map(d => d.timestamp),
           hovertemplate: '<b>%{text}</b><br>Predicho: %{x:.2f} L/h<br>Observado: %{y:.2f} L/h<br>Error vertical = residuo<extra></extra>'
         },
@@ -4839,6 +5394,7 @@
           type: 'scatter',
           mode: 'lines',
           name: 'Línea ideal',
+          line: { color: '#5ba3e0', width: 1.5, dash: 'dot' },
           hoverinfo: 'skip'
         }
       ], plotLayout('Observado vs predicho', { xTitle: 'Predicho L/h', yTitle: 'Observado L/h' }), plotConfig());
@@ -4850,6 +5406,8 @@
           type: 'scatter',
           mode: 'lines+markers',
           name: 'Residuo',
+          line: { color: '#3b82c4', width: 1.8 },
+          marker: { size: 3, color: '#3b82c4', line: { width: 0 } },
           hovertemplate: '<b>%{x}</b><br>Residuo: %{y:.2f} L/h<br><i>Positivo = produjo más de lo predicho.</i><extra></extra>'
         },
         {
@@ -4858,6 +5416,7 @@
           type: 'scatter',
           mode: 'lines',
           name: '0',
+          line: { color: 'rgba(40,38,30,0.20)', width: 1, dash: 'dot' },
           hoverinfo: 'skip'
         }
       ], plotLayout('Residuos del modelo', { hovermode: 'x unified', yTitle: 'Residuo L/h' }), plotConfig());
@@ -4919,6 +5478,80 @@
 
       setHTML('conclusion-list', conclusions.map(x => `<li class="clickable-row" data-insight-title="Conclusión" data-insight="${escapeAttr(x)}">${x}</li>`).join(''));
       setHTML('limitation-list', limitations.map(x => `<li class="clickable-row" data-insight-title="Limitación metodológica" data-insight="${escapeAttr(x)}">${x}</li>`).join(''));
+
+      // ── CONCLUSIONES GENERALES (lenguaje no técnico) ─────────────────
+      const gcItems = [
+        {
+          icon: '💧',
+          title: '¿Cuánta agua produce el sistema?',
+          fn: () => {
+            const tot = fmt.num(total, 1);
+            const ov = fmt.num(overlap, 1);
+            return `El sistema registró <strong>${tot} L</strong> de producción total durante el bloque B01. De esos, <strong>${ov} L</strong> ocurrieron mientras el sensor de clima también estaba funcionando, que son los que podemos analizar junto con las condiciones atmosféricas.`;
+          }
+        },
+        {
+          icon: '🕐',
+          title: '¿En qué momento del día produce más?',
+          fn: () => {
+            if (!bestDaypart) return 'No hay suficientes datos por franja horaria todavía.';
+            return `La mayor producción promedio ocurrió en la franja <strong>"${bestDaypart.daypart}"</strong>, con un promedio de <strong>${fmt.num(bestDaypart.production_mean, 2)} L/h</strong>. Esto sugiere que las condiciones de esa parte del día (habitualmente mayor humedad y menor temperatura) son más favorables para el sistema.`;
+          }
+        },
+        {
+          icon: '💨',
+          title: '¿Qué condición climática importa más?',
+          fn: () => {
+            if (!bestCorr) return 'No se encontró una correlación climática dominante en este bloque.';
+            const dir = Number(bestCorr.spearman_rho) > 0 ? 'a mayor' : 'a menor';
+            const dir2 = Number(bestCorr.spearman_rho) > 0 ? 'más' : 'menos';
+            return `El factor climático con mayor relación con la producción fue <strong>${label(bestCorr.variable)}</strong>: ${dir} ${label(bestCorr.variable)}, el sistema tiende a producir ${dir2}. La asociación tiene una fuerza de <strong>ρ=${fmt.num(bestCorr.spearman_rho, 2)}</strong> (escala de −1 a +1, donde valores mayores a 0.3 ya son notables en este tipo de datos).`;
+          }
+        },
+        {
+          icon: '📊',
+          title: '¿Qué tan bien predice el modelo?',
+          fn: () => {
+            const r2pct = (r2 * 100).toFixed(0);
+            const nivel = r2 < 0.15 ? 'baja' : r2 < 0.40 ? 'moderada' : 'buena';
+            return `El modelo estadístico explica el <strong>${r2pct}%</strong> del comportamiento horario de la producción — una capacidad predictiva ${nivel} para este tipo de sistema con un solo bloque de datos. El <strong>${(100 - r2 * 100).toFixed(0)}%</strong> restante depende de factores no medidos aún (operación, mantenimiento, variables no registradas).`;
+          }
+        },
+        {
+          icon: '⚠️',
+          title: '¿Qué no podemos concluir todavía?',
+          fn: () => {
+            return `Con un solo bloque de datos no podemos afirmar que el sistema siempre se comportará así. Los patrones observados son una primera evidencia, no una garantía. <strong>Cada bloque adicional fortalecerá (o cuestionará) estas conclusiones</strong>. La recomendación es mantener los mismos sensores activos en el próximo bloque.`;
+          }
+        },
+        {
+          icon: '🎯',
+          title: '¿Qué acción práctica sugieren los datos?',
+          fn: () => {
+            const dp = bestDaypart ? bestDaypart.daypart : 'nocturna';
+            const v = bestCorr ? label(bestCorr.variable) : 'humedad relativa';
+            return `Si se busca maximizar producción: <strong>operar en la franja "${dp}"</strong> y monitorear activamente <strong>${v}</strong>. El simulador de esta página permite estimar cuánto produciría el sistema bajo distintas combinaciones de clima — sin esperar al siguiente bloque.`;
+          }
+        }
+      ];
+
+      const gcCards = gcItems.map(item => {
+        let body = '';
+        try { body = item.fn(); } catch(e) { body = 'Datos insuficientes para este punto.'; }
+        return `
+          <div class="card reveal" style="padding:20px;">
+            <div style="display:flex;align-items:flex-start;gap:12px;">
+              <div style="font-size:28px;line-height:1;flex-shrink:0;">${item.icon}</div>
+              <div>
+                <div class="card-title" style="margin-bottom:8px;font-size:11px;">${item.title}</div>
+                <div style="font-size:13px;line-height:1.72;color:var(--ink-soft);">${body}</div>
+              </div>
+            </div>
+          </div>`;
+      });
+      setHTML('general-conclusions-grid', gcCards.join(''));
+      if (window.__attachReveal) setTimeout(window.__attachReveal, 50);
+
     }
 
     function bindPlotInsight(id, title, text) {
@@ -5044,7 +5677,12 @@
       const comparePct = clamp((ratio || 0) / 2, 0, 1) * 100;
 
       const fill = document.getElementById('garrafon-fill');
-      if (fill) fill.style.height = `${fillPct}%`;
+      if (fill) {
+        // SVG rect: y goes from 282 (empty, bottom) to ~82 (full)
+        // fillPct 0=empty, 100=full. SVG body spans ~y=82 to y=282 = 200px
+        const svgY = 282 - (fillPct / 100) * 196;
+        fill.setAttribute('y', svgY);
+      }
       const gauge = document.getElementById('sim-gauge-ring');
       if (gauge) gauge.style.setProperty('--gauge-angle', `${clamp(idx, 0, 100) * 3.6}deg`);
       const compareFill = document.getElementById('sim-compare-fill');
@@ -5397,6 +6035,34 @@
       }
 
       window.__animateKPICounter = animateCounter;
+    })();
+
+
+    // ══ LOADING SCREEN DISMISS ═══════════════════════════════════
+    (function () {
+      function dismissLoader() {
+        const loader = document.getElementById('awa-loader');
+        if (!loader) return;
+        loader.classList.add('fade-out');
+        setTimeout(() => loader.classList.add('gone'), 750);
+      }
+      // Auto-dismiss after 4.1s
+      setTimeout(dismissLoader, 4100);
+      // Also dismiss on first user interaction after 2s
+      let interacted = false;
+      function onInteract() {
+        if (interacted) return;
+        interacted = true;
+        setTimeout(dismissLoader, 300);
+        document.removeEventListener('click', onInteract);
+        document.removeEventListener('keydown', onInteract);
+        document.removeEventListener('scroll', onInteract);
+      }
+      setTimeout(() => {
+        document.addEventListener('click', onInteract);
+        document.addEventListener('keydown', onInteract);
+        document.addEventListener('scroll', onInteract, { passive: true });
+      }, 2000);
     })();
 
     document.addEventListener('DOMContentLoaded', init);
