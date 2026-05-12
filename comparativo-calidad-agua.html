@@ -1387,7 +1387,7 @@
     .loader-wordmark span { color: #7ee8f4; }
     .loader-sub { color: rgba(255,255,255,0.5); font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; }
     .loader-bar-wrap { position: relative; z-index: 2; width: 220px; height: 2px; background: rgba(255,255,255,0.12); border-radius: 999px; margin-top: 28px; overflow: hidden; }
-    .loader-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #10a8d0, #fff, #18a978); border-radius: 999px; animation: barFill 5.2s cubic-bezier(.4,0,.2,1) 0.2s forwards; }
+    .loader-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #10a8d0, #fff, #18a978); border-radius: 999px; animation: barFill 5s cubic-bezier(.4,0,.2,1) forwards; }
     @keyframes barFill { from { width: 0%; } to { width: 100%; } }
 
   
@@ -2151,6 +2151,13 @@
       }
     }
 
+
+    /* ══ MOBILE MENU FIX — navegación entre páginas ═══════════════ */
+    .mobile-menu.open {
+      display: grid !important;
+      gap: 8px;
+    }
+
   </style>
 </head>
 
@@ -2180,12 +2187,12 @@
     <a href="analisis-estadistico.html" class="hd-hide-sm" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:4px;border:1px solid rgba(255,255,255,0.22);background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.85);font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.10em;text-decoration:none;text-transform:uppercase;transition:all 0.15s;">Análisis estadístico</a>
     <a href="comparativo-calidad-agua.html" class="hd-hide-sm" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:4px;border:1px solid rgba(255,255,255,0.22);background:rgba(255,255,255,0.92);color:#1c3f6e;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.10em;text-decoration:none;text-transform:uppercase;transition:all 0.15s;">Calidad de agua</a>
     <div class="hd-ts" id="header-ts">--</div>
-    <button class="btn hd-mobile-menu" id="btn-mobile-menu" onclick="toggleMobileMenu()" aria-label="Menú">☰</button>
+    <button class="btn hd-mobile-menu" id="btn-mobile-menu" aria-label="Menú">☰</button>
   </div>
 </header>
 
 <!-- MENÚ MÓVIL: navegación entre páginas -->
-<div id="mobile-menu" class="mobile-menu" style="display:none">
+<div id="mobile-menu" class="mobile-menu">
   <nav class="mobile-nav">
     <a class="mobile-nav-link" href="index.html">Inicio</a>
     <a class="mobile-nav-link" href="dashboard.html">Dashboard</a>
@@ -4078,25 +4085,54 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
   <script>
-    /* ── AWA05 Loader dismiss — runs immediately, no dependencies ── */
+    function toggleMobileMenu(force) {
+      var menu = document.getElementById('mobile-menu');
+      if (!menu) return;
+      if (force === true) menu.classList.add('open');
+      else if (force === false) menu.classList.remove('open');
+      else menu.classList.toggle('open');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var menu = document.getElementById('mobile-menu');
+      var btn = document.getElementById('btn-mobile-menu') || document.getElementById('mobile-btn');
+      if (btn && menu) {
+        btn.addEventListener('click', function (ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          toggleMobileMenu();
+        });
+      }
+
+      document.addEventListener('click', function (ev) {
+        if (!menu || !menu.classList.contains('open')) return;
+        var insideMenu = menu.contains(ev.target);
+        var insideBtn = btn && btn.contains(ev.target);
+        if (!insideMenu && !insideBtn) toggleMobileMenu(false);
+      });
+
+      Array.prototype.forEach.call(document.querySelectorAll('#mobile-menu a'), function (link) {
+        link.addEventListener('click', function () { toggleMobileMenu(false); });
+      });
+    });
+  </script>
+
+  <script>
+    /* ── AWA05 Loader dismiss — duración fija de 5 segundos ── */
     (function () {
-      var DISMISS_MS = 5500;
+      var DISMISS_MS = 5000;
       function dismiss() {
         var el = document.getElementById('awa-loader');
         if (!el || el.classList.contains('fade-out')) return;
         el.classList.add('fade-out');
-        setTimeout(function () { if (el) el.style.display = 'none'; }, 800);
+        setTimeout(function () {
+          if (el) {
+            el.classList.add('gone');
+            el.style.display = 'none';
+          }
+        }, 760);
       }
-      // Auto-dismiss
       setTimeout(dismiss, DISMISS_MS);
-      // Allow dismiss after 3s via interaction
-      setTimeout(function() {
-        document.addEventListener('click', dismiss, { once: true, capture: true });
-        document.addEventListener('keydown', dismiss, { once: true, capture: true });
-        document.addEventListener('scroll', dismiss, { once: true, passive: true, capture: true });
-      }, 3000);
-      // Failsafe: if page loads, dismiss after 1s
-      window.addEventListener('load', function() { setTimeout(dismiss, 800); });
     })();
   </script>
 
