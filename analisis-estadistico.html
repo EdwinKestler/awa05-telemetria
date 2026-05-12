@@ -2612,6 +2612,438 @@
       display: none !important;
     }
 
+
+    /* ═══════════════════════════════════════════════════════════════
+       MEJORAS V5 — Animaciones, simulador premium, page feel
+    ═══════════════════════════════════════════════════════════════ */
+
+    /* Reading progress bar */
+    #reading-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10000;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cobalt-mid), #5ba3f5, var(--cobalt));
+      transition: width 0.1s linear;
+      pointer-events: none;
+    }
+
+    /* ── Scroll-reveal system ──────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s cubic-bezier(.22,.68,0,1.15), transform 0.65s cubic-bezier(.22,.68,0,1.15);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s cubic-bezier(.22,.68,0,1.15), transform 0.5s cubic-bezier(.22,.68,0,1.15);
+    }
+
+    .reveal-stagger.visible > *:nth-child(1) { transition-delay: 0.05s; opacity: 1; transform: none; }
+    .reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.12s; opacity: 1; transform: none; }
+    .reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.19s; opacity: 1; transform: none; }
+    .reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.26s; opacity: 1; transform: none; }
+    .reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.33s; opacity: 1; transform: none; }
+    .reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.40s; opacity: 1; transform: none; }
+
+    /* ── Custom range inputs ───────────────────────────── */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(to right, var(--cobalt-mid) 0%, var(--cobalt-mid) var(--pct, 50%), var(--rule-strong) var(--pct, 50%));
+      outline: none;
+      cursor: pointer;
+      margin: 4px 0;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid var(--cobalt-mid);
+      box-shadow: 0 1px 6px rgba(28,63,110,0.30), 0 0 0 0 rgba(37,88,160,0);
+      transition: box-shadow 0.18s, transform 0.18s;
+      cursor: grab;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid var(--cobalt-mid);
+      box-shadow: 0 1px 6px rgba(28,63,110,0.30);
+      cursor: grab;
+    }
+
+    input[type="range"]:active::-webkit-slider-thumb {
+      cursor: grabbing;
+      box-shadow: 0 1px 6px rgba(28,63,110,0.30), 0 0 0 6px rgba(37,88,160,0.12);
+      transform: scale(1.12);
+    }
+
+    input[type="range"]:hover::-webkit-slider-thumb {
+      box-shadow: 0 1px 6px rgba(28,63,110,0.30), 0 0 0 4px rgba(37,88,160,0.09);
+    }
+
+    /* ── Control value display ────────────────────────── */
+    .control-value {
+      background: var(--cobalt-pale);
+      border: 1px solid var(--cobalt-rim);
+      border-radius: 3px;
+      padding: 2px 7px;
+      color: var(--cobalt);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      min-width: 68px;
+      text-align: center;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    /* ── Scenario buttons — premium redesign ─────────── */
+    .scenario-btn {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 13px 10px;
+      border: 1px solid var(--rule-strong);
+      border-radius: 6px;
+      background: var(--surface2);
+      color: var(--ink-soft);
+      font-family: var(--mono);
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(.22,.68,0,1.2);
+    }
+
+    .scenario-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(28,63,110,0.10), rgba(37,88,160,0.06));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .scenario-btn:hover::before { opacity: 1; }
+
+    .scenario-btn:hover {
+      border-color: var(--cobalt-rim);
+      color: var(--cobalt);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(28,63,110,0.14);
+    }
+
+    .scenario-btn.active {
+      border-color: var(--cobalt);
+      background: var(--cobalt);
+      color: white;
+      box-shadow: 0 4px 20px rgba(28,63,110,0.32);
+      transform: translateY(-1px);
+    }
+
+    .scenario-btn.active::before { display: none; }
+
+    .scen-icon {
+      font-size: 14px;
+      line-height: 1;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* ── Simulator status indicator ───────────────────── */
+    .sim-status-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px 0 4px;
+    }
+
+    .sim-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--forest);
+      transition: background 0.4s, box-shadow 0.4s;
+      flex-shrink: 0;
+    }
+
+    .sim-status-dot.warn { background: var(--amber); box-shadow: 0 0 8px rgba(176,92,0,0.4); }
+    .sim-status-dot.danger { background: var(--crimson); box-shadow: 0 0 8px rgba(149,31,31,0.4); }
+    .sim-status-dot.good { background: var(--forest); box-shadow: 0 0 8px rgba(26,92,56,0.4); }
+
+    .sim-status-text {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      transition: color 0.3s;
+    }
+
+    /* ── Simulator main value — animated ─────────────── */
+    .sim-main {
+      transition: color 0.4s;
+    }
+
+    .sim-main.updating {
+      opacity: 0.75;
+    }
+
+    /* ── Section head decoration ──────────────────────── */
+    .section-head {
+      position: relative;
+    }
+
+    .section-title {
+      position: relative;
+    }
+
+    /* ── Card hover refinement ────────────────────────── */
+    .card {
+      transition: box-shadow 0.22s, transform 0.22s;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+
+    /* ── Method steps — enhanced ──────────────────────── */
+    .method-step {
+      transition: box-shadow 0.22s, transform 0.22s, border-color 0.22s;
+    }
+
+    .method-step:hover {
+      border-color: var(--cobalt-rim) !important;
+      box-shadow: 0 4px 20px rgba(28,63,110,0.08);
+      transform: translateY(-2px);
+    }
+
+    /* ── KPI counter animation ────────────────────────── */
+    .kpi-val[data-counting="true"] {
+      opacity: 0.7;
+    }
+
+    /* ── Impact cards — better styling ───────────────── */
+    .impact-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .impact-card::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cobalt-mid), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .impact-card:hover::after { opacity: 0.5; }
+
+    /* ── Hero pill refinements ────────────────────────── */
+    .pill {
+      transition: background 0.18s, border-color 0.18s, color 0.18s;
+    }
+
+    .pill:hover {
+      border-color: var(--cobalt-rim);
+      background: var(--cobalt-pale);
+      color: var(--cobalt);
+    }
+
+    /* ── Insight rail fade-in ─────────────────────────── */
+    .insight-card {
+      transition: box-shadow 0.3s, transform 0.3s;
+    }
+
+    .insight-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+
+    /* ── Hero action buttons ──────────────────────────── */
+    .hero-action {
+      transition: all 0.22s cubic-bezier(.22,.68,0,1.2);
+    }
+
+    .hero-action:not(.primary):hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(28,63,110,0.12);
+    }
+
+    .hero-action.primary:hover {
+      background: var(--cobalt-mid);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(28,63,110,0.30);
+    }
+
+    /* ── Garrafon panel enhanced ──────────────────────── */
+    .garrafon-fill {
+      transition: height 0.6s cubic-bezier(.22,.68,0,1.2) !important;
+    }
+
+    /* ── Driver bars animated ─────────────────────────── */
+    .driver-fill {
+      transition: width 0.5s cubic-bezier(.22,.68,0,1.15) !important;
+    }
+
+    /* ── Sim compare fill ─────────────────────────────── */
+    #sim-compare-fill {
+      transition: width 0.5s cubic-bezier(.22,.68,0,1.15) !important;
+    }
+
+    /* ── Sim gauge ring ───────────────────────────────── */
+    #sim-gauge-ring {
+      transition: --gauge-angle 0.5s !important;
+    }
+
+    /* ── Page title animation ─────────────────────────── */
+    @keyframes heroReveal {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-inner .eyebrow {
+      animation: heroReveal 0.5s 0.15s both;
+    }
+
+    .hero h1 {
+      animation: heroReveal 0.7s 0.25s both;
+    }
+
+    .hero p {
+      animation: heroReveal 0.7s 0.40s both;
+    }
+
+    .pill-row {
+      animation: heroReveal 0.7s 0.55s both;
+    }
+
+    .hero-actions {
+      animation: heroReveal 0.7s 0.65s both;
+    }
+
+    /* ── Sim panel pulse on update ────────────────────── */
+    @keyframes valuePop {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.04); }
+      100% { transform: scale(1); }
+    }
+
+    .sim-main.pop {
+      animation: valuePop 0.3s cubic-bezier(.22,.68,0,1.4) both;
+    }
+
+    /* ── Section number decoration ───────────────────────── */
+    .section[id]::before {
+      content: attr(id);
+      display: none;
+    }
+
+    /* ── Impact value colors ──────────────────────────── */
+    .impact-value.positive {
+      color: var(--forest) !important;
+    }
+
+    .impact-value.negative {
+      color: var(--crimson) !important;
+    }
+
+    /* ── Scenario button icon ─────────────────────────── */
+    .scen-icon {
+      font-style: normal;
+    }
+
+    /* ── Better insight eyebrow ───────────────────────── */
+    .insight-eyebrow::before {
+      content: "▸ ";
+      opacity: 0.6;
+    }
+
+    /* ── Section rule gradient ────────────────────────── */
+    .section-rule {
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, var(--cobalt), var(--rule-strong), transparent);
+      height: 1.5px;
+    }
+
+    /* ── Hero badge pill hover ────────────────────────── */
+    .hero .pill-row .pill {
+      cursor: default;
+    }
+
+    /* ── Sim panel card feel ──────────────────────────── */
+    .sim-readout {
+      background: linear-gradient(135deg, rgba(28,63,110,0.055), rgba(255,255,255,0));
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 0;
+    }
+
+    /* ── Scenario grid spacing ────────────────────────── */
+    .scenario-grid {
+      margin-top: 14px;
+      gap: 8px;
+    }
+
+    /* ── Control head spacing ─────────────────────────── */
+    .control-head {
+      margin-bottom: 6px;
+    }
+
+    /* ── Sim explain enhanced ─────────────────────────── */
+    .sim-explain {
+      border-left: 3px solid var(--cobalt-mid);
+      border-top: none;
+      border-right: none;
+      border-bottom: none;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    /* ── Header pulse on load ─────────────────────────── */
+    @keyframes headerIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    header {
+      animation: headerIn 0.45s 0.05s both;
+    }
+
+    /* ── Scrollbar style refinement ───────────────────── */
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(28,63,110,0.30);
+    }
+
   </style>
 
   <script>
@@ -2661,6 +3093,7 @@
 
 </head>
 <body>
+  <div id="reading-progress"></div>
   <header>
     <div class="hd-brand">
       <span class="hd-name">AWA05</span>
@@ -2767,26 +3200,13 @@
     <main>
       <section id="resumen" class="hero insightable" data-insight="Resumen del informe estadístico del bloque B01: producción observada, tramo climático común y lectura del modelo microclimático.">
         <div class="hero-inner">
-          <div class="eyebrow">Informe científico interactivo · bloque experimental B01</div>
-          <h1>Producción atmosférica de agua y respuesta microclimática</h1>
+          <div class="eyebrow">Bloque experimental B01 · análisis estadístico avanzado</div>
+          <h1>Análisis estadístico del bloque B01 — producción y clima</h1>
           <p>
-            Este informe evalúa la producción de agua del sistema AWA05 frente a humedad relativa,
-            temperatura, punto de rocío, VPD, radiación, viento y hora de operación. La lectura separa
-            tres niveles: producción total medida, producción con clima simultáneo y capacidad explicativa
-            del modelo durante el solapamiento real de sensores.
+            Informe estadístico del sistema AWA05 sobre el bloque experimental B01. Evalúa la relación
+            entre producción de agua atmosférica y variables climáticas: humedad relativa, temperatura, VPD,
+            radiación solar y viento. Incluye pruebas de supuestos, correlaciones, modelos de regresión y simulador interactivo.
           </p>
-          <div class="pill-row">
-            <span class="pill ok">Datos procesados</span>
-            <span class="pill ok">MathJax</span>
-            <span class="pill ok">Plotly</span>
-            <span class="pill warn">1 bloque activo</span>
-            <span class="pill">ANOVA</span>
-            <span class="pill">Welch</span>
-            <span class="pill">Kruskal-Wallis</span>
-            <span class="pill">Post hoc</span>
-            <span class="pill">OLS HAC</span>
-            <span class="pill">Simulador</span>
-          </div>
           <div class="hero-actions">
             <a class="hero-action primary" href="#simulador">Abrir simulador</a>
             <a class="hero-action" href="#correlaciones">Ver evidencia climática</a>
@@ -2797,42 +3217,42 @@
       </section>
 
       <section class="section">
-        <div id="kpi-grid" class="kpi-grid"></div>
+        <div id="kpi-grid" class="kpi-grid reveal-stagger"></div>
       </section>
 
       <section id="metodologia" class="section">
-        <div class="section-head">
+        <div class="section-head reveal">
           <div>
-            <div class="eyebrow">Diseño analítico</div>
-            <h2 class="section-title">De CSV crudo a evidencia <em>interpretada</em></h2>
+            <div class="eyebrow">Metodología analítica</div>
+            <h2 class="section-title">Pipeline de procesamiento estadístico</h2>
             <p class="section-sub">
-              El objetivo no es hacer una sincronización fina para operación en vivo, sino construir un bloque analítico
-              precargado. Este bloque resume todo lo observado y separa producción total de inferencia producción–clima.
+              Los datos crudos de campo pasan por cuatro etapas antes de entrar al análisis inferencial.
+              Cada etapa se documenta y sus resultados están disponibles en las secciones siguientes.
             </p>
           </div>
           <span class="badge violet">Pipeline</span>
         </div>
         <div class="section-rule"></div>
-        <div class="methodology-grid">
+        <div class="methodology-grid reveal-stagger">
           <div class="method-step insightable" data-insight="Los archivos nivel_raw.csv y clima_raw.csv se consideran fuentes crudas. Python hace la limpieza; el HTML solo muestra resultados.">
             <div class="method-num">Paso 01</div>
             <div class="method-title">Lectura cruda</div>
-            <div class="method-text">Se cargan registros de nivel y estación WS-2000 sin asumir que tienen la misma frecuencia.</div>
+            <div class="method-text">Carga de archivos de nivel (nivel_raw.csv) y estación WS-2000 sin asumir frecuencia de muestreo común.</div>
           </div>
           <div class="method-step insightable" data-insight="Se descartan saltos de producción que pueden representar vaciados, reinicios, ruido o intervalos físicamente no comparables.">
             <div class="method-num">Paso 02</div>
             <div class="method-title">Control físico</div>
-            <div class="method-text">Se separa producción válida de incrementos sospechosos y se documenta lo removido.</div>
+            <div class="method-text">Separación de eventos de producción válidos. Los incrementos sospechosos se documentan y excluyen del análisis.</div>
           </div>
           <div class="method-step insightable" data-insight="La inferencia climática solo se ejecuta dentro del periodo donde hay simultáneamente agua y clima. Esto evita relacionar producción de mayo con clima faltante.">
             <div class="method-num">Paso 03</div>
             <div class="method-title">Solapamiento</div>
-            <div class="method-text">Se define un periodo común real para modelar producción como función del clima.</div>
+            <div class="method-text">Se define el periodo de solapamiento real entre sensores. La inferencia climática opera únicamente dentro de ese tramo.</div>
           </div>
           <div class="method-step insightable" data-insight="La página consume statistical_analysis.json. Esa separación permite subir un HTML liviano y volver a recalcular cuando llegue el bloque 02.">
             <div class="method-num">Paso 04</div>
             <div class="method-title">Precarga</div>
-            <div class="method-text">Python exporta estadísticas, pruebas, modelos y series listas para visualización.</div>
+            <div class="method-text">Python exporta estadísticas, pruebas, modelos y series a statistical_analysis.json. El HTML consume ese archivo sin procesamiento adicional.</div>
           </div>
         </div>
       </section>
@@ -2841,10 +3261,10 @@
         <div class="section-head">
           <div>
             <div class="eyebrow">Simulación microclimática</div>
-            <h2 class="section-title">Simulador de producción bajo condiciones microclimáticas</h2>
+            <h2 class="section-title">Simulador de producción microclimática</h2>
             <p class="section-sub">
-              Ajusta las variables medidas en campo para estimar la respuesta horaria del sistema.
-              El resultado combina el ajuste estadístico del bloque B01 con restricciones físicas simples de condensación.
+              Estima la producción horaria del sistema bajo condiciones microclimáticas definidas por el usuario.
+              Combina los coeficientes del modelo OLS/HAC del bloque B01 con restricciones físicas de condensación.
             </p>
           </div>
           <span class="badge warn">Simulación</span>
@@ -2854,9 +3274,13 @@
         <div class="simulator-shell">
           <div class="sim-panel">
             <div class="sim-readout">
+              <div class="sim-status-bar">
+                <div class="sim-status-dot good" id="sim-status-dot"></div>
+                <div class="sim-status-text" id="sim-status-text">Configura las condiciones</div>
+              </div>
               <div class="sim-label">Producción estimada</div>
-              <div class="sim-main"><span id="sim-lph">—</span><span>L/h</span></div>
-              <div class="sim-sub" id="sim-sub">Configura un escenario para estimar la producción del sistema.</div>
+              <div class="sim-main" id="sim-main-display"><span id="sim-lph">—</span><span>L/h</span></div>
+              <div class="sim-sub" id="sim-sub">Ajusta las condiciones para calcular la estimación.</div>
             </div>
 
             <div class="sim-controls">
@@ -2871,7 +3295,7 @@
               </div>
 
               <div class="control">
-                <div class="control-head"><span class="control-label">Déficit de presión de vapor</span><span class="control-value" id="vpd-val">0.55 kPa</span></div>
+                <div class="control-head"><span class="control-label">Déficit de vapor (VPD)</span><span class="control-value" id="vpd-val">0.55 kPa</span></div>
                 <input id="vpd" type="range" min="0.05" max="2.3" step="0.01" value="0.55" />
               </div>
 
@@ -2892,10 +3316,10 @@
             </div>
 
             <div class="scenario-grid">
-              <button class="scenario-btn" data-scenario="optimal">Óptimo observado</button>
-              <button class="scenario-btn" data-scenario="humid-night">Noche húmeda</button>
-              <button class="scenario-btn" data-scenario="dry-day">Tarde seca</button>
-              <button class="scenario-btn" data-scenario="block-mean">Promedio del bloque</button>
+              <button class="scenario-btn" data-scenario="optimal"><span class="scen-icon">★</span>Óptimo observado</button>
+              <button class="scenario-btn" data-scenario="humid-night"><span class="scen-icon">🌙</span>Noche húmeda</button>
+              <button class="scenario-btn" data-scenario="dry-day"><span class="scen-icon">☀</span>Tarde seca</button>
+              <button class="scenario-btn" data-scenario="block-mean"><span class="scen-icon">◉</span>Promedio del bloque</button>
             </div>
           </div>
 
@@ -3018,29 +3442,29 @@
 
             <div class="impact-grid">
               <div class="impact-card">
-                <div class="impact-label">Sensibilidad local</div>
+                <div class="impact-label">Si la humedad sube 5%</div>
                 <div class="impact-value" id="impact-humidity">—</div>
                 <div class="impact-note">Cambio estimado si la humedad aumenta 5 puntos porcentuales.</div>
               </div>
               <div class="impact-card">
-                <div class="impact-label">Sensibilidad local</div>
+                <div class="impact-label">Si el VPD baja 0.2 kPa</div>
                 <div class="impact-value" id="impact-vpd">—</div>
                 <div class="impact-note">Cambio estimado si el VPD disminuye 0.20 kPa.</div>
               </div>
               <div class="impact-card">
-                <div class="impact-label">Sensibilidad local</div>
+                <div class="impact-label">Si la radiación cae 40 W/m²</div>
                 <div class="impact-value" id="impact-solar">—</div>
                 <div class="impact-note">Cambio estimado si la radiación desciende 40 W/m².</div>
               </div>
               <div class="impact-card">
-                <div class="impact-label">Sensibilidad local</div>
+                <div class="impact-label">En una hora nocturna</div>
                 <div class="impact-value" id="impact-night">—</div>
                 <div class="impact-note">Cambio estimado al llevar el mismo escenario a una hora nocturna.</div>
               </div>
             </div>
 
             <div class="sim-explain" id="sim-explain">
-              Ajusta las variables o selecciona un escenario de referencia para obtener una estimación interpretable de la producción.
+              Selecciona un escenario o ajusta manualmente las variables. La estimación se actualiza en tiempo real.
             </div>
           </div>
         </div>
@@ -3050,10 +3474,10 @@
         <div class="section-head">
           <div>
             <div class="eyebrow">Auditoría de datos</div>
-            <h2 class="section-title">Periodo real del bloque y <em>solapamiento</em></h2>
+            <h2 class="section-title">Bloque de datos y control de calidad</h2>
             <p class="section-sub">
-              La producción/nivel se extiende más allá del clima. Por eso la producción total y la producción climáticamente explicable
-              son conceptos distintos y se muestran separados.
+              El registro de nivel y la estación climática no comparten el mismo rango temporal.
+              Se separa la producción total observada de la producción con solapamiento climático disponible.
             </p>
           </div>
           <span class="badge ok">Datos reales</span>
@@ -3089,9 +3513,10 @@
         <div class="section-head">
           <div>
             <div class="eyebrow">Formalización matemática</div>
-            <h2 class="section-title">Ecuaciones base del análisis</h2>
+            <h2 class="section-title">La matemática detrás de cada número</h2>
             <p class="section-sub">
-              Las ecuaciones definen la variable dependiente, los estadísticos descriptivos, las pruebas de grupos y el modelo climático.
+              Las ecuaciones definen la variable dependiente, estadísticos descriptivos,
+              pruebas de grupos y el modelo de regresión climática.
             </p>
           </div>
           <span class="badge violet">MathJax</span>
@@ -3104,10 +3529,10 @@
         <div class="section-head">
           <div>
             <div class="eyebrow">Producción observada</div>
-            <h2 class="section-title">Patrones diarios, horarios y climáticos</h2>
+            <h2 class="section-title">Patrones de producción diarios, horarios y por franja climática</h2>
             <p class="section-sub">
-              La producción de AWA05 se analiza en términos de litros por día, litros por hora y grupos horarios.
-              Las gráficas incluyen texto de lectura para evitar visualizaciones decorativas.
+              Producción analizada en litros por día, litros por hora y por franja horaria.
+              Las gráficas incluyen anotaciones contextuales. Pasa el cursor sobre los puntos para ver el detalle.
             </p>
           </div>
           <span class="badge">Series</span>
@@ -3159,11 +3584,11 @@
       <section id="supuestos" class="section">
         <div class="section-head">
           <div>
-            <div class="eyebrow">Rigor inferencial</div>
-            <h2 class="section-title">Pruebas de supuestos estadísticos</h2>
+            <div class="eyebrow">Validación de supuestos</div>
+            <h2 class="section-title">Pruebas de normalidad, estacionariedad y homogeneidad de varianzas</h2>
             <p class="section-sub">
-              Antes de escoger ANOVA, Welch o Kruskal-Wallis se evalúan normalidad, estacionariedad y varianzas.
-              El informe explica qué significa cada p-value.
+              Antes de ejecutar ANOVA, Welch o Kruskal-Wallis se verifican los supuestos estadísticos.
+              Los resultados determinan qué método inferencial corresponde aplicar.
             </p>
           </div>
           <span class="badge warn">Validación</span>
@@ -3192,10 +3617,10 @@
         <div class="section-head">
           <div>
             <div class="eyebrow">Asociación climática</div>
-            <h2 class="section-title">Correlaciones y rezagos con interpretación</h2>
+            <h2 class="section-title">Correlaciones y rezagos entre producción y clima</h2>
             <p class="section-sub">
-              Se reportan Pearson, Spearman, Kendall, correlaciones parciales y rezagos. La lectura prioriza dirección, magnitud,
-              significancia y plausibilidad física.
+              Se reportan Pearson, Spearman, Kendall, correlaciones parciales y rezagos temporales.
+              La interpretación prioriza dirección, magnitud, significancia y plausibilidad física.
             </p>
           </div>
           <span class="badge">ρ / r / τ</span>
@@ -4603,10 +5028,10 @@
 
       const r2 = Number(get(ANALYSIS, 'models.ols_hac.r2', 0));
       setHTML('sim-explain', `
-        <strong>Lectura del escenario:</strong> el modelo estima ${fmt.num(lph, 2)} L/h. Frente al promedio horario del bloque, este escenario equivale a ${fmt.num(ratio, 2)}×. El punto de rocío estimado es ${fmt.num(dew, 1)}°C y la humedad absoluta ${fmt.num(ah, 1)} g/m³. La banda ${fmt.num(low, 1)}–${fmt.num(high, 1)} L/h refleja el error observado del ajuste. R² OLS/HAC=${fmt.num(r2, 3)}.
+        <strong>Aquí está la lectura:</strong> el modelo estima ${fmt.num(lph, 2)} L/h. Frente al promedio horario del bloque, este escenario equivale a ${fmt.num(ratio, 2)}×. El punto de rocío estimado es ${fmt.num(dew, 1)}°C y la humedad absoluta ${fmt.num(ah, 1)} g/m³. La banda ${fmt.num(low, 1)}–${fmt.num(high, 1)} L/h refleja el error observado del ajuste. R² OLS/HAC=${fmt.num(r2, 3)}.
       `);
 
-      updateInsight('Simulador microclimático', `Escenario actual: ${fmt.num(lph, 2)} L/h, índice ${fmt.num(idx, 0)}/100, ${daypart}. La lectura combina coeficientes estadísticos con penalización física por VPD alto y radiación.`, 'Simulador activo');
+      updateInsight('Simulador activo', `Bajo estas condiciones tu sistema produciría ${fmt.num(lph, 2)} L/h. Índice de favorabilidad: ${fmt.num(idx, 0)}/100 (${daypart}). Ajusta humedad o VPD para ver cómo cambia.`, 'En tiempo real');
       renderSimulatorVisuals(input, { lph, low, high, daypart, blockAvg, ratio, quality, dew, ah, idx, penalty });
     }
 
@@ -4698,7 +5123,7 @@
         `La comparación con el bloque B01 indica un desempeño ${ratio >= 1 ? 'superior' : 'inferior'} al promedio observado, en una razón de ${fmt.num(ratio, 2)}×.`,
         `La penalización conjunta por VPD y radiación se estima en ${fmt.num(penalty, 2)} L/h. El ajuste lineal disponible tiene R²=${fmt.num(r2, 3)} y debe leerse como aproximación de escenario.`
       ];
-      setHTML('sim-explain', `<strong>Interpretación del escenario.</strong> ${summary.join(' ')}`);
+      setHTML('sim-explain', `<strong>Lo que ves en este escenario.</strong> ${summary.join(' ')}`);
     }
 
     function applyScenario(name) {
@@ -4779,16 +5204,200 @@
       installSimulatorEvents();
       installNavigationSpy();
       updateSimulator();
+
+      // Attach reveal to dynamically rendered elements
+      setTimeout(() => {
+        if (window.__attachReveal) window.__attachReveal();
+      }, 120);
       updateInsight(
-        'Informe cargado',
+        'Informe listo',
         USING_FALLBACK
-          ? 'No se pudo cargar statistical_analysis.json, así que se activó un respaldo mínimo. Sube el JSON a data/processed para ver el informe completo.'
-          : 'El archivo statistical_analysis.json se cargó correctamente. Haz clic en cualquier tarjeta, fila, ecuación o gráfica para obtener interpretación contextual.',
-        USING_FALLBACK ? 'Modo respaldo' : 'Datos procesados'
+          ? 'No encontramos el archivo de datos. Sube statistical_analysis.json a data/processed y recarga la página.'
+          : 'Los datos de tu bloque están cargados. Explora cada sección — haz clic en cualquier tarjeta, fila o gráfica para leer la interpretación.',
+        USING_FALLBACK ? 'Sin datos' : 'Listo'
       );
     }
 
     window.toggleMobileMenu = toggleMobileMenu;
+
+
+    // ══════════════════════════════════════════════════════════════
+    // MEJORAS V5 — Animaciones, progress bar, range inputs, simulator
+    // ══════════════════════════════════════════════════════════════
+
+    // ── Reading progress bar ──────────────────────────────────────
+    (function () {
+      const bar = document.getElementById('reading-progress');
+      if (!bar) return;
+      function updateProgress() {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docH = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docH > 0 ? (scrollTop / docH) * 100 : 0;
+        bar.style.width = pct + '%';
+      }
+      window.addEventListener('scroll', updateProgress, { passive: true });
+      updateProgress();
+    })();
+
+    // ── IntersectionObserver for scroll-reveal ────────────────────
+    (function () {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+      function attachReveal() {
+        document.querySelectorAll('.section-head, .card, .method-step, .equation-card, .sim-panel, .sim-result-card, .garrafon-panel, .gauge-card, .compare-card, .driver-board, .impact-card, .sim-explain').forEach(el => {
+          if (!el.classList.contains('reveal') && !el.classList.contains('reveal-stagger')) {
+            el.classList.add('reveal');
+            observer.observe(el);
+          }
+        });
+        document.querySelectorAll('.reveal:not(.visible), .reveal-stagger').forEach(el => {
+          observer.observe(el);
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', attachReveal);
+      } else {
+        attachReveal();
+      }
+
+      // Re-attach after dynamic content is rendered
+      window.__attachReveal = attachReveal;
+    })();
+
+    // ── Range input visual fill update ────────────────────────────
+    (function () {
+      function updateRangeFill(input) {
+        const min = parseFloat(input.min) || 0;
+        const max = parseFloat(input.max) || 100;
+        const val = parseFloat(input.value) || 0;
+        const pct = ((val - min) / (max - min)) * 100;
+        input.style.setProperty('--pct', pct + '%');
+      }
+
+      function attachRangeListeners() {
+        document.querySelectorAll('input[type="range"]').forEach(input => {
+          updateRangeFill(input);
+          input.addEventListener('input', () => updateRangeFill(input));
+          input.addEventListener('change', () => updateRangeFill(input));
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', attachRangeListeners);
+      } else {
+        attachRangeListeners();
+      }
+    })();
+
+    // ── Simulator status dot + pop animation ──────────────────────
+    (function () {
+      const origUpdate = typeof window.__simUpdateHooked === 'undefined' ? null : true;
+
+      function hookSimulator() {
+        const dot = document.getElementById('sim-status-dot');
+        const statusText = document.getElementById('sim-status-text');
+        const mainDisplay = document.getElementById('sim-main-display');
+        if (!dot || !statusText) return;
+
+        // Patch updateSimulator to add status update
+        const originalUpdateSim = window.__originalUpdateSimulator;
+        if (!window.__simUpdateHooked) {
+          window.__simUpdateHooked = true;
+
+          // Use MutationObserver on sim-lph to detect changes
+          const lphEl = document.getElementById('sim-lph');
+          if (!lphEl) return;
+
+          let lastVal = '';
+          const lphObs = new MutationObserver(() => {
+            const val = lphEl.textContent;
+            if (val === lastVal) return;
+            lastVal = val;
+
+            // Trigger pop animation
+            if (mainDisplay) {
+              mainDisplay.classList.remove('pop');
+              void mainDisplay.offsetWidth; // reflow
+              mainDisplay.classList.add('pop');
+              mainDisplay.addEventListener('animationend', () => mainDisplay.classList.remove('pop'), { once: true });
+            }
+
+            // Update status indicator based on current index
+            const idxEl = document.getElementById('sim-index');
+            const idxVal = idxEl ? parseInt(idxEl.textContent) : 50;
+
+            if (dot && statusText) {
+              dot.classList.remove('good', 'warn', 'danger');
+              if (idxVal >= 65) {
+                dot.classList.add('good');
+                statusText.textContent = 'Condiciones favorables';
+                statusText.style.color = 'var(--forest)';
+              } else if (idxVal >= 40) {
+                dot.classList.add('warn');
+                statusText.textContent = 'Condiciones moderadas';
+                statusText.style.color = 'var(--amber)';
+              } else {
+                dot.classList.add('danger');
+                statusText.textContent = 'Condiciones restrictivas';
+                statusText.style.color = 'var(--crimson)';
+              }
+            }
+
+            // Re-attach reveal for dynamically added elements
+            if (window.__attachReveal) window.__attachReveal();
+          });
+
+          lphObs.observe(lphEl, { childList: true, characterData: true, subtree: true });
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', hookSimulator);
+      } else {
+        hookSimulator();
+      }
+
+      // Also hook after init
+      const origInit = window.addEventListener;
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(hookSimulator, 500);
+      });
+    })();
+
+    // ── Smooth number counters for KPIs ───────────────────────────
+    (function () {
+      function animateCounter(el, targetText, duration = 900) {
+        const numMatch = targetText.match(/([\d]+\.?[\d]*)/);
+        if (!numMatch) { el.textContent = targetText; return; }
+        
+        const targetNum = parseFloat(numMatch[1]);
+        const prefix = targetText.slice(0, numMatch.index);
+        const suffix = targetText.slice(numMatch.index + numMatch[0].length);
+        const decimals = (numMatch[1].split('.')[1] || '').length;
+        const start = 0;
+        const startTime = performance.now();
+
+        function step(now) {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = start + (targetNum - start) * eased;
+          el.textContent = prefix + current.toFixed(decimals) + suffix;
+          if (progress < 1) requestAnimationFrame(step);
+        }
+
+        requestAnimationFrame(step);
+      }
+
+      window.__animateKPICounter = animateCounter;
+    })();
 
     document.addEventListener('DOMContentLoaded', init);
   </script>
