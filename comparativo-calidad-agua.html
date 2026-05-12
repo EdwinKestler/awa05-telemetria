@@ -3569,5 +3569,27 @@ document.addEventListener('DOMContentLoaded', () => {
   );
 });
 </script>
+
+  <script>
+    /* ── AWA05 Loader dismiss — runs immediately, no dependencies ── */
+    (function () {
+      var DISMISS_MS = 3500;
+      function dismiss() {
+        var el = document.getElementById('awa-loader');
+        if (!el || el.classList.contains('fade-out')) return;
+        el.classList.add('fade-out');
+        setTimeout(function () { if (el) el.style.display = 'none'; }, 800);
+      }
+      // Auto-dismiss
+      setTimeout(dismiss, DISMISS_MS);
+      // Click anywhere dismisses immediately (no delay guard)
+      document.addEventListener('click', dismiss, { once: true, capture: true });
+      document.addEventListener('keydown', dismiss, { once: true, capture: true });
+      document.addEventListener('scroll', dismiss, { once: true, passive: true, capture: true });
+      // Failsafe: if page loads, dismiss after 1s
+      window.addEventListener('load', function() { setTimeout(dismiss, 800); });
+    })();
+  </script>
+
 </body>
 </html>
