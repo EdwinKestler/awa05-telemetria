@@ -1,29 +1,29 @@
 {
-  "actualizado": "2026-05-18 12:40:12",
+  "actualizado": "2026-05-18 12:55:40",
   "kpis": {
     "nivel_l": 2.61,
-    "humedad_pct": 70.0,
-    "temp_c": 25.0,
-    "punto_rocio_c": 19.2,
-    "presion_inhg": 24.965,
-    "viento_kmh": 0.0,
-    "viento_dir_deg": 349.0,
+    "humedad_pct": 73.0,
+    "temp_c": 24.5,
+    "punto_rocio_c": 19.4,
+    "presion_inhg": 24.959,
+    "viento_kmh": 0.4,
+    "viento_dir_deg": 348.0,
     "lluvia_hora_mm": 0.0,
-    "radiacion_solar_wm2": 114.1,
-    "uv": 1.0
+    "radiacion_solar_wm2": 40.2,
+    "uv": 0.0
   },
   "sistema": {
-    "cpu_temp_c": 40.9,
+    "cpu_temp_c": 40.4,
     "voltaje_v": 0.946,
     "ram_uso_pct": 12.0,
     "disco_uso_pct": 10.4,
-    "uptime": "163h 33m",
+    "uptime": "163h 48m",
     "gpu_temp_c": null,
     "freq_cpu_mhz": 1800,
     "throttle_ok": true,
     "throttle_flags": "0x0",
-    "wifi_dbm": -63,
-    "wifi_pct": 74,
+    "wifi_dbm": -64,
+    "wifi_pct": 72,
     "load1": 0.0,
     "load5": 0.0,
     "load15": 0.0,
@@ -1759,7 +1759,8 @@
       "2026-05-18 11:53:37",
       "2026-05-18 12:08:57",
       "2026-05-18 12:24:12",
-      "2026-05-18 12:39:38"
+      "2026-05-18 12:39:38",
+      "2026-05-18 12:55:17"
     ],
     "nivel_l": [
       16.99,
@@ -3390,6 +3391,7 @@
       2.56,
       2.56,
       2.56,
+      2.61,
       2.61,
       2.61
     ],
