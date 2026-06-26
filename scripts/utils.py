@@ -1,29 +1,6 @@
-import json
-import csv
-import logging
-import os
-from datetime import datetime
+from pathlib import Path
+import sys
 
-def cargar_config(ruta):
-    with open(ruta, 'r') as f:
-        return json.load(f)
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-def timestamp_ahora():
-    return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-def guardar_csv(ruta, fila, encabezados=None):
-    archivo_nuevo = not os.path.exists(ruta)
-    with open(ruta, 'a', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=encabezados or fila.keys())
-        if archivo_nuevo:
-            writer.writeheader()
-        writer.writerow(fila)
-
-def configurar_log(nombre, ruta_log):
-    logger = logging.getLogger(nombre)
-    logger.setLevel(logging.INFO)
-    handler = logging.FileHandler(ruta_log)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    return logger
+from awa05.utils import *  # noqa: F401,F403

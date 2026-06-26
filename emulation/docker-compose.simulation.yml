@@ -1,0 +1,13 @@
+services:
+  awa05-simulation:
+    build:
+      context: ..
+      dockerfile: emulation/Dockerfile.simulation
+    image: awa05-phase1-simulation:latest
+    working_dir: /workspace
+    volumes:
+      - ..:/workspace
+    environment:
+      AWA05_DRY_RUN: "true"
+      AWA05_ENABLE_SHUTDOWN: "false"
+    command: ["bash", "emulation/simulation/phase1-check.sh"]

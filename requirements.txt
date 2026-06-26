@@ -1,0 +1,5 @@
+Flask
+PyGithub
+RPi.GPIO
+schedule
+python-dotenv

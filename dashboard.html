@@ -1303,16 +1303,24 @@ function buildFallback() {
 }
 
 // ─── FETCH ─────────────────────────────────────────────────────────────
+const DASHBOARD_DATA_URLS = [
+  'https://raw.githubusercontent.com/geograficaaala/awa05-telemetria/data/data/processed/dashboard_data.json',
+  './data/processed/dashboard_data.json'
+];
+
 async function fetchData() {
-  try {
-    const r = await fetch('./data/processed/dashboard_data.json?t='+Date.now());
-    if (!r.ok) return buildFallback();
-    const d = await r.json();
-    const s = d.series || {};
-    const nivelLabels = s.labels_nivel || s.labels;
-    if (!nivelLabels || !nivelLabels.length) return buildFallback();
-    return d;
-  } catch { return buildFallback(); }
+  for (const url of DASHBOARD_DATA_URLS) {
+    try {
+      const r = await fetch(url + '?t=' + Date.now(), { cache: 'no-store' });
+      if (!r.ok) continue;
+      const d = await r.json();
+      const s = d.series || {};
+      const nivelLabels = s.labels_nivel || s.labels;
+      if (!nivelLabels || !nivelLabels.length) continue;
+      return d;
+    } catch {}
+  }
+  return buildFallback();
 }
 
 // ─── CHART HELPERS ────────────────────────────────────────────────────
@@ -2654,7 +2662,7 @@ async function exportXLSX() {
       ['AWA05 — Exportación de datos crudos'],
       ['Sitio', 'Santa Catarina Palopó, Sololá, Guatemala'],
       ['Generado', new Date().toLocaleString('es-GT')],
-      ['Fuente JSON', 'dashboard_data.json (GitHub Pages)'],
+      ['Fuente JSON', 'dashboard_data.json (rama data; fallback local)'],
       ['Fuente clima', 'Estación WS-2000 vía servidor Flask Pi'],
       ['Fuente nivel', 'Sensor ultrasónico JSN-SR04T'],
       ['Fuente lluvia', 'Ambient Weather API'],
@@ -2761,7 +2769,7 @@ async function exportXLSX() {
       ['Throttling OK',            p?.sistema?.throttle_ok ? 'SÍ' : 'NO', '', 'vcgencmd'],
       ['Throttle flags',           p?.sistema?.throttle_flags,'',    'vcgencmd'],
       ['IP Tailscale',             p?.sistema?.tailscale_ip,  '',    'tailscale'],
-      ['Actualizado',              p?.actualizado,             '',    'dashboard_data.json'],
+      ['Actualizado',              p?.actualizado,             '',    'dashboard_data.json · rama data'],
     ];
     const wsKPIs = XLSX.utils.aoa_to_sheet(kpiRows);
     wsKPIs['!cols'] = [{wch:26},{wch:16},{wch:10},{wch:18}];

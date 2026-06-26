@@ -1,6 +1,6 @@
 {
     "sitio": "AWA05",
-    "frecuencia_muestreo_minutos": 60,
+    "frecuencia_muestreo_minutos": 15,
     "zona_horaria": "America/Guatemala",
     "rutas": {
         "datos_raw": "data/raw/",
@@ -8,8 +8,30 @@
         "backups": "data/backups/",
         "logs": "logs/"
     },
+    "sensor_distancia": {
+        "trig_gpio": 17,
+        "echo_gpio": 18,
+        "altura_total_cm": 72.5,
+        "altura_max_agua_cm": 38.3,
+        "radio_cm": 12.9,
+        "num_muestras": 11,
+        "pausa_muestras_s": 0.06,
+        "timeout_echo_s": 0.04
+    },
     "github": {
         "repo": "",
         "rama": "main"
+    },
+    "scheduler": {
+        "espera_red_minutos": 10,
+        "lectura_intervalo_minutos": 15,
+        "kpi_intervalo_minutos": 15,
+        "watchdog_intervalo_minutos": 5
+    },
+    "watchdog": {
+        "temperatura_critica_c": 75.0,
+        "habilitar_apagado": false,
+        "cooldown_minutos": 30,
+        "espera_apagado_segundos": 10
     }
 }

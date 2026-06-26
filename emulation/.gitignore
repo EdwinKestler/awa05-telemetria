@@ -1,0 +1,12 @@
+# Generated large files - do not commit
+images/
+overlays/
+*.img
+*.img.xz
+*.qcow2
+*.dtb
+kernel/
+
+# Temporary
+*.log
+*~

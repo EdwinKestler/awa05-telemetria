@@ -1,0 +1,5 @@
+data/raw/*.csv binary
+data/processed/*.json binary
+*.png binary
+*.pdf binary
+*.docx binary

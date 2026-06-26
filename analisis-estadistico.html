@@ -4301,7 +4301,14 @@
 
 
   <script>
-    const DATA_URL = 'data/processed/statistical_analysis.json';
+    const DATA_URLS = [
+      'https://raw.githubusercontent.com/geograficaaala/awa05-telemetria/data/data/processed/statistical_analysis.json',
+      'data/processed/statistical_analysis.json'
+    ];
+    const DASHBOARD_DATA_URLS = [
+      'https://raw.githubusercontent.com/geograficaaala/awa05-telemetria/data/data/processed/dashboard_data.json',
+      './data/processed/dashboard_data.json'
+    ];
 
     const FALLBACK_DATA = {
       metadata: {
@@ -4613,15 +4620,18 @@
     }
 
     async function loadAnalysis() {
-      try {
-        const response = await fetch(DATA_URL, { cache: 'no-store' });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        return await response.json();
-      } catch (error) {
-        USING_FALLBACK = true;
-        console.warn('No se pudo cargar statistical_analysis.json; usando respaldo mínimo.', error);
-        return FALLBACK_DATA;
+      for (const url of DATA_URLS) {
+        try {
+          const response = await fetch(url + '?t=' + Date.now(), { cache: 'no-store' });
+          if (!response.ok) continue;
+          return await response.json();
+        } catch (error) {
+          console.warn('No se pudo cargar JSON desde', url, error);
+        }
       }
+      USING_FALLBACK = true;
+      console.warn('No se pudo cargar statistical_analysis.json; usando respaldo mínimo.');
+      return FALLBACK_DATA;
     }
 
     function updateInsight(title, text, meta = 'Elemento interpretado') {
@@ -5724,7 +5734,7 @@
       updateInsight(
         'Informe listo',
         USING_FALLBACK
-          ? 'No encontramos el archivo de datos. Sube statistical_analysis.json a data/processed y recarga la página.'
+          ? 'No encontramos el archivo de datos. Sube statistical_analysis.json a data/processed en la rama data y recarga la página.'
           : 'Los datos de tu bloque están cargados. Explora cada sección — haz clic en cualquier tarjeta, fila o gráfica para leer la interpretación.',
         USING_FALLBACK ? 'Sin datos' : 'Listo'
       );
@@ -5953,7 +5963,11 @@
     if (typeof window.exportXLSX !== 'function') {
       window.exportXLSX = async function() {
         try {
-          var res = await fetch('data/processed/statistical_analysis.json?t=' + Date.now());
+          var res = null;
+          for (var i = 0; i < DATA_URLS.length; i++) {
+            res = await fetch(DATA_URLS[i] + '?t=' + Date.now(), { cache: 'no-store' });
+            if (res.ok) break;
+          }
           if (!res.ok) throw new Error('sin JSON');
           var data = await res.json();
           var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
@@ -5973,8 +5987,12 @@
 
     async function updateSharedHeader() {
       try {
-        var res = await fetch('./data/processed/dashboard_data.json?t=' + Date.now());
-        if (!res.ok) return;
+        var res = null;
+        for (var i = 0; i < DASHBOARD_DATA_URLS.length; i++) {
+          res = await fetch(DASHBOARD_DATA_URLS[i] + '?t=' + Date.now(), { cache: 'no-store' });
+          if (res.ok) break;
+        }
+        if (!res || !res.ok) return;
         var d = await res.json();
         var k = d.kpis || {};
         txt('h-nivel', (k.nivel_l ?? '--') + ' L');

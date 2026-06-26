@@ -1,0 +1,24 @@
+# AWA05 Phase 1 simulation container
+#
+# This is intentionally NOT a Raspberry Pi/QEMU emulator.
+# It runs the project in a clean Python Linux container and validates that the
+# package, config, dry-run upload, data processing, and scheduler-safe units work
+# without requiring Pi hardware.
+
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    AWA05_DRY_RUN=true
+
+WORKDIR /workspace
+
+# Install project dependencies from pyproject.toml.  The RPi.GPIO dependency is
+# guarded there with an ARM-only platform marker, so this x86_64 simulation
+# image does not try to install GPIO bindings.
+COPY pyproject.toml README.md /tmp/awa05-install/
+COPY awa05 /tmp/awa05-install/awa05
+RUN python -m pip install --no-cache-dir -e /tmp/awa05-install
+
+CMD ["bash", "emulation/simulation/phase1-check.sh"]

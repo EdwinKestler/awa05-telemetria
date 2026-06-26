@@ -1,0 +1,44 @@
+version: '3.8'
+
+# AWA05 Emulation - Docker wrapper for QEMU
+#
+# This provides an isolated and reproducible environment
+# that contains QEMU and helper tools to launch the Pi emulation.
+#
+# It does NOT replace the QEMU launch script — it gives you a clean
+# container in which to run prepare-image.sh and launch.sh.
+#
+# Usage:
+#   docker compose -f emulation/docker-compose.yml build
+#   docker compose -f emulation/docker-compose.yml run --rm qemu-rpi bash
+#
+# Inside the container:
+#   cd /app/emulation
+#   ./prepare-image.sh
+#   ./qemu/launch.sh
+
+services:
+  qemu-rpi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: awa05-qemu-rpi:latest
+    container_name: awa05-qemu-rpi
+    privileged: true   # needed for QEMU full system emulation
+    volumes:
+      - ..:/app                 # Mount entire project (read-write for convenience)
+      - ./images:/app/emulation/images
+      - ./overlays:/app/emulation/overlays
+    working_dir: /app/emulation
+    tty: true
+    stdin_open: true
+    # Optional: expose ports from the inner QEMU
+    ports:
+      - "2222:2222"   # SSH to emulated Pi
+      - "7777:7777"   # AWA05 Flask receiver
+    environment:
+      - QEMU_MACHINE=raspi3b
+      - MEMORY=1G
+    cap_add:
+      - SYS_ADMIN
+      - NET_ADMIN

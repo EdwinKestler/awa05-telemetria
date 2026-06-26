@@ -5,3 +5,10 @@ data/raw/peso_raw.csv
 data/raw/*.csv
 data/processed/
 scripts/__pycache__/
+
+# Emulation generated files (large images)
+emulation/images/
+emulation/overlays/
+emulation/*.img
+emulation/*.qcow2
+emulation/kernel/
