@@ -1,6 +1,6 @@
 # Phase 4 Status — Resilience, Safety & Observability
 
-**Status**: Logging foundation slice implemented and validated.
+**Status**: Thermal watchdog state slice implemented and validated.
 **Date**: 2026-06-26
 **Human approval to start**: Granted after Phase 3 scheduler integration review.
 
@@ -263,5 +263,53 @@ Observed result:
 
 ## Human gate
 
-This logging foundation slice is ready for human review. Request human approval
-before proceeding to the next Phase 4 slice.
+This logging foundation slice was reviewed and approved.
+
+## Thermal watchdog state slice
+
+This slice models thermal watchdog outcomes as structured data and connects
+critical temperature results to the state machine.
+
+Implemented:
+
+- `awa05.core.watchdog.ThermalWatchdogResult`
+- `watchdog_termico()` now returns structured thermal status while preserving
+  current print/report/shutdown behavior.
+- Critical temperature results transition `TelemetryNode` into
+  `THERMAL_CRITICAL`.
+- Non-critical watchdog results recover from `THERMAL_CRITICAL` back to
+  `NORMAL`.
+- Watchdog result errors transition to `ERROR` with `context.last_error`.
+- Tests for normal, critical, cooldown, and error watchdog outcomes.
+- Tests for orchestrator thermal critical/recovery/error transitions.
+
+Local validation:
+
+- `python3 -m unittest discover -s tests -v`
+- `python3 -m compileall -q awa05 scripts tests`
+- `git diff --check`
+
+Observed result:
+
+- Unit tests: 60 run; 55 passed; 5 Flask endpoint tests skipped because Flask
+  is not installed in the local shell.
+- Compile check: passed.
+- Diff whitespace check: passed.
+
+Dummy Raspberry Pi validation:
+
+- Repo synced to `/home/sakitron/awa05-telemetria`.
+- `python -m pip install -e .`
+- `python -m unittest discover -s tests -v`
+- `python -m compileall -q awa05 scripts tests`
+
+Observed result:
+
+- Pi unit tests: 60 passed.
+- Flask endpoint tests ran on the Pi and passed.
+- Pi compile check: passed.
+
+## Human gate
+
+This thermal watchdog state slice is ready for human review. Request human
+approval before proceeding to the next Phase 4 slice.

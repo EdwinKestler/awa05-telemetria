@@ -1,12 +1,26 @@
 import os
 import time
+from dataclasses import dataclass
 from datetime import datetime, timedelta
+from typing import Optional
 
 from awa05.drivers.system import SystemMonitor
 from awa05.utils import cargar_config, env_bool, env_float, env_int
 
 
 ULTIMA_ACCION_TERMICA = None
+
+
+@dataclass
+class ThermalWatchdogResult:
+    temperature_c: Optional[float] = None
+    threshold_c: Optional[float] = None
+    critical: bool = False
+    cooldown_active: bool = False
+    shutdown_enabled: bool = False
+    shutdown_executed: bool = False
+    report_uploaded: bool = False
+    error: Optional[str] = None
 
 
 def reset_estado_watchdog():
@@ -60,18 +74,25 @@ def watchdog_termico(leer_temperatura=leer_temperatura_cpu, ejecutar_apagado=Non
 
         params = parametros_watchdog()
         temp = leer_temperatura()
+        result = ThermalWatchdogResult(
+            temperature_c=temp,
+            threshold_c=params["temperatura_critica_c"],
+            shutdown_enabled=params["habilitar_apagado"],
+        )
         print(f"[WATCHDOG] Temperatura CPU: {temp}°C")
         if temp < params["temperatura_critica_c"]:
-            return
+            return result
 
         ahora = datetime.now()
         cooldown = timedelta(minutes=params["cooldown_minutos"])
+        result.critical = True
         if ULTIMA_ACCION_TERMICA and ahora - ULTIMA_ACCION_TERMICA < cooldown:
+            result.cooldown_active = True
             print(
                 "[WATCHDOG] Temperatura crítica ya atendida; "
                 f"cooldown activo por {params['cooldown_minutos']} min."
             )
-            return
+            return result
 
         ULTIMA_ACCION_TERMICA = ahora
         print(
@@ -80,16 +101,20 @@ def watchdog_termico(leer_temperatura=leer_temperatura_cpu, ejecutar_apagado=Non
         )
         generar_dashboard_json()
         subir_dashboard()
+        result.report_uploaded = True
         if not params["habilitar_apagado"]:
             print(
                 "[WATCHDOG] Apagado automático deshabilitado. "
                 "Use AWA05_ENABLE_SHUTDOWN=true solo con aprobación humana."
             )
-            return
+            return result
 
         espera = params["espera_apagado_segundos"]
         print(f"[WATCHDOG] Apagado habilitado; ejecutando en {espera}s...")
         time.sleep(espera)
         ejecutar_apagado("sudo shutdown -h now")
+        result.shutdown_executed = True
+        return result
     except Exception as e:
         print(f"[WATCHDOG] Error leyendo temperatura: {e}")
+        return ThermalWatchdogResult(error=str(e))

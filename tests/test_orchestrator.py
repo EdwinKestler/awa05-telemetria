@@ -1,6 +1,6 @@
 import unittest
 
-from awa05.core import TelemetryNode, TelemetryState
+from awa05.core import TelemetryNode, TelemetryState, ThermalWatchdogResult
 
 
 class TelemetryNodeTests(unittest.TestCase):
@@ -97,6 +97,42 @@ class TelemetryNodeTests(unittest.TestCase):
 
         self.assertEqual(node.current_state, TelemetryState.NORMAL)
         self.assertEqual(calls, ["dashboard", "upload_dashboard", "watchdog"])
+
+    def test_watchdog_critical_enters_thermal_state_and_recovers(self):
+        results = iter(
+            [
+                ThermalWatchdogResult(
+                    temperature_c=80.0,
+                    threshold_c=75.0,
+                    critical=True,
+                ),
+                ThermalWatchdogResult(
+                    temperature_c=60.0,
+                    threshold_c=75.0,
+                    critical=False,
+                ),
+            ]
+        )
+        node = TelemetryNode(read_level=lambda: (10.0, 20.0), watchdog=lambda: next(results))
+        node.start()
+        node.network_ready()
+
+        self.assertTrue(node.run_watchdog_cycle())
+        self.assertEqual(node.current_state, TelemetryState.THERMAL_CRITICAL)
+
+        self.assertTrue(node.run_watchdog_cycle())
+        self.assertEqual(node.current_state, TelemetryState.NORMAL)
+
+    def test_watchdog_result_error_enters_error_state(self):
+        node = TelemetryNode(
+            read_level=lambda: (10.0, 20.0),
+            watchdog=lambda: ThermalWatchdogResult(error="sensor offline"),
+        )
+
+        self.assertFalse(node.run_watchdog_cycle())
+
+        self.assertEqual(node.current_state, TelemetryState.ERROR)
+        self.assertEqual(node.context.last_error, "sensor offline")
 
 
 if __name__ == "__main__":

@@ -102,6 +102,23 @@ class SchedulerTests(unittest.TestCase):
         dormir.assert_not_called()
         ejecutar_apagado.assert_not_called()
 
+    def test_watchdog_devuelve_resultado_no_critico(self):
+        watchdog.reset_estado_watchdog()
+
+        with patch("awa05.core.watchdog.cargar_config", return_value={"watchdog": {}}), \
+             patch.dict(
+                 "os.environ",
+                 {
+                     "AWA05_TEMP_CRITICA_C": "75",
+                 },
+                 clear=False,
+             ):
+            result = scheduler.watchdog_termico(leer_temperatura=lambda: 55.0)
+
+        self.assertFalse(result.critical)
+        self.assertEqual(result.temperature_c, 55.0)
+        self.assertEqual(result.threshold_c, 75.0)
+
     def test_watchdog_respeta_cooldown(self):
         watchdog.reset_estado_watchdog()
 
@@ -117,11 +134,22 @@ class SchedulerTests(unittest.TestCase):
              ), \
              patch("awa05.processing.dashboard.generar_dashboard_json") as generar_dashboard, \
              patch("awa05.upload.github.subir_dashboard") as subir_dashboard:
-            scheduler.watchdog_termico(leer_temperatura=lambda: 80.0)
-            scheduler.watchdog_termico(leer_temperatura=lambda: 80.0)
+            first = scheduler.watchdog_termico(leer_temperatura=lambda: 80.0)
+            second = scheduler.watchdog_termico(leer_temperatura=lambda: 80.0)
 
         generar_dashboard.assert_called_once_with()
         subir_dashboard.assert_called_once_with()
+        self.assertTrue(first.critical)
+        self.assertFalse(first.cooldown_active)
+        self.assertTrue(second.critical)
+        self.assertTrue(second.cooldown_active)
+
+    def test_watchdog_devuelve_error_estructurado(self):
+        result = scheduler.watchdog_termico(
+            leer_temperatura=lambda: (_ for _ in ()).throw(RuntimeError("sin sensor"))
+        )
+
+        self.assertEqual(result.error, "sin sensor")
 
     def test_jobs_delegate_to_shared_node(self):
         node = _FakeNode()

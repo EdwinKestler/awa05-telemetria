@@ -116,7 +116,19 @@ class TelemetryNode:
 
     def run_watchdog_cycle(self):
         try:
-            self.watchdog()
+            result = self.watchdog()
+            error = getattr(result, "error", None)
+            if error:
+                self.context.last_error = error
+                self.transition_to(TelemetryState.ERROR, "watchdog failed")
+                return False
+            if getattr(result, "critical", False):
+                self.transition_to(
+                    TelemetryState.THERMAL_CRITICAL,
+                    "thermal threshold reached",
+                )
+            elif self.current_state == TelemetryState.THERMAL_CRITICAL:
+                self.transition_to(TelemetryState.NORMAL, "thermal recovered")
             return True
         except Exception as exc:
             self.context.last_error = str(exc)

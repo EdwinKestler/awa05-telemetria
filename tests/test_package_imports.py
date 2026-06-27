@@ -37,6 +37,7 @@ class PackageImportTests(unittest.TestCase):
         from scripts.read_weight import leer_peso, leer_peso_simulado
         from scripts.read_ws2000 import WS2000Receiver, iniciar_servidor
         from scripts.scheduler import iniciar_scheduler
+        from awa05.core.watchdog import ThermalWatchdogResult
         from scripts.utils import guardar_csv, ruta_proyecto
 
         self.assertIsNotNone(ConfigPublicacion)
@@ -49,6 +50,7 @@ class PackageImportTests(unittest.TestCase):
         self.assertTrue(callable(leer_peso_simulado))
         self.assertTrue(callable(iniciar_servidor))
         self.assertTrue(callable(iniciar_scheduler))
+        self.assertIsNotNone(ThermalWatchdogResult)
         self.assertTrue(callable(guardar_csv))
         self.assertTrue(callable(ruta_proyecto))
 

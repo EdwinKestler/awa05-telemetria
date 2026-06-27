@@ -5,6 +5,7 @@ from awa05.core.health import node_health, write_health_status
 from awa05.core.logging import configure_logging
 from awa05.core.orchestrator import TelemetryNode
 from awa05.core.states import TelemetryState
+from awa05.core.watchdog import ThermalWatchdogResult
 
 __all__ = [
     "TelemetryContext",
@@ -12,6 +13,7 @@ __all__ = [
     "TelemetryState",
     "AWA05Error",
     "JobResult",
+    "ThermalWatchdogResult",
     "configure_logging",
     "node_health",
     "write_health_status",
