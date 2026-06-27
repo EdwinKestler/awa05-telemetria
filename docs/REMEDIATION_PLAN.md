@@ -2,7 +2,7 @@
 
 **Status**: Phase 0 approved; Phase 1 closed; Phase 2 driver slices complete
 for code/load testing; Phase 3 closed for code/load validation; Phase 4
-structured job-result slice implemented and validated (2026-06-26)
+logging foundation slice implemented and validated (2026-06-26)
 **Scope**: Python scripts, configuration, testing, data/git strategy, architecture, reliability, and maintainability.  
 **Goals**:
 - Stop repository bloat and data pollution on `main`.
@@ -279,10 +279,10 @@ while the existing wall-clock `schedule` loop remains in place.
 ## Phase 4 — Resilience, Safety & Observability
 
 **Priority**: High
-**Current status**: Health/status and WS-2000 receiver hardening slices
-implemented and approved; structured job-result slice implemented and
-validated. `ejecutar_seguro()` now returns a structured `JobResult` while
-preserving current scheduler behavior.
+**Current status**: Health/status, WS-2000 receiver hardening, and structured
+job-result slices implemented and approved; logging foundation slice
+implemented and validated. Runtime logging is centralized with a rotating log
+file while preserving current operator-facing print output.
 
 ### Objectives
 - Replace broad exception swallowing with structured handling.

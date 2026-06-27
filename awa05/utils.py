@@ -64,10 +64,24 @@ def env_int(nombre, default):
 
 
 def ejecutar_seguro(nombre, trabajo):
+    awa05_logger = logging.getLogger("awa05")
+    logger = logging.getLogger("awa05.scheduler")
     from awa05.core.errors import run_safely
 
     resultado = run_safely(nombre, trabajo)
     if resultado.failed:
+        if awa05_logger.handlers:
+            logger.error(
+                "Error en %s: %s: %s",
+                nombre,
+                resultado.error_type,
+                resultado.message,
+                exc_info=(
+                    type(resultado.error),
+                    resultado.error,
+                    resultado.error.__traceback__,
+                ),
+            )
         print(f"[SCHEDULER] Error en {nombre}: {resultado.message}")
     return resultado
 
@@ -84,12 +98,6 @@ def guardar_csv(ruta, fila, encabezados=None):
 
 
 def configurar_log(nombre, ruta_log):
-    ruta_log = ruta_proyecto(ruta_log)
-    ruta_log.parent.mkdir(parents=True, exist_ok=True)
-    logger = logging.getLogger(nombre)
-    logger.setLevel(logging.INFO)
-    handler = logging.FileHandler(ruta_log)
-    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    return logger
+    from awa05.core.logging import configure_logging
+
+    return configure_logging(name=nombre, path=ruta_log)

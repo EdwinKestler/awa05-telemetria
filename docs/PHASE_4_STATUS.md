@@ -1,6 +1,6 @@
 # Phase 4 Status — Resilience, Safety & Observability
 
-**Status**: Structured job-result slice implemented and validated.
+**Status**: Logging foundation slice implemented and validated.
 **Date**: 2026-06-26
 **Human approval to start**: Granted after Phase 3 scheduler integration review.
 
@@ -193,5 +193,75 @@ Observed result:
 
 ## Human gate
 
-This structured job-result slice is ready for human review. Request human
-approval before proceeding to the next Phase 4 slice.
+This structured job-result slice was reviewed and approved.
+
+## Logging foundation slice
+
+This slice adds central logging configuration while preserving current
+operator-facing print output.
+
+Implemented:
+
+- `awa05.core.logging.configure_logging()`
+- Rotating file handler with configurable size and backup count.
+- Optional console handler.
+- Scheduler entrypoint initializes logging.
+- `ejecutar_seguro()` writes scheduler job failures to the AWA05 logger when
+  logging is configured, while preserving the existing print message.
+- Legacy `configurar_log()` delegates to the new logging setup.
+
+Configuration:
+
+```json
+"logging": {
+  "enabled": true,
+  "level": "INFO",
+  "path": "logs/awa05.log",
+  "max_bytes": 1048576,
+  "backup_count": 5
+}
+```
+
+Environment overrides:
+
+- `AWA05_LOG_ENABLED`
+- `AWA05_LOG_LEVEL`
+- `AWA05_LOG_PATH`
+- `AWA05_LOG_MAX_BYTES`
+- `AWA05_LOG_BACKUP_COUNT`
+
+Local validation:
+
+- `python3 -m unittest discover -s tests -v`
+- `python3 -m compileall -q awa05 scripts tests`
+- `git diff --check`
+
+Observed result:
+
+- Unit tests: 56 run; 51 passed; 5 Flask endpoint tests skipped because Flask
+  is not installed in the local shell.
+- Compile check: passed.
+- Diff whitespace check: passed.
+
+Dummy Raspberry Pi validation:
+
+- Repo synced to `/home/sakitron/awa05-telemetria`.
+- `python -m pip install -e .`
+- `python -m unittest discover -s tests -v`
+- `python -m compileall -q awa05 scripts tests`
+- `AWA05_DRY_RUN=true AWA05_SCHEDULER_ESPERA_RED_MINUTOS=0 timeout 30s python scripts/scheduler.py || true`
+- `test -f logs/awa05.log && ls -l logs/awa05.log`
+
+Observed result:
+
+- Pi unit tests: 56 passed.
+- Flask endpoint tests ran on the Pi and passed.
+- Pi compile check: passed.
+- Scheduler smoke created `logs/awa05.log`.
+- Scheduler smoke still reached the expected no-sensor JSN-SR04T warning on
+  the dummy Pi.
+
+## Human gate
+
+This logging foundation slice is ready for human review. Request human approval
+before proceeding to the next Phase 4 slice.

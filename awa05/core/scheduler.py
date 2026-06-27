@@ -123,6 +123,9 @@ def iniciar_scheduler(
 
 def iniciar_nodo():
     from awa05.drivers.ws2000 import iniciar_servidor
+    from awa05.core.logging import configure_logging
+
+    configure_logging()
 
     hilo_flask = threading.Thread(target=iniciar_servidor, daemon=True)
     hilo_flask.start()

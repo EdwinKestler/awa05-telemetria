@@ -37,5 +37,12 @@
     "ws2000": {
         "shared_secret_env": "AWA05_WS2000_SHARED_SECRET",
         "max_content_length_bytes": 8192
+    },
+    "logging": {
+        "enabled": true,
+        "level": "INFO",
+        "path": "logs/awa05.log",
+        "max_bytes": 1048576,
+        "backup_count": 5
     }
 }

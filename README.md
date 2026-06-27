@@ -142,6 +142,22 @@ por defecto; para habilitarlo se requiere `AWA05_ENABLE_SHUTDOWN=true` y debe
 haber aprobación humana previa. Esto no controla ni corta la alimentación de la
 máquina AWA05.
 
+Los logs de runtime se configuran desde `config/settings.json`:
+
+- `logging.enabled`
+- `logging.level`
+- `logging.path`
+- `logging.max_bytes`
+- `logging.backup_count`
+
+También pueden sobreescribirse con:
+
+- `AWA05_LOG_ENABLED`
+- `AWA05_LOG_LEVEL`
+- `AWA05_LOG_PATH`
+- `AWA05_LOG_MAX_BYTES`
+- `AWA05_LOG_BACKUP_COUNT`
+
 ## Verificación local
 
 Las pruebas no requieren GPIO:

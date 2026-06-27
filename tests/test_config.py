@@ -5,6 +5,7 @@ from awa05.config import (
     ConfigError,
     obtener,
     obtener_int,
+    logging_config,
     scheduler_config,
     sensor_distancia_config,
     validar_settings,
@@ -99,6 +100,33 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual(config["shared_secret"], "secreto")
         self.assertEqual(config["shared_secret_env"], "AWA05_TEST_WS_SECRET")
         self.assertEqual(config["max_content_length_bytes"], 2048)
+
+    def test_logging_config_lee_settings_y_overrides(self):
+        settings = settings_base()
+        settings["logging"] = {
+            "enabled": True,
+            "level": "WARNING",
+            "path": "logs/custom.log",
+            "max_bytes": 1000,
+            "backup_count": 2,
+        }
+
+        with patch("awa05.config.cargar_settings", return_value=settings), \
+             patch.dict(
+                 "os.environ",
+                 {
+                     "AWA05_LOG_LEVEL": "ERROR",
+                     "AWA05_LOG_MAX_BYTES": "2048",
+                 },
+                 clear=True,
+             ):
+            config = logging_config()
+
+        self.assertTrue(config["enabled"])
+        self.assertEqual(config["level"], "ERROR")
+        self.assertEqual(config["path"], "logs/custom.log")
+        self.assertEqual(config["max_bytes"], 2048)
+        self.assertEqual(config["backup_count"], 2)
 
     def test_validacion_reporta_config_faltante(self):
         with self.assertRaisesRegex(ConfigError, "sensor_distancia.trig_gpio"):

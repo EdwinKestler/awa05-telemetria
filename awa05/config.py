@@ -1,6 +1,7 @@
 import os
 
 from awa05.utils import cargar_config
+from awa05.utils import env_bool
 from awa05.utils import env_int
 
 
@@ -147,6 +148,32 @@ def ws2000_config():
         "max_content_length_bytes": env_int(
             "AWA05_WS2000_MAX_CONTENT_LENGTH_BYTES",
             obtener_int(settings, "ws2000.max_content_length_bytes", 8192),
+        ),
+    }
+
+
+def logging_config():
+    settings = validar_settings()
+    return {
+        "enabled": env_bool(
+            "AWA05_LOG_ENABLED",
+            bool(obtener(settings, "logging.enabled", True)),
+        ),
+        "level": os.getenv(
+            "AWA05_LOG_LEVEL",
+            str(obtener(settings, "logging.level", "INFO")),
+        ),
+        "path": os.getenv(
+            "AWA05_LOG_PATH",
+            str(obtener(settings, "logging.path", "logs/awa05.log")),
+        ),
+        "max_bytes": env_int(
+            "AWA05_LOG_MAX_BYTES",
+            obtener_int(settings, "logging.max_bytes", 1048576),
+        ),
+        "backup_count": env_int(
+            "AWA05_LOG_BACKUP_COUNT",
+            obtener_int(settings, "logging.backup_count", 5),
         ),
     }
 
