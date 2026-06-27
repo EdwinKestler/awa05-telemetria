@@ -1,3 +1,5 @@
+import os
+
 from awa05.utils import cargar_config
 from awa05.utils import env_int
 
@@ -130,6 +132,22 @@ def sensor_distancia_config():
         "num_muestras": obtener_int(settings, "sensor_distancia.num_muestras", 11),
         "pausa_muestras_s": obtener_float(settings, "sensor_distancia.pausa_muestras_s", 0.06),
         "timeout_echo_s": obtener_float(settings, "sensor_distancia.timeout_echo_s", 0.04),
+    }
+
+
+def ws2000_config():
+    settings = validar_settings()
+    secret_env_var = str(
+        obtener(settings, "ws2000.shared_secret_env", "AWA05_WS2000_SHARED_SECRET")
+        or "AWA05_WS2000_SHARED_SECRET"
+    )
+    return {
+        "shared_secret": os.getenv(secret_env_var, ""),
+        "shared_secret_env": secret_env_var,
+        "max_content_length_bytes": env_int(
+            "AWA05_WS2000_MAX_CONTENT_LENGTH_BYTES",
+            obtener_int(settings, "ws2000.max_content_length_bytes", 8192),
+        ),
     }
 
 

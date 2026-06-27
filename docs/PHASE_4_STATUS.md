@@ -1,13 +1,14 @@
 # Phase 4 Status — Resilience, Safety & Observability
 
-**Status**: First health/status slice implemented and validated.
+**Status**: WS-2000 receiver hardening slice implemented and validated.
 **Date**: 2026-06-26
 **Human approval to start**: Granted after Phase 3 scheduler integration review.
 
-## Scope of this slice
+## Health/status slice
 
-This slice adds a queryable local health/status file without changing upload
-policy, thermal shutdown policy, or field hardware behavior.
+Approved after review. This slice added a queryable local health/status file
+without changing upload policy, thermal shutdown policy, or field hardware
+behavior.
 
 Implemented:
 
@@ -88,3 +89,65 @@ Observed result:
 
 This slice is ready for human review. Request human approval before proceeding
 to the next Phase 4 slice.
+
+## WS-2000 receiver hardening slice
+
+This slice hardens the Flask `/data` receiver while preserving backwards
+compatibility:
+
+- If no shared secret is configured, `/data` keeps accepting existing WS-2000
+  GET/POST payloads.
+- If `AWA05_WS2000_SHARED_SECRET` is set, `/data` requires the token through
+  one of:
+  - `X-AWA05-Token` header
+  - `token` query parameter
+  - `token` form field
+- The token is stripped before payload persistence so it is not written into
+  weather CSV rows.
+- `MAX_CONTENT_LENGTH` is configured from `config/settings.json` and can be
+  overridden with `AWA05_WS2000_MAX_CONTENT_LENGTH_BYTES`.
+
+Configuration:
+
+```json
+"ws2000": {
+  "shared_secret_env": "AWA05_WS2000_SHARED_SECRET",
+  "max_content_length_bytes": 8192
+}
+```
+
+Local validation:
+
+- `python3 -m unittest discover -s tests -v`
+- `python3 -m compileall -q awa05 scripts tests`
+- `git diff --check`
+
+Observed result:
+
+- Unit tests: 50 run; 45 passed; 5 Flask endpoint tests skipped because Flask
+  is not installed in the local shell.
+- Compile check: passed.
+- Diff whitespace check: passed.
+
+Dummy Raspberry Pi validation:
+
+- Repo synced to `/home/sakitron/awa05-telemetria`.
+- `python -m pip install -e .`
+- `python -m unittest discover -s tests -v`
+- `python -m compileall -q awa05 scripts tests`
+
+Observed result:
+
+- Pi unit tests: 50 passed.
+- Flask endpoint tests ran on the Pi and passed, including:
+  - default open GET/POST compatibility
+  - missing/wrong token rejected when a shared secret is configured
+  - correct token accepted through query parameter
+  - correct token accepted through `X-AWA05-Token`
+  - oversized payload rejected with HTTP 413
+- Pi compile check: passed.
+
+## Human gate
+
+This WS-2000 receiver hardening slice is ready for human review. Request human
+approval before proceeding to the next Phase 4 slice.

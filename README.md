@@ -124,6 +124,18 @@ La geometría y parámetros del JSN-SR04T también se leen desde
 - `sensor_distancia.pausa_muestras_s`
 - `sensor_distancia.timeout_echo_s`
 
+El receptor WS-2000 acepta el comportamiento histórico por defecto. Para
+proteger `/data` con un secreto compartido:
+
+```bash
+export AWA05_WS2000_SHARED_SECRET='change-me'
+```
+
+Luego enviar el token con `X-AWA05-Token`, `token` como query parameter o
+`token` como campo de formulario. El límite de payload se configura con
+`ws2000.max_content_length_bytes` y puede sobreescribirse con
+`AWA05_WS2000_MAX_CONTENT_LENGTH_BYTES`.
+
 El watchdog térmico registra temperatura y genera un reporte cuando supera el
 umbral configurado. El apagado automático de la Raspberry Pi está deshabilitado
 por defecto; para habilitarlo se requiere `AWA05_ENABLE_SHUTDOWN=true` y debe

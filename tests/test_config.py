@@ -1,7 +1,15 @@
 import unittest
 from unittest.mock import patch
 
-from awa05.config import ConfigError, obtener, obtener_int, scheduler_config, sensor_distancia_config, validar_settings
+from awa05.config import (
+    ConfigError,
+    obtener,
+    obtener_int,
+    scheduler_config,
+    sensor_distancia_config,
+    validar_settings,
+    ws2000_config,
+)
 
 
 def settings_base():
@@ -69,6 +77,28 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual(config["distancia_min_cm"], 34.2)
         self.assertEqual(config["distancia_max_cm"], 72.5)
         self.assertAlmostEqual(config["area_base_cm2"], 522.7924, places=4)
+
+    def test_ws2000_config_lee_secreto_desde_variable_de_entorno(self):
+        settings = settings_base()
+        settings["ws2000"] = {
+            "shared_secret_env": "AWA05_TEST_WS_SECRET",
+            "max_content_length_bytes": 4096,
+        }
+
+        with patch("awa05.config.cargar_settings", return_value=settings), \
+             patch.dict(
+                 "os.environ",
+                 {
+                     "AWA05_TEST_WS_SECRET": "secreto",
+                     "AWA05_WS2000_MAX_CONTENT_LENGTH_BYTES": "2048",
+                 },
+                 clear=True,
+             ):
+            config = ws2000_config()
+
+        self.assertEqual(config["shared_secret"], "secreto")
+        self.assertEqual(config["shared_secret_env"], "AWA05_TEST_WS_SECRET")
+        self.assertEqual(config["max_content_length_bytes"], 2048)
 
     def test_validacion_reporta_config_faltante(self):
         with self.assertRaisesRegex(ConfigError, "sensor_distancia.trig_gpio"):

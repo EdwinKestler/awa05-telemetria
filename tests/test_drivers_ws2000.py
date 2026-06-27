@@ -68,7 +68,7 @@ class WS2000ReceiverTests(unittest.TestCase):
                 received.append(dict(datos))
                 return {"ok": True}
 
-        app = create_app(Receiver())
+        app = create_app(Receiver(), shared_secret="")
         client = app.test_client()
 
         ok = client.get("/data?tempf=77.0&humidity=65")
@@ -90,13 +90,72 @@ class WS2000ReceiverTests(unittest.TestCase):
                 received.append(dict(datos))
                 return {"ok": True}
 
-        app = create_app(Receiver())
+        app = create_app(Receiver(), shared_secret="")
         client = app.test_client()
 
         response = client.post("/data", data={"tempf": "78.0"})
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(received, [{"tempf": "78.0"}])
+
+    @unittest.skipUnless(HAS_FLASK, "Flask no instalado en este entorno")
+    def test_flask_endpoint_requiere_token_si_hay_secreto_configurado(self):
+        received = []
+
+        class Receiver:
+            def receive(self, datos):
+                received.append(dict(datos))
+                return {"ok": True}
+
+        app = create_app(Receiver(), shared_secret="secreto")
+        client = app.test_client()
+
+        missing = client.get("/data?tempf=77.0")
+        wrong = client.get("/data?tempf=77.0&token=otro")
+        ok = client.get("/data?tempf=77.0&token=secreto")
+
+        self.assertEqual(missing.status_code, 401)
+        self.assertEqual(wrong.status_code, 401)
+        self.assertEqual(ok.status_code, 200)
+        self.assertEqual(received, [{"tempf": "77.0"}])
+
+    @unittest.skipUnless(HAS_FLASK, "Flask no instalado en este entorno")
+    def test_flask_endpoint_acepta_token_por_header(self):
+        received = []
+
+        class Receiver:
+            def receive(self, datos):
+                received.append(dict(datos))
+                return {"ok": True}
+
+        app = create_app(Receiver(), shared_secret="secreto")
+        client = app.test_client()
+
+        response = client.post(
+            "/data",
+            data={"tempf": "78.0"},
+            headers={"X-AWA05-Token": "secreto"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(received, [{"tempf": "78.0"}])
+
+    @unittest.skipUnless(HAS_FLASK, "Flask no instalado en este entorno")
+    def test_flask_endpoint_limita_tamano_de_payload(self):
+        class Receiver:
+            def receive(self, datos):
+                return {"ok": True}
+
+        app = create_app(
+            Receiver(),
+            shared_secret="",
+            max_content_length_bytes=8,
+        )
+        client = app.test_client()
+
+        response = client.post("/data", data={"tempf": "78.0"})
+
+        self.assertEqual(response.status_code, 413)
 
 
 if __name__ == "__main__":

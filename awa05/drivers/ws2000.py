@@ -1,3 +1,6 @@
+from secrets import compare_digest
+
+from awa05.config import ws2000_config
 from awa05.utils import guardar_csv, ruta_proyecto, timestamp_ahora
 
 
@@ -48,15 +51,42 @@ class WS2000Receiver:
         return fila
 
 
-def create_app(receiver=None):
+def _request_token(request):
+    return (
+        request.headers.get("X-AWA05-Token")
+        or request.args.get("token")
+        or request.form.get("token")
+        or ""
+    )
+
+
+def _payload_sin_token(datos):
+    return {clave: valor for clave, valor in dict(datos).items() if clave != "token"}
+
+
+def create_app(receiver=None, shared_secret=None, max_content_length_bytes=None):
     from flask import Flask, request
 
     receiver = receiver or WS2000Receiver()
+    config = ws2000_config()
+    if shared_secret is None:
+        shared_secret = config["shared_secret"]
+    if max_content_length_bytes is None:
+        max_content_length_bytes = config["max_content_length_bytes"]
+
     app = Flask(__name__)
+    if max_content_length_bytes and max_content_length_bytes > 0:
+        app.config["MAX_CONTENT_LENGTH"] = max_content_length_bytes
 
     @app.route(DEFAULT_ROUTE, methods=["POST", "GET"])
     def recibir_datos():
+        if shared_secret and not compare_digest(
+            str(shared_secret),
+            _request_token(request),
+        ):
+            return "No autorizado", 401
         datos = request.args if request.method == "GET" else request.form
+        datos = _payload_sin_token(datos)
         fila = receiver.receive(datos)
         if fila is None:
             return "Sin datos", 400

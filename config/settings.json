@@ -33,5 +33,9 @@
         "habilitar_apagado": false,
         "cooldown_minutos": 30,
         "espera_apagado_segundos": 10
+    },
+    "ws2000": {
+        "shared_secret_env": "AWA05_WS2000_SHARED_SECRET",
+        "max_content_length_bytes": 8192
     }
 }
