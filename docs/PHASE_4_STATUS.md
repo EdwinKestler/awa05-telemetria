@@ -1,6 +1,6 @@
 # Phase 4 Status — Resilience, Safety & Observability
 
-**Status**: GitHub upload retry slice implemented and validated.
+**Status**: Health endpoint slice implemented and validated.
 **Date**: 2026-06-26
 **Human approval to start**: Granted after Phase 3 scheduler integration review.
 
@@ -359,5 +359,55 @@ Observed result:
 
 ## Human gate
 
-This GitHub upload retry slice is ready for human review. Request human
-approval before proceeding to the next Phase 4 slice.
+This GitHub upload retry slice was reviewed and approved.
+
+## Health endpoint slice
+
+This slice exposes the existing scheduler health file through the WS-2000 Flask
+server without changing `/data` ingestion behavior.
+
+Implemented:
+
+- `GET /health` on the existing Flask app.
+- Reads `data/processed/health_status.json`.
+- Returns the health JSON with HTTP 200 when the status file exists.
+- Returns HTTP 503 with a small JSON error when health status has not been
+  generated yet or cannot be read.
+- Uses the same `AWA05_WS2000_SHARED_SECRET` token rule as `/data` when a
+  shared secret is configured.
+- Tests for successful JSON response, missing status file, and token
+  protection.
+
+Local validation:
+
+- `python3 -m unittest discover -s tests -v`
+- `python3 -m compileall -q awa05 scripts tests`
+- `git diff --check`
+
+Observed result:
+
+- Unit tests: 67 run; 59 passed; 8 Flask endpoint tests skipped because Flask
+  is not installed in the local shell.
+- Compile check: passed.
+- Diff whitespace check: passed.
+
+Dummy Raspberry Pi validation:
+
+- Repo synced to `/home/sakitron/awa05-telemetria`.
+- `python -m pip install -e .`
+- `python -m unittest discover -s tests -v`
+- `python -m compileall -q awa05 scripts tests`
+
+Observed result:
+
+- Pi unit tests: 67 passed.
+- Flask endpoint tests ran on the Pi and passed, including:
+  - `/health` returns scheduler health JSON when the file exists.
+  - `/health` returns HTTP 503 when the health file is missing.
+  - `/health` requires the configured shared secret token.
+- Pi compile check: passed.
+
+## Human gate
+
+This health endpoint slice is ready for human review. Request human approval
+before proceeding to the next Phase 4 slice.

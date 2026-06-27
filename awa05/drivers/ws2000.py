@@ -1,10 +1,13 @@
+import json
 from secrets import compare_digest
 
 from awa05.config import ws2000_config
+from awa05.core.health import DEFAULT_HEALTH_PATH
 from awa05.utils import guardar_csv, ruta_proyecto, timestamp_ahora
 
 
 DEFAULT_ROUTE = "/data"
+DEFAULT_HEALTH_ROUTE = "/health"
 DEFAULT_HOST = "0.0.0.0"
 DEFAULT_PORT = 7777
 RUTA_CLIMA = ruta_proyecto("data/raw/clima_raw.csv")
@@ -60,12 +63,32 @@ def _request_token(request):
     )
 
 
+def _autorizado(request, shared_secret):
+    return not shared_secret or compare_digest(
+        str(shared_secret),
+        _request_token(request),
+    )
+
+
 def _payload_sin_token(datos):
     return {clave: valor for clave, valor in dict(datos).items() if clave != "token"}
 
 
-def create_app(receiver=None, shared_secret=None, max_content_length_bytes=None):
-    from flask import Flask, request
+def _leer_health_status(path):
+    health_path = ruta_proyecto(path)
+    try:
+        return json.loads(health_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def create_app(
+    receiver=None,
+    shared_secret=None,
+    max_content_length_bytes=None,
+    health_path=DEFAULT_HEALTH_PATH,
+):
+    from flask import Flask, jsonify, request
 
     receiver = receiver or WS2000Receiver()
     config = ws2000_config()
@@ -80,10 +103,7 @@ def create_app(receiver=None, shared_secret=None, max_content_length_bytes=None)
 
     @app.route(DEFAULT_ROUTE, methods=["POST", "GET"])
     def recibir_datos():
-        if shared_secret and not compare_digest(
-            str(shared_secret),
-            _request_token(request),
-        ):
+        if not _autorizado(request, shared_secret):
             return "No autorizado", 401
         datos = request.args if request.method == "GET" else request.form
         datos = _payload_sin_token(datos)
@@ -95,6 +115,23 @@ def create_app(receiver=None, shared_secret=None, max_content_length_bytes=None)
     @app.route("/", methods=["GET"])
     def estado():
         return "Servidor AWA05 activo", 200
+
+    @app.route(DEFAULT_HEALTH_ROUTE, methods=["GET"])
+    def health():
+        if not _autorizado(request, shared_secret):
+            return "No autorizado", 401
+        payload = _leer_health_status(health_path)
+        if payload is None:
+            return (
+                jsonify(
+                    {
+                        "status": "unavailable",
+                        "detail": "health status not generated yet",
+                    }
+                ),
+                503,
+            )
+        return jsonify(payload), 200
 
     return app
 

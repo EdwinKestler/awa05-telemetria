@@ -136,6 +136,12 @@ Luego enviar el token con `X-AWA05-Token`, `token` como query parameter o
 `ws2000.max_content_length_bytes` y puede sobreescribirse con
 `AWA05_WS2000_MAX_CONTENT_LENGTH_BYTES`.
 
+El mismo servidor Flask expone `/health`, que devuelve el contenido de
+`data/processed/health_status.json` generado por el scheduler. Si el archivo
+todavía no existe o no se puede leer, responde HTTP 503. Si
+`AWA05_WS2000_SHARED_SECRET` está configurado, `/health` exige el mismo token
+que `/data` para no exponer estado operacional sin autorización.
+
 El watchdog térmico registra temperatura y genera un reporte cuando supera el
 umbral configurado. El apagado automático de la Raspberry Pi está deshabilitado
 por defecto; para habilitarlo se requiere `AWA05_ENABLE_SHUTDOWN=true` y debe

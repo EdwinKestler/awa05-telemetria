@@ -1,3 +1,4 @@
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -156,6 +157,73 @@ class WS2000ReceiverTests(unittest.TestCase):
         response = client.post("/data", data={"tempf": "78.0"})
 
         self.assertEqual(response.status_code, 413)
+
+    @unittest.skipUnless(HAS_FLASK, "Flask no instalado en este entorno")
+    def test_health_endpoint_devuelve_status_json(self):
+        class Receiver:
+            def receive(self, datos):
+                return {"ok": True}
+
+        with tempfile.TemporaryDirectory() as temporal:
+            health_path = Path(temporal) / "health_status.json"
+            health_path.write_text(
+                json.dumps(
+                    {
+                        "state": "NORMAL",
+                        "consecutive_sensor_failures": 0,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            app = create_app(Receiver(), shared_secret="", health_path=health_path)
+            client = app.test_client()
+
+            response = client.get("/health")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json["state"], "NORMAL")
+        self.assertEqual(response.json["consecutive_sensor_failures"], 0)
+
+    @unittest.skipUnless(HAS_FLASK, "Flask no instalado en este entorno")
+    def test_health_endpoint_respeta_token_si_hay_secreto_configurado(self):
+        class Receiver:
+            def receive(self, datos):
+                return {"ok": True}
+
+        with tempfile.TemporaryDirectory() as temporal:
+            health_path = Path(temporal) / "health_status.json"
+            health_path.write_text('{"state": "NORMAL"}', encoding="utf-8")
+            app = create_app(
+                Receiver(),
+                shared_secret="secreto",
+                health_path=health_path,
+            )
+            client = app.test_client()
+
+            missing = client.get("/health")
+            wrong = client.get("/health?token=otro")
+            ok = client.get("/health", headers={"X-AWA05-Token": "secreto"})
+
+        self.assertEqual(missing.status_code, 401)
+        self.assertEqual(wrong.status_code, 401)
+        self.assertEqual(ok.status_code, 200)
+        self.assertEqual(ok.json["state"], "NORMAL")
+
+    @unittest.skipUnless(HAS_FLASK, "Flask no instalado en este entorno")
+    def test_health_endpoint_reporta_no_disponible_si_no_existe(self):
+        class Receiver:
+            def receive(self, datos):
+                return {"ok": True}
+
+        with tempfile.TemporaryDirectory() as temporal:
+            health_path = Path(temporal) / "missing-health.json"
+            app = create_app(Receiver(), shared_secret="", health_path=health_path)
+            client = app.test_client()
+
+            response = client.get("/health")
+
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json["status"], "unavailable")
 
 
 if __name__ == "__main__":
