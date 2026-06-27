@@ -1,8 +1,8 @@
 # AWA05 Telemetría — Remediation Plan by Phases
 
 **Status**: Phase 0 approved; Phase 1 closed; Phase 2 driver slices complete
-for code/load testing; Phase 3 closed for code/load validation; Phase 4
-thermal watchdog state slice implemented and validated (2026-06-26)
+for code/load testing; Phase 3 closed for code/load validation; Phase 4 GitHub
+upload retry slice implemented and validated (2026-06-26)
 **Scope**: Python scripts, configuration, testing, data/git strategy, architecture, reliability, and maintainability.  
 **Goals**:
 - Stop repository bloat and data pollution on `main`.
@@ -280,10 +280,10 @@ while the existing wall-clock `schedule` loop remains in place.
 
 **Priority**: High
 **Current status**: Health/status, WS-2000 receiver hardening, structured
-job-result, and logging foundation slices implemented and approved; thermal
-watchdog state slice implemented and validated. Critical thermal watchdog
-outcomes are represented in the state machine without changing the existing
-shutdown policy.
+job-result, logging foundation, and thermal watchdog state slices implemented
+and approved; GitHub upload retry slice implemented and validated. Real GitHub
+branch/file operations are wrapped in bounded retries without changing dry-run
+or branch-safety behavior.
 
 ### Objectives
 - Replace broad exception swallowing with structured handling.

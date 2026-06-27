@@ -1,6 +1,6 @@
 # Phase 4 Status — Resilience, Safety & Observability
 
-**Status**: Thermal watchdog state slice implemented and validated.
+**Status**: GitHub upload retry slice implemented and validated.
 **Date**: 2026-06-26
 **Human approval to start**: Granted after Phase 3 scheduler integration review.
 
@@ -311,5 +311,53 @@ Observed result:
 
 ## Human gate
 
-This thermal watchdog state slice is ready for human review. Request human
+This thermal watchdog state slice was reviewed and approved.
+
+## GitHub upload retry slice
+
+This slice adds bounded retry/backoff around real GitHub branch/file operations
+without changing dry-run behavior, branch-safety policy, or token handling.
+
+Implemented:
+
+- `ConfigPublicacion.upload_retries`
+- `ConfigPublicacion.upload_retry_delay_s`
+- `AWA05_UPLOAD_RETRIES`
+- `AWA05_UPLOAD_RETRY_DELAY_S`
+- `_ejecutar_con_reintentos()` retry helper
+- Retries around real `_asegurar_branch()` calls.
+- Retries around real `_publicar_archivo()` calls.
+- Dry-run uploads still avoid token/client/retry calls.
+- Tests for retry success, retry exhaustion, env config, dry-run behavior, and
+  real dashboard publication path using the retry wrapper.
+
+Local validation:
+
+- `python3 -m unittest discover -s tests -v`
+- `python3 -m compileall -q awa05 scripts tests`
+- `git diff --check`
+
+Observed result:
+
+- Unit tests: 64 run; 59 passed; 5 Flask endpoint tests skipped because Flask
+  is not installed in the local shell.
+- Compile check: passed.
+- Diff whitespace check: passed.
+
+Dummy Raspberry Pi validation:
+
+- Repo synced to `/home/sakitron/awa05-telemetria`.
+- `python -m pip install -e .`
+- `python -m unittest discover -s tests -v`
+- `python -m compileall -q awa05 scripts tests`
+
+Observed result:
+
+- Pi unit tests: 64 passed.
+- Flask endpoint tests ran on the Pi and passed.
+- Pi compile check: passed.
+
+## Human gate
+
+This GitHub upload retry slice is ready for human review. Request human
 approval before proceeding to the next Phase 4 slice.

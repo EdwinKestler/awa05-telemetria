@@ -1,4 +1,5 @@
 import os
+import time
 from dataclasses import dataclass
 
 from awa05.utils import cargar_entorno, ruta_proyecto, timestamp_ahora
@@ -19,6 +20,8 @@ class ConfigPublicacion:
     dry_run: bool = False
     allow_main_data: bool = False
     create_data_branch: bool = True
+    upload_retries: int = 2
+    upload_retry_delay_s: float = 5.0
 
 
 def _bool_env(nombre, default=False):
@@ -26,6 +29,28 @@ def _bool_env(nombre, default=False):
     if valor is None:
         return default
     return valor.strip().lower() in VALORES_TRUE
+
+
+def _int_env(nombre, default):
+    valor = os.getenv(nombre)
+    if valor in (None, ""):
+        return default
+    try:
+        return int(valor)
+    except ValueError:
+        print(f"[CONFIG] Valor inválido para {nombre}: {valor!r}; usando {default}")
+        return default
+
+
+def _float_env(nombre, default):
+    valor = os.getenv(nombre)
+    if valor in (None, ""):
+        return default
+    try:
+        return float(valor)
+    except ValueError:
+        print(f"[CONFIG] Valor inválido para {nombre}: {valor!r}; usando {default}")
+        return default
 
 
 def config_desde_env():
@@ -39,6 +64,8 @@ def config_desde_env():
         dry_run=_bool_env("AWA05_DRY_RUN", False),
         allow_main_data=_bool_env("AWA05_ALLOW_MAIN_DATA", False),
         create_data_branch=_bool_env("AWA05_CREATE_DATA_BRANCH", True),
+        upload_retries=max(0, _int_env("AWA05_UPLOAD_RETRIES", 2)),
+        upload_retry_delay_s=max(0.0, _float_env("AWA05_UPLOAD_RETRY_DELAY_S", 5.0)),
     )
 
 
@@ -101,6 +128,26 @@ def _validar_branch_publicacion(branch, config, tipo):
     return True
 
 
+def _ejecutar_con_reintentos(nombre, operacion, retries, delay_s, sleep_fn=time.sleep):
+    intento = 0
+    while True:
+        try:
+            return operacion()
+        except Exception as exc:
+            if intento >= retries:
+                print(
+                    f"[ERROR] {nombre}: falló después de {intento + 1} intento(s): {exc}"
+                )
+                raise
+            intento += 1
+            print(
+                f"[WARN] {nombre}: intento {intento} falló: {exc}. "
+                f"Reintentando en {delay_s}s..."
+            )
+            if delay_s > 0:
+                sleep_fn(delay_s)
+
+
 def _asegurar_branch(repo, branch, source_branch, crear=True):
     if branch == source_branch:
         return
@@ -151,7 +198,17 @@ def subir_archivos(config=None):
     else:
         token = cargar_token()
         repo = _github_repo(token, config.repo_name)
-        _asegurar_branch(repo, branch, config.app_branch, config.create_data_branch)
+        _ejecutar_con_reintentos(
+            f"asegurar rama {branch}",
+            lambda: _asegurar_branch(
+                repo,
+                branch,
+                config.app_branch,
+                config.create_data_branch,
+            ),
+            config.upload_retries,
+            config.upload_retry_delay_s,
+        )
 
     for ruta_local in ARCHIVOS:
         ruta_absoluta = ruta_proyecto(ruta_local)
@@ -165,7 +222,12 @@ def subir_archivos(config=None):
         if config.dry_run:
             print(f"[DRY-RUN] {ruta_github}: {len(contenido)} bytes -> {branch}")
             continue
-        _publicar_archivo(repo, ruta_github, contenido, branch, mensaje)
+        _ejecutar_con_reintentos(
+            f"publicar {ruta_github}",
+            lambda: _publicar_archivo(repo, ruta_github, contenido, branch, mensaje),
+            config.upload_retries,
+            config.upload_retry_delay_s,
+        )
 
 
 def subir_dashboard(config=None):
@@ -190,13 +252,23 @@ def subir_dashboard(config=None):
 
     token = cargar_token()
     repo = _github_repo(token, config.repo_name)
-    _asegurar_branch(repo, branch, config.app_branch, config.create_data_branch)
-    _publicar_archivo(
-        repo,
-        ruta_local,
-        contenido,
-        branch,
-        f"[sistema] KPIs Pi {timestamp_ahora()}",
+    _ejecutar_con_reintentos(
+        f"asegurar rama {branch}",
+        lambda: _asegurar_branch(repo, branch, config.app_branch, config.create_data_branch),
+        config.upload_retries,
+        config.upload_retry_delay_s,
+    )
+    _ejecutar_con_reintentos(
+        f"publicar {ruta_local}",
+        lambda: _publicar_archivo(
+            repo,
+            ruta_local,
+            contenido,
+            branch,
+            f"[sistema] KPIs Pi {timestamp_ahora()}",
+        ),
+        config.upload_retries,
+        config.upload_retry_delay_s,
     )
 
 

@@ -158,6 +158,12 @@ También pueden sobreescribirse con:
 - `AWA05_LOG_MAX_BYTES`
 - `AWA05_LOG_BACKUP_COUNT`
 
+Las publicaciones a GitHub tienen reintentos acotados para fallas transitorias
+en operaciones reales de rama/archivo. No afectan `AWA05_DRY_RUN=true`.
+
+- `AWA05_UPLOAD_RETRIES` (default: `2`)
+- `AWA05_UPLOAD_RETRY_DELAY_S` (default: `5.0`)
+
 ## Verificación local
 
 Las pruebas no requieren GPIO:
