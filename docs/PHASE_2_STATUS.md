@@ -1,6 +1,7 @@
 # Phase 2 Status — Hardware Abstraction Layer
 
-**Status**: In progress; driver-boundary slices implemented.  
+**Status**: Driver-boundary slices implemented and code/load-tested; field
+hardware validation still pending.
 **Date**: 2026-06-26  
 **Human approval to start**: Granted after Phase 1 real-Pi validation.
 
@@ -122,6 +123,14 @@ Observed result:
 - `throttle_flags 0x50000` was observed on the Pi and should be interpreted
   operationally before deployment closure.
 
+## Phase gate note
+
+Human approval was granted to continue with Phase 3 scaffolding while treating
+Phase 2 as conditionally complete for code/load testing. This does not close
+field validation. The real AWA05 node or a sensor-equipped bench rig still
+needs to validate the physical JSN-SR04T/WS2000/weight-sensor behavior before
+deployment closure.
+
 ## Next recommended Phase 2 task
 
 Add/decide the remaining driver boundaries:
@@ -133,5 +142,6 @@ Add/decide the remaining driver boundaries:
 
 ## Human gate
 
-Phase 2 is not ready for closure yet. The implemented driver slices are safe to
-review and test, but real hardware verification is still pending.
+Phase 2 is ready to support Phase 3 code scaffolding, but not final deployment
+closure. The implemented driver slices are safe to review and test; real
+hardware verification is still pending.

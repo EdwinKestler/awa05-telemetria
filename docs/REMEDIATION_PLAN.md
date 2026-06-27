@@ -1,6 +1,7 @@
 # AWA05 Telemetría — Remediation Plan by Phases
 
-**Status**: Phase 0 approved; Phase 1 closed; Phase 2 in progress (2026-06-26)  
+**Status**: Phase 0 approved; Phase 1 closed; Phase 2 driver slices complete
+for code/load testing; Phase 3 scaffold in progress (2026-06-26)
 **Scope**: Python scripts, configuration, testing, data/git strategy, architecture, reliability, and maintainability.  
 **Goals**:
 - Stop repository bloat and data pollution on `main`.
@@ -228,6 +229,9 @@ and deterministic simulator while preserving old wrapper functions.
 ## Phase 3 — Explicit State Machine & Orchestrator
 
 **Priority**: High (addresses core architectural debt)
+**Current status**: First scaffold slice implemented and validated. The
+state/context/orchestrator modules exist without replacing the live scheduler
+yet.
 
 ### Objectives
 - Replace implicit job scheduling with an explicit finite state machine.
