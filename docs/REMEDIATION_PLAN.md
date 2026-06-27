@@ -1,7 +1,8 @@
 # AWA05 Telemetría — Remediation Plan by Phases
 
 **Status**: Phase 0 approved; Phase 1 closed; Phase 2 driver slices complete
-for code/load testing; Phase 3 scaffold in progress (2026-06-26)
+for code/load testing; Phase 3 closed for code/load validation; Phase 4 health
+slice implemented and validated (2026-06-26)
 **Scope**: Python scripts, configuration, testing, data/git strategy, architecture, reliability, and maintainability.  
 **Goals**:
 - Stop repository bloat and data pollution on `main`.
@@ -229,9 +230,9 @@ and deterministic simulator while preserving old wrapper functions.
 ## Phase 3 — Explicit State Machine & Orchestrator
 
 **Priority**: High (addresses core architectural debt)
-**Current status**: Scheduler integration slice in progress. Runtime scheduler
-jobs now route through the `TelemetryNode` boundary while the existing
-wall-clock `schedule` loop remains in place.
+**Current status**: Closed for code/load validation; approved to proceed to
+Phase 4. Runtime scheduler jobs route through the `TelemetryNode` boundary
+while the existing wall-clock `schedule` loop remains in place.
 
 ### Objectives
 - Replace implicit job scheduling with an explicit finite state machine.
@@ -278,6 +279,9 @@ wall-clock `schedule` loop remains in place.
 ## Phase 4 — Resilience, Safety & Observability
 
 **Priority**: High
+**Current status**: First health/status slice implemented and validated. A
+local `data/processed/health_status.json` file records state and recent runtime
+context without requiring print-output parsing.
 
 ### Objectives
 - Replace broad exception swallowing with structured handling.

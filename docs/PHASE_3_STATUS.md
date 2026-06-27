@@ -1,6 +1,6 @@
 # Phase 3 Status — Explicit State Machine & Orchestrator
 
-**Status**: Scheduler integration slice implemented and validated.
+**Status**: Closed for code/load validation; approved to proceed.
 **Date**: 2026-06-26  
 **Human approval to start**: Granted after Phase 2 code/load-test review.
 
@@ -122,5 +122,6 @@ Observed result:
 
 ## Human gate
 
-This integration slice is ready for human review. Request approval before
-proceeding to the next Phase 3 slice or Phase 4.
+This integration slice was approved after local and dummy-Pi validation. Phase
+4 may proceed. Real field-hardware validation is still outside the dummy-Pi
+scope and remains required before deployment closure.

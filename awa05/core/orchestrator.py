@@ -1,5 +1,6 @@
 from awa05.core.context import StateTransition, TelemetryContext
 from awa05.core.states import TelemetryState
+from awa05.utils import timestamp_ahora
 
 
 def _noop(*args, **kwargs):
@@ -23,6 +24,7 @@ class TelemetryNode:
         watchdog=_noop,
         max_sensor_failures=3,
         context=None,
+        timestamp_fn=timestamp_ahora,
     ):
         self.read_level = read_level
         self.generate_dashboard = generate_dashboard
@@ -31,6 +33,7 @@ class TelemetryNode:
         self.watchdog = watchdog
         self.max_sensor_failures = max_sensor_failures
         self.context = context or TelemetryContext()
+        self.timestamp_fn = timestamp_fn
         self.current_state = TelemetryState.BOOTING
 
     def transition_to(self, new_state, reason):
@@ -69,6 +72,7 @@ class TelemetryNode:
 
         self.context.last_distance_cm = distance_cm
         self.context.last_volume_l = volume_l
+        self.context.last_successful_read_at = self.timestamp_fn()
         self.context.consecutive_sensor_failures = 0
         if self.current_state == TelemetryState.DEGRADED_SENSOR:
             self.transition_to(TelemetryState.NORMAL, "sensor recovered")

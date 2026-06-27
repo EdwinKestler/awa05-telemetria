@@ -16,6 +16,7 @@ class PackageImportTests(unittest.TestCase):
             "awa05.sensors.distance",
             "awa05.telemetry.level",
             "awa05.core.context",
+            "awa05.core.health",
             "awa05.core.orchestrator",
             "awa05.core.scheduler",
             "awa05.core.states",

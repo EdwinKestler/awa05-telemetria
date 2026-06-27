@@ -2,6 +2,7 @@ import threading
 import time
 
 from awa05.config import scheduler_config
+from awa05.core.health import write_health_status
 from awa05.core.orchestrator import TelemetryNode
 from awa05.core.watchdog import watchdog_termico
 from awa05.processing.dashboard import generar_dashboard_json
@@ -20,7 +21,15 @@ def crear_nodo_telemetria():
     )
 
 
-def job_lectura(node=None):
+def publicar_salud(node, health_writer=write_health_status):
+    try:
+        return health_writer(node)
+    except Exception as exc:
+        print(f"[HEALTH] No se pudo escribir health status: {exc}")
+        return None
+
+
+def job_lectura(node=None, health_writer=write_health_status):
     node = node or crear_nodo_telemetria()
     print("[SCHEDULER] Tomando lectura del sensor...")
     resultado = node.run_telemetry_cycle()
@@ -31,10 +40,11 @@ def job_lectura(node=None):
             "[SCHEDULER] Ciclo de lectura sin publicación. "
             f"Estado={node.current_state.value}"
         )
+    publicar_salud(node, health_writer=health_writer)
     return resultado
 
 
-def job_sistema(node=None):
+def job_sistema(node=None, health_writer=write_health_status):
     node = node or crear_nodo_telemetria()
     print("[SCHEDULER] Actualizando KPIs del sistema Pi...")
     resultado = node.run_system_cycle()
@@ -43,18 +53,25 @@ def job_sistema(node=None):
             "[SCHEDULER] Ciclo de sistema falló. "
             f"Estado={node.current_state.value}"
         )
+    publicar_salud(node, health_writer=health_writer)
     return resultado
 
 
-def job_watchdog(node=None):
+def job_watchdog(node=None, health_writer=write_health_status):
     node = node or crear_nodo_telemetria()
     resultado = node.run_watchdog_cycle()
     if not resultado:
         print(f"[SCHEDULER] Watchdog falló. Estado={node.current_state.value}")
+    publicar_salud(node, health_writer=health_writer)
     return resultado
 
 
-def iniciar_scheduler(schedule_module=None, node=None, run_forever=True):
+def iniciar_scheduler(
+    schedule_module=None,
+    node=None,
+    run_forever=True,
+    health_writer=write_health_status,
+):
     schedule = schedule_module
     if schedule is None:
         import schedule as schedule
@@ -70,22 +87,26 @@ def iniciar_scheduler(schedule_module=None, node=None, run_forever=True):
     node.start()
     time.sleep(espera_red * 60)
     node.network_ready()
+    publicar_salud(node, health_writer=health_writer)
     print("[SCHEDULER] Lectura inicial al arrancar...")
-    ejecutar_seguro("lectura inicial", lambda: job_lectura(node))
+    ejecutar_seguro(
+        "lectura inicial",
+        lambda: job_lectura(node, health_writer=health_writer),
+    )
     schedule.every(lectura_intervalo).minutes.do(
         ejecutar_seguro,
         "lectura",
-        lambda: job_lectura(node),
+        lambda: job_lectura(node, health_writer=health_writer),
     )
     schedule.every(kpi_intervalo).minutes.do(
         ejecutar_seguro,
         "KPIs del sistema",
-        lambda: job_sistema(node),
+        lambda: job_sistema(node, health_writer=health_writer),
     )
     schedule.every(watchdog_intervalo).minutes.do(
         ejecutar_seguro,
         "watchdog térmico",
-        lambda: job_watchdog(node),
+        lambda: job_watchdog(node, health_writer=health_writer),
     )
     print(
         "[SCHEDULER] Activo - "

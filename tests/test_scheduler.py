@@ -121,19 +121,23 @@ class SchedulerTests(unittest.TestCase):
 
     def test_jobs_delegate_to_shared_node(self):
         node = _FakeNode()
+        health_calls = []
+        health_writer = lambda node: health_calls.append(node.current_state.value)
 
-        self.assertTrue(core_scheduler.job_lectura(node))
-        self.assertTrue(core_scheduler.job_sistema(node))
-        self.assertTrue(core_scheduler.job_watchdog(node))
+        self.assertTrue(core_scheduler.job_lectura(node, health_writer=health_writer))
+        self.assertTrue(core_scheduler.job_sistema(node, health_writer=health_writer))
+        self.assertTrue(core_scheduler.job_watchdog(node, health_writer=health_writer))
 
         self.assertEqual(
             node.calls,
             ["run_telemetry_cycle", "run_system_cycle", "run_watchdog_cycle"],
         )
+        self.assertEqual(health_calls, ["BOOTING", "BOOTING", "BOOTING"])
 
     def test_iniciar_scheduler_bootstraps_node_and_schedules_node_jobs(self):
         node = _FakeNode()
         schedule_module = _ScheduleModule()
+        health_calls = []
 
         with patch(
             "awa05.core.scheduler.scheduler_config",
@@ -148,6 +152,7 @@ class SchedulerTests(unittest.TestCase):
                 schedule_module=schedule_module,
                 node=node,
                 run_forever=False,
+                health_writer=lambda node: health_calls.append(node.current_state.value),
             )
 
         self.assertIs(resultado, node)
@@ -155,6 +160,7 @@ class SchedulerTests(unittest.TestCase):
             node.calls,
             ["start", "network_ready", "run_telemetry_cycle"],
         )
+        self.assertEqual(health_calls, ["NORMAL", "NORMAL"])
         dormir.assert_called_once_with(0)
         self.assertEqual([call[0] for call in schedule_module.calls], [1, 2, 3])
 

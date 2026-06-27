@@ -15,6 +15,7 @@ class StateTransition:
 class TelemetryContext:
     last_distance_cm: Optional[float] = None
     last_volume_l: Optional[float] = None
+    last_successful_read_at: Optional[str] = None
     consecutive_sensor_failures: int = 0
     last_error: Optional[str] = None
     transitions: List[StateTransition] = field(default_factory=list)
