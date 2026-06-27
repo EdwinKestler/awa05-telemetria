@@ -64,9 +64,13 @@ class SchedulerTests(unittest.TestCase):
         trabajo = Mock(side_effect=RuntimeError("red no disponible"))
 
         with patch("builtins.print") as imprimir:
-            ejecutar_seguro("publicación", trabajo)
+            resultado = ejecutar_seguro("publicación", trabajo)
 
         trabajo.assert_called_once_with()
+        self.assertTrue(resultado.failed)
+        self.assertEqual(resultado.name, "publicación")
+        self.assertEqual(resultado.error_type, "RuntimeError")
+        self.assertEqual(resultado.message, "red no disponible")
         imprimir.assert_called_once_with(
             "[SCHEDULER] Error en publicación: red no disponible"
         )

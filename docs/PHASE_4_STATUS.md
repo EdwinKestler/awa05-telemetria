@@ -1,6 +1,6 @@
 # Phase 4 Status — Resilience, Safety & Observability
 
-**Status**: WS-2000 receiver hardening slice implemented and validated.
+**Status**: Structured job-result slice implemented and validated.
 **Date**: 2026-06-26
 **Human approval to start**: Granted after Phase 3 scheduler integration review.
 
@@ -149,5 +149,49 @@ Observed result:
 
 ## Human gate
 
-This WS-2000 receiver hardening slice is ready for human review. Request human
+This WS-2000 receiver hardening slice was reviewed and approved.
+
+## Structured job-result slice
+
+This slice begins replacing print-only exception swallowing with structured
+results while preserving current scheduler behavior.
+
+Implemented:
+
+- `awa05.core.errors.AWA05Error`
+- `awa05.core.errors.JobResult`
+- `awa05.core.errors.run_safely()`
+- `ejecutar_seguro()` now returns a `JobResult` while still catching exceptions
+  and printing the existing scheduler error message.
+- Tests for successful and failed protected jobs.
+
+Local validation:
+
+- `python3 -m unittest discover -s tests -v`
+- `python3 -m compileall -q awa05 scripts tests`
+- `git diff --check`
+
+Observed result:
+
+- Unit tests: 51 run; 46 passed; 5 Flask endpoint tests skipped because Flask
+  is not installed in the local shell.
+- Compile check: passed.
+- Diff whitespace check: passed.
+
+Dummy Raspberry Pi validation:
+
+- Repo synced to `/home/sakitron/awa05-telemetria`.
+- `python -m pip install -e .`
+- `python -m unittest discover -s tests -v`
+- `python -m compileall -q awa05 scripts tests`
+
+Observed result:
+
+- Pi unit tests: 51 passed.
+- Flask endpoint tests ran on the Pi and passed.
+- Pi compile check: passed.
+
+## Human gate
+
+This structured job-result slice is ready for human review. Request human
 approval before proceeding to the next Phase 4 slice.

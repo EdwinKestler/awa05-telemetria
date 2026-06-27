@@ -64,10 +64,12 @@ def env_int(nombre, default):
 
 
 def ejecutar_seguro(nombre, trabajo):
-    try:
-        trabajo()
-    except Exception as e:
-        print(f"[SCHEDULER] Error en {nombre}: {e}")
+    from awa05.core.errors import run_safely
+
+    resultado = run_safely(nombre, trabajo)
+    if resultado.failed:
+        print(f"[SCHEDULER] Error en {nombre}: {resultado.message}")
+    return resultado
 
 
 def guardar_csv(ruta, fila, encabezados=None):

@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.utils import guardar_csv
+from scripts.utils import ejecutar_seguro, guardar_csv
 
 
 class UtilsTests(unittest.TestCase):
@@ -15,6 +15,17 @@ class UtilsTests(unittest.TestCase):
             lineas = ruta.read_text(encoding="utf-8").splitlines()
             self.assertEqual(lineas[0], "timestamp,valor")
             self.assertEqual(len(lineas), 3)
+
+    def test_ejecutar_seguro_devuelve_resultado_exitoso(self):
+        llamadas = []
+
+        resultado = ejecutar_seguro("demo", lambda: llamadas.append("ok"))
+
+        self.assertTrue(resultado.ok)
+        self.assertFalse(resultado.failed)
+        self.assertEqual(resultado.name, "demo")
+        self.assertIsNone(resultado.error)
+        self.assertEqual(llamadas, ["ok"])
 
 
 if __name__ == "__main__":
