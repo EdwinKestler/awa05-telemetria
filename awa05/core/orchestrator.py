@@ -37,6 +37,10 @@ class TelemetryNode:
         new_state = TelemetryState(new_state)
         if new_state == self.current_state:
             return self.current_state
+        print(
+            "[STATE] "
+            f"{self.current_state.value} -> {new_state.value}: {reason}"
+        )
         self.context.transitions.append(
             StateTransition(
                 from_state=self.current_state,

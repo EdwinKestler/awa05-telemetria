@@ -229,9 +229,9 @@ and deterministic simulator while preserving old wrapper functions.
 ## Phase 3 — Explicit State Machine & Orchestrator
 
 **Priority**: High (addresses core architectural debt)
-**Current status**: First scaffold slice implemented and validated. The
-state/context/orchestrator modules exist without replacing the live scheduler
-yet.
+**Current status**: Scheduler integration slice in progress. Runtime scheduler
+jobs now route through the `TelemetryNode` boundary while the existing
+wall-clock `schedule` loop remains in place.
 
 ### Objectives
 - Replace implicit job scheduling with an explicit finite state machine.

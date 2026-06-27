@@ -1,9 +1,62 @@
 import unittest
+from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
+import awa05.core.scheduler as core_scheduler
 import awa05.core.watchdog as watchdog
 import scripts.scheduler as scheduler
 from scripts.utils import ejecutar_seguro
+
+
+class _ScheduledJob:
+    def __init__(self, interval, calls):
+        self.interval = interval
+        self.calls = calls
+
+    @property
+    def minutes(self):
+        return self
+
+    def do(self, *args):
+        self.calls.append((self.interval, args))
+        return self
+
+
+class _ScheduleModule:
+    def __init__(self):
+        self.calls = []
+
+    def every(self, interval):
+        return _ScheduledJob(interval, self.calls)
+
+    def run_pending(self):
+        return None
+
+
+class _FakeNode:
+    def __init__(self):
+        self.current_state = SimpleNamespace(value="BOOTING")
+        self.calls = []
+
+    def start(self):
+        self.calls.append("start")
+        self.current_state = SimpleNamespace(value="WAITING_NETWORK")
+
+    def network_ready(self):
+        self.calls.append("network_ready")
+        self.current_state = SimpleNamespace(value="NORMAL")
+
+    def run_telemetry_cycle(self):
+        self.calls.append("run_telemetry_cycle")
+        return True
+
+    def run_system_cycle(self):
+        self.calls.append("run_system_cycle")
+        return True
+
+    def run_watchdog_cycle(self):
+        self.calls.append("run_watchdog_cycle")
+        return True
 
 
 class SchedulerTests(unittest.TestCase):
@@ -65,6 +118,45 @@ class SchedulerTests(unittest.TestCase):
 
         generar_dashboard.assert_called_once_with()
         subir_dashboard.assert_called_once_with()
+
+    def test_jobs_delegate_to_shared_node(self):
+        node = _FakeNode()
+
+        self.assertTrue(core_scheduler.job_lectura(node))
+        self.assertTrue(core_scheduler.job_sistema(node))
+        self.assertTrue(core_scheduler.job_watchdog(node))
+
+        self.assertEqual(
+            node.calls,
+            ["run_telemetry_cycle", "run_system_cycle", "run_watchdog_cycle"],
+        )
+
+    def test_iniciar_scheduler_bootstraps_node_and_schedules_node_jobs(self):
+        node = _FakeNode()
+        schedule_module = _ScheduleModule()
+
+        with patch(
+            "awa05.core.scheduler.scheduler_config",
+            return_value={
+                "espera_red_minutos": 0,
+                "lectura_intervalo_minutos": 1,
+                "kpi_intervalo_minutos": 2,
+                "watchdog_intervalo_minutos": 3,
+            },
+        ), patch("awa05.core.scheduler.time.sleep") as dormir:
+            resultado = core_scheduler.iniciar_scheduler(
+                schedule_module=schedule_module,
+                node=node,
+                run_forever=False,
+            )
+
+        self.assertIs(resultado, node)
+        self.assertEqual(
+            node.calls,
+            ["start", "network_ready", "run_telemetry_cycle"],
+        )
+        dormir.assert_called_once_with(0)
+        self.assertEqual([call[0] for call in schedule_module.calls], [1, 2, 3])
 
 
 if __name__ == "__main__":

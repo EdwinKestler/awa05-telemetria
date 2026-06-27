@@ -9,7 +9,7 @@ def tomar_lectura(sensor=None):
     distancia, volumen = leer_nivel(sensor=sensor)
     if distancia is None:
         print("[SKIP] Lectura descartada, sin respuesta del sensor.")
-        return
+        return None, None
     fila = {
         "timestamp": timestamp_ahora(),
         "distancia_cm": distancia,
@@ -17,6 +17,7 @@ def tomar_lectura(sensor=None):
     }
     guardar_csv(RUTA_RAW, fila)
     print(f"[{fila['timestamp']}] Nivel: {distancia} cm | Volumen: {volumen} L")
+    return distancia, volumen
 
 
 if __name__ == "__main__":
