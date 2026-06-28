@@ -1,8 +1,10 @@
 # AWA05 Telemetría — Remediation Plan by Phases
 
 **Status**: Phases 0–4 closed/approved for code-load validation as of
-2026-06-28. Field hardware validation remains required before deployment on the
-real AWA05 node. Next phase: Phase 5 — Testing, CI & Quality.
+2026-06-28. Phase 5 quality-gate foundation implemented and validated for
+review. Field hardware validation remains required before deployment on the
+real AWA05 node. Next phase after Phase 5 approval: Phase 6 — Sustainable Data
+Strategy & Long-term Architecture.
 **Scope**: Python scripts, configuration, testing, data/git strategy, architecture, reliability, and maintainability.  
 **Goals**:
 - Stop repository bloat and data pollution on `main`.
@@ -336,6 +338,10 @@ bounded retries without changing dry-run or branch-safety behavior.
 ## Phase 5 — Testing, CI & Quality
 
 **Priority**: Medium (but should start early)
+**Current status**: Implemented and validated for review. GitHub Actions,
+Makefile quality commands, and quality-contract tests now provide a repeatable
+non-Pi gate for package install, config validation, unit tests, compile checks,
+upload dry-run, and diff whitespace checks.
 
 ### Objectives
 - Achieve reliable automated verification without a Raspberry Pi.
@@ -365,9 +371,13 @@ bounded retries without changing dry-run or branch-safety behavior.
 - `tests/conftest.py` or fixtures for mocks
 
 ### Success Criteria
-- `pytest` (or unittest) runs cleanly in CI.
-- >70% coverage on core modules (drivers + orchestrator).
+- `unittest` runs cleanly in CI.
+- CI validates package install, config, tests, compile, upload dry-run, and
+  whitespace diff checks on Python 3.11 and 3.12.
 - A developer can run the full test suite on Linux/macOS without GPIO.
+- `make check` provides a single local quality gate.
+- Coverage thresholds and optional ruff/mypy remain future hardening once the
+  basic CI gate is stable.
 
 **Effort**: Medium  
 **Dependencies**: Phases 1–3 (to have testable units)
@@ -434,16 +444,16 @@ bounded retries without changing dry-run or branch-safety behavior.
 | 5     | Testing + CI                 | Ongoing         | Regression protection     | Medium      |
 | 6     | Data strategy                | 2–4 weeks       | Long-term sustainability  | P0 (long)   |
 
-Phases 0–4 are closed for code/load validation. Phase 5 is the next planned
-work; Phase 6 remains pending for long-term data architecture.
+Phases 0–4 are closed for code/load validation. Phase 5 has a quality-gate
+foundation implemented for review. Phase 6 remains pending for long-term data
+architecture.
 
 ---
 
 ## How to Execute
 
-1. Start **Phase 5 — Testing, CI & Quality**.
-2. Add CI and repeatable developer commands before expanding further
-   architecture work.
+1. Review/approve **Phase 5 — Testing, CI & Quality**.
+2. Start **Phase 6 — Sustainable Data Strategy & Long-term Architecture**.
 3. Keep the original `scripts/` entry points working as thin shims during
    transition.
 4. Use the dummy Raspberry Pi only for code/load testing; use real AWA05
@@ -467,5 +477,5 @@ This plan systematically eliminates each of them.
 
 ---
 
-**Next step recommendation**: Begin Phase 5 by adding CI, repeatable local
-quality commands, and coverage around the existing package modules.
+**Next step recommendation**: Review the Phase 5 quality gate, then begin Phase
+6 data strategy work.

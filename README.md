@@ -190,3 +190,18 @@ Las pruebas no requieren GPIO:
 python3 -m unittest discover -s tests -v
 python3 -m compileall -q awa05 scripts tests
 ```
+
+También hay comandos repetibles de Fase 5:
+
+```bash
+make check
+make test
+make compile
+make upload-dry-run
+make run-simulation
+```
+
+`make check` ejecuta validación de configuración, pruebas unitarias,
+`compileall`, dry-run de publicación y `git diff --check`. La verificación en
+GitHub Actions usa la misma ruta base sobre Python 3.11 y 3.12 sin requerir
+GPIO ni sensores conectados.
