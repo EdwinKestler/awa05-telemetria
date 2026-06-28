@@ -97,6 +97,8 @@ class TelemetryNode:
             self.transition_to(previous_state, "telemetry published")
             return True
         except Exception as exc:
+            # Intentional state-machine boundary: unexpected job errors are
+            # converted into ERROR state and surfaced through context.last_error.
             self.context.last_error = str(exc)
             self.transition_to(TelemetryState.ERROR, "telemetry cycle failed")
             return False
@@ -110,6 +112,7 @@ class TelemetryNode:
             self.transition_to(previous_state, "system dashboard published")
             return True
         except Exception as exc:
+            # Intentional state-machine boundary; see run_telemetry_cycle().
             self.context.last_error = str(exc)
             self.transition_to(TelemetryState.ERROR, "system cycle failed")
             return False
@@ -131,6 +134,8 @@ class TelemetryNode:
                 self.transition_to(TelemetryState.NORMAL, "thermal recovered")
             return True
         except Exception as exc:
+            # Intentional state-machine boundary; watchdog result errors are
+            # also mapped to ERROR state above.
             self.context.last_error = str(exc)
             self.transition_to(TelemetryState.ERROR, "watchdog failed")
             return False

@@ -1,7 +1,7 @@
 # Phase 2 Status — Hardware Abstraction Layer
 
-**Status**: Driver-boundary slices implemented and code/load-tested; field
-hardware validation still pending.
+**Status**: Closed for code/load validation and approved; field hardware
+validation remains a deployment prerequisite.
 **Date**: 2026-06-26  
 **Human approval to start**: Granted after Phase 1 real-Pi validation.
 
@@ -125,23 +125,12 @@ Observed result:
 
 ## Phase gate note
 
-Human approval was granted to continue with Phase 3 scaffolding while treating
-Phase 2 as conditionally complete for code/load testing. This does not close
-field validation. The real AWA05 node or a sensor-equipped bench rig still
-needs to validate the physical JSN-SR04T/WS2000/weight-sensor behavior before
-deployment closure.
-
-## Next recommended Phase 2 task
-
-Add/decide the remaining driver boundaries:
-
-1. Run driver checks on real AWA05 hardware or a sensor-equipped bench rig.
-2. Review Flask receiver hardening needs for later security phase.
-3. Request human review on whether Phase 2 can close or should add more driver
-   abstractions first.
+Human approval was granted to close Phase 2 for code/load validation. The real
+AWA05 node or a sensor-equipped bench rig still needs to validate the physical
+JSN-SR04T/WS2000/weight-sensor behavior before field deployment closure.
 
 ## Human gate
 
-Phase 2 is ready to support Phase 3 code scaffolding, but not final deployment
-closure. The implemented driver slices are safe to review and test; real
-hardware verification is still pending.
+Phase 2 is closed for code/load validation. It is approved as the driver
+foundation used by Phases 3 and 4. Real hardware verification remains an
+operational deployment gate, not a blocker for code remediation Phases 3–4.

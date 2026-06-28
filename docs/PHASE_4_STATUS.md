@@ -1,8 +1,9 @@
 # Phase 4 Status — Resilience, Safety & Observability
 
-**Status**: Health endpoint slice implemented and validated.
-**Date**: 2026-06-26
+**Status**: Closed and approved for code/load validation.
+**Date**: 2026-06-28
 **Human approval to start**: Granted after Phase 3 scheduler integration review.
+**Human approval to close**: Granted for all Phase 4 work completed to date.
 
 ## Health/status slice
 
@@ -87,8 +88,7 @@ Observed result:
 
 ## Human gate
 
-This slice is ready for human review. Request human approval before proceeding
-to the next Phase 4 slice.
+This health/status file slice was reviewed and approved.
 
 ## WS-2000 receiver hardening slice
 
@@ -409,5 +409,75 @@ Observed result:
 
 ## Human gate
 
-This health endpoint slice is ready for human review. Request human approval
-before proceeding to the next Phase 4 slice.
+This health endpoint slice was reviewed and approved.
+
+## Complete Phase 4 closeout
+
+After approval to finish Phase 4 as one complete phase rather than by remaining
+slices, the following final hardening was added:
+
+- Configurable level-sensor read retries:
+  - `sensor_retry.max_attempts`
+  - `sensor_retry.delay_s`
+  - `AWA05_SENSOR_READ_MAX_ATTEMPTS`
+  - `AWA05_SENSOR_READ_RETRY_DELAY_S`
+- Sensor retries handle `(None, None)` reads and `RuntimeError` failures without
+  fabricating telemetry.
+- WS-2000 known-field validation now rejects non-numeric or out-of-range values
+  with HTTP 400 before CSV persistence.
+- WS-2000 validation can be disabled only through explicit configuration:
+  - `ws2000.validate_numeric_ranges`
+  - `AWA05_WS2000_VALIDATE_NUMERIC_RANGES`
+- System metric collection now catches explicit OS/subprocess/parse error types
+  instead of broad silent exceptions.
+- Remaining broad catches in scheduler/orchestrator/upload/watchdog boundaries
+  are documented as intentional Phase 4 boundaries because they convert failures
+  into structured state, `JobResult`, retry exhaustion, or
+  `ThermalWatchdogResult(error=...)`.
+
+Final local validation:
+
+- `python3 -m unittest discover -s tests -v`
+- `python3 -m compileall -q awa05 scripts tests`
+- `git diff --check`
+
+Observed result:
+
+- Unit tests: 74 run; 65 passed; 9 Flask endpoint tests skipped because Flask
+  is not installed in the local shell.
+- Compile check: passed.
+- Diff whitespace check: passed.
+
+Final dummy Raspberry Pi validation:
+
+- Repo synced to `/home/sakitron/awa05-telemetria`.
+- `python -m pip install -e .`
+- `python -m unittest discover -s tests -v`
+- `python -m compileall -q awa05 scripts tests`
+- `AWA05_DRY_RUN=true AWA05_SCHEDULER_ESPERA_RED_MINUTOS=0 AWA05_SENSOR_READ_RETRY_DELAY_S=0 timeout 30s python scripts/scheduler.py || true`
+- `python -m json.tool data/processed/health_status.json`
+
+Observed result:
+
+- Pi unit tests: 74 passed.
+- Flask endpoint tests ran on the Pi and passed, including `/data`, `/health`,
+  token, payload-size, and invalid-payload checks.
+- Pi compile check: passed.
+- Scheduler smoke generated `data/processed/health_status.json`.
+- Scheduler smoke showed expected no-sensor retries on the dummy Pi:
+  - `Sin respuesta JSN-SR04T — verificar TRIG(GPIO17)/ECHO(GPIO18) y 5V.`
+  - `[SENSOR] Lectura de nivel falló; reintento 2/2 en 0.0s.`
+- Health JSON captured:
+  - `state: NORMAL`
+  - `consecutive_sensor_failures: 1`
+  - `last_distance_cm: null`
+  - `last_volume_l: null`
+  - boot/network transitions only
+
+## Phase 4 closure
+
+Phase 4 is closed and approved for code/load validation. The remaining
+field-hardware validation is still a deployment prerequisite because the dummy
+Raspberry Pi has no AWA05 sensors attached.
+
+Next phase: Phase 5 — Testing, CI & Quality.

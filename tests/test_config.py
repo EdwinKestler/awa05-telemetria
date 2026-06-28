@@ -8,6 +8,7 @@ from awa05.config import (
     logging_config,
     scheduler_config,
     sensor_distancia_config,
+    sensor_retry_config,
     validar_settings,
     ws2000_config,
 )
@@ -25,6 +26,10 @@ def settings_base():
             "num_muestras": 11,
             "pausa_muestras_s": 0.06,
             "timeout_echo_s": 0.04,
+        },
+        "sensor_retry": {
+            "max_attempts": 2,
+            "delay_s": 1.0,
         },
     }
 
@@ -84,6 +89,7 @@ class ConfigTests(unittest.TestCase):
         settings["ws2000"] = {
             "shared_secret_env": "AWA05_TEST_WS_SECRET",
             "max_content_length_bytes": 4096,
+            "validate_numeric_ranges": True,
         }
 
         with patch("awa05.config.cargar_settings", return_value=settings), \
@@ -92,6 +98,7 @@ class ConfigTests(unittest.TestCase):
                  {
                      "AWA05_TEST_WS_SECRET": "secreto",
                      "AWA05_WS2000_MAX_CONTENT_LENGTH_BYTES": "2048",
+                     "AWA05_WS2000_VALIDATE_NUMERIC_RANGES": "false",
                  },
                  clear=True,
              ):
@@ -100,6 +107,24 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual(config["shared_secret"], "secreto")
         self.assertEqual(config["shared_secret_env"], "AWA05_TEST_WS_SECRET")
         self.assertEqual(config["max_content_length_bytes"], 2048)
+        self.assertFalse(config["validate_numeric_ranges"])
+
+    def test_sensor_retry_config_lee_settings_y_overrides(self):
+        settings = settings_base()
+
+        with patch("awa05.config.cargar_settings", return_value=settings), \
+             patch.dict(
+                 "os.environ",
+                 {
+                     "AWA05_SENSOR_READ_MAX_ATTEMPTS": "4",
+                     "AWA05_SENSOR_READ_RETRY_DELAY_S": "0.25",
+                 },
+                 clear=True,
+             ):
+            config = sensor_retry_config()
+
+        self.assertEqual(config["max_attempts"], 4)
+        self.assertEqual(config["delay_s"], 0.25)
 
     def test_logging_config_lee_settings_y_overrides(self):
         settings = settings_base()

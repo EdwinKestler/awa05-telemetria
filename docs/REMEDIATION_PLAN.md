@@ -1,9 +1,8 @@
 # AWA05 Telemetría — Remediation Plan by Phases
 
-**Status**: Phase 0 approved; Phase 1 closed; Phase 2 driver slices complete
-for code/load testing; Phase 3 closed for code/load validation; Phase 4 GitHub
-upload retry slice approved; Phase 4 health endpoint slice implemented and
-validated for review (2026-06-26)
+**Status**: Phases 0–4 closed/approved for code-load validation as of
+2026-06-28. Field hardware validation remains required before deployment on the
+real AWA05 node. Next phase: Phase 5 — Testing, CI & Quality.
 **Scope**: Python scripts, configuration, testing, data/git strategy, architecture, reliability, and maintainability.  
 **Goals**:
 - Stop repository bloat and data pollution on `main`.
@@ -49,7 +48,7 @@ Minimum checks after every code phase:
 
 ```bash
 python3 -m unittest discover -s tests -v
-python3 -m compileall -q scripts tests
+python3 -m compileall -q awa05 scripts tests
 git diff --check
 ```
 
@@ -187,8 +186,9 @@ while legacy `scripts/` entry points remain as compatibility shims.
 ## Phase 2 — Hardware Abstraction Layer (Drivers)
 
 **Priority**: High (foundational for OOP and reliability)
-**Status**: In progress. First slice adds a class-based distance sensor driver
-and deterministic simulator while preserving old wrapper functions.
+**Status**: Closed for code/load validation and approved. Driver boundaries are
+implemented for distance, system metrics, WS-2000 ingestion, and inactive
+weight-sensor behavior. Physical sensor validation remains a deployment gate.
 
 ### Objectives
 - Encapsulate all hardware access behind classes.
@@ -231,9 +231,9 @@ and deterministic simulator while preserving old wrapper functions.
 ## Phase 3 — Explicit State Machine & Orchestrator
 
 **Priority**: High (addresses core architectural debt)
-**Current status**: Closed for code/load validation; approved to proceed to
-Phase 4. Runtime scheduler jobs route through the `TelemetryNode` boundary
-while the existing wall-clock `schedule` loop remains in place.
+**Current status**: Closed for code/load validation and approved. Runtime
+scheduler jobs route through the `TelemetryNode` boundary while the existing
+wall-clock `schedule` loop remains in place.
 
 ### Objectives
 - Replace implicit job scheduling with an explicit finite state machine.
@@ -280,12 +280,12 @@ while the existing wall-clock `schedule` loop remains in place.
 ## Phase 4 — Resilience, Safety & Observability
 
 **Priority**: High
-**Current status**: Health/status, WS-2000 receiver hardening, structured
-job-result, logging foundation, thermal watchdog state, and GitHub upload retry
-slices implemented and approved. The health endpoint slice is implemented and
-validated for review. Real GitHub branch/file operations are wrapped in bounded
-retries without changing dry-run or branch-safety behavior, and the WS-2000
-Flask app now exposes the scheduler health file through `/health`.
+**Current status**: Closed for code/load validation and approved. Health/status,
+WS-2000 receiver hardening, structured job results, logging foundation, thermal
+watchdog state, GitHub upload retries, `/health`, sensor read retries,
+WS-2000 numeric/range validation, and explicit error-boundary documentation are
+implemented and validated. Real GitHub branch/file operations are wrapped in
+bounded retries without changing dry-run or branch-safety behavior.
 
 ### Objectives
 - Replace broad exception swallowing with structured handling.
@@ -320,9 +320,13 @@ Flask app now exposes the scheduler health file through `/health`.
 - Logging configuration
 
 ### Success Criteria
-- No bare `except:` left in core paths.
+- No bare `except:` remains; remaining broad `except Exception` blocks are
+  intentional scheduler/orchestrator/upload/watchdog boundaries that convert
+  failures to structured state/results or retry exhaustion.
 - Structured logs written to disk with rotation.
 - Health status is queryable without parsing print output.
+- Sensor reads have bounded retries/backoff.
+- WS-2000 known-field validation rejects invalid payloads before persistence.
 
 **Effort**: Medium  
 **Dependencies**: Phase 3 (or can start in parallel with state machine work)
@@ -430,17 +434,21 @@ Flask app now exposes the scheduler health file through `/health`.
 | 5     | Testing + CI                 | Ongoing         | Regression protection     | Medium      |
 | 6     | Data strategy                | 2–4 weeks       | Long-term sustainability  | P0 (long)   |
 
-Phases 0–2 can and should be started immediately. Phases 3+ can overlap once foundations are in place.
+Phases 0–4 are closed for code/load validation. Phase 5 is the next planned
+work; Phase 6 remains pending for long-term data architecture.
 
 ---
 
 ## How to Execute
 
-1. Start with **Phase 0** items this week (data branch flag + watchdog safety).
-2. Create a feature branch per phase or major component (`feat/package-structure`, `feat/distance-driver`, etc.).
-3. Keep the original `scripts/` entry points working as thin shims during transition.
-4. Update the running Pi only after tests pass and simulation mode works.
-5. Re-evaluate the plan after Phase 2 — the state machine design may reveal further simplifications.
+1. Start **Phase 5 — Testing, CI & Quality**.
+2. Add CI and repeatable developer commands before expanding further
+   architecture work.
+3. Keep the original `scripts/` entry points working as thin shims during
+   transition.
+4. Use the dummy Raspberry Pi only for code/load testing; use real AWA05
+   hardware or a sensor-equipped bench rig for field validation.
+5. Defer long-term storage/dashboard architecture decisions to Phase 6.
 
 ---
 
@@ -459,4 +467,5 @@ This plan systematically eliminates each of them.
 
 ---
 
-**Next step recommendation**: Approve Phase 0 + Phase 1 scope, then begin implementation on a dedicated branch.
+**Next step recommendation**: Begin Phase 5 by adding CI, repeatable local
+quality commands, and coverage around the existing package modules.

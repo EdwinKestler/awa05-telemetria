@@ -134,6 +134,9 @@ def _ejecutar_con_reintentos(nombre, operacion, retries, delay_s, sleep_fn=time.
         try:
             return operacion()
         except Exception as exc:
+            # Intentional retry boundary: PyGithub and network layers can raise
+            # several exception families, so retry policy is applied here and
+            # exhaustion is re-raised to the scheduler/state-machine layer.
             if intento >= retries:
                 print(
                     f"[ERROR] {nombre}: falló después de {intento + 1} intento(s): {exc}"
@@ -154,6 +157,8 @@ def _asegurar_branch(repo, branch, source_branch, crear=True):
     try:
         repo.get_branch(branch)
     except Exception as e:
+        # PyGithub raises provider-specific exceptions for missing branches;
+        # only 404/not-found is handled here, everything else propagates.
         if not _es_no_encontrado(e):
             raise
         if not crear:
@@ -175,6 +180,8 @@ def _publicar_archivo(repo, ruta_github, contenido, branch, mensaje):
         )
         print(f"[OK] Actualizado en {branch}: {ruta_github}")
     except Exception as e:
+        # PyGithub uses 404/not-found to signal first publish. Non-404 errors
+        # propagate into the retry boundary.
         if not _es_no_encontrado(e):
             raise
         repo.create_file(

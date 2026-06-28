@@ -1,6 +1,6 @@
 # Phase 3 Status — Explicit State Machine & Orchestrator
 
-**Status**: Closed for code/load validation; approved to proceed.
+**Status**: Closed for code/load validation and approved.
 **Date**: 2026-06-26  
 **Human approval to start**: Granted after Phase 2 code/load-test review.
 
@@ -122,6 +122,7 @@ Observed result:
 
 ## Human gate
 
-This integration slice was approved after local and dummy-Pi validation. Phase
-4 may proceed. Real field-hardware validation is still outside the dummy-Pi
-scope and remains required before deployment closure.
+Phase 3 is closed. The integration slice was approved after local and dummy-Pi
+validation, and Phase 4 work was approved on top of this state-machine
+boundary. Real field-hardware validation is still outside the dummy-Pi scope
+and remains required before deployment closure.

@@ -2,6 +2,7 @@ import json
 from secrets import compare_digest
 
 from awa05.config import ws2000_config
+from awa05.core.errors import AWA05Error
 from awa05.core.health import DEFAULT_HEALTH_PATH
 from awa05.utils import guardar_csv, ruta_proyecto, timestamp_ahora
 
@@ -11,6 +12,10 @@ DEFAULT_HEALTH_ROUTE = "/health"
 DEFAULT_HOST = "0.0.0.0"
 DEFAULT_PORT = 7777
 RUTA_CLIMA = ruta_proyecto("data/raw/clima_raw.csv")
+
+
+class InvalidWS2000Payload(AWA05Error):
+    """Raised when a WS-2000 payload contains invalid known field values."""
 
 
 class WS2000Receiver:
@@ -28,10 +33,50 @@ class WS2000Receiver:
         "uv": "UV",
     }
 
-    def __init__(self, csv_path=None, guardar=guardar_csv, timestamp_fn=timestamp_ahora):
+    FIELD_RANGES = {
+        "tempf": (-60.0, 160.0),
+        "humidity": (0.0, 100.0),
+        "dewptf": (-80.0, 160.0),
+        "baromin": (20.0, 35.0),
+        "windspeedmph": (0.0, 250.0),
+        "winddir": (0.0, 360.0),
+        "rainin": (0.0, 50.0),
+        "solarradiation": (0.0, 2000.0),
+        "UV": (0.0, 20.0),
+    }
+
+    def __init__(
+        self,
+        csv_path=None,
+        guardar=guardar_csv,
+        timestamp_fn=timestamp_ahora,
+        validate_numeric_ranges=True,
+    ):
         self.csv_path = csv_path or RUTA_CLIMA
         self.guardar = guardar
         self.timestamp_fn = timestamp_fn
+        self.validate_numeric_ranges = validate_numeric_ranges
+
+    def validar(self, datos):
+        if not self.validate_numeric_ranges:
+            return True
+
+        for campo, (minimo, maximo) in self.FIELD_RANGES.items():
+            valor = datos.get(campo)
+            if valor in (None, ""):
+                continue
+            try:
+                numero = float(valor)
+            except (TypeError, ValueError) as exc:
+                raise InvalidWS2000Payload(
+                    f"Campo {campo} debe ser numérico: {valor!r}"
+                ) from exc
+            if numero < minimo or numero > maximo:
+                raise InvalidWS2000Payload(
+                    f"Campo {campo} fuera de rango: {numero} "
+                    f"(esperado {minimo}..{maximo})"
+                )
+        return True
 
     def normalizar(self, datos):
         return {
@@ -45,6 +90,7 @@ class WS2000Receiver:
     def receive(self, datos):
         if not datos:
             return None
+        self.validar(datos)
         fila = self.normalizar(datos)
         self.guardar(self.csv_path, fila)
         print(
@@ -90,8 +136,10 @@ def create_app(
 ):
     from flask import Flask, jsonify, request
 
-    receiver = receiver or WS2000Receiver()
     config = ws2000_config()
+    receiver = receiver or WS2000Receiver(
+        validate_numeric_ranges=config["validate_numeric_ranges"],
+    )
     if shared_secret is None:
         shared_secret = config["shared_secret"]
     if max_content_length_bytes is None:
@@ -107,7 +155,10 @@ def create_app(
             return "No autorizado", 401
         datos = request.args if request.method == "GET" else request.form
         datos = _payload_sin_token(datos)
-        fila = receiver.receive(datos)
+        try:
+            fila = receiver.receive(datos)
+        except InvalidWS2000Payload as exc:
+            return jsonify({"status": "invalid", "detail": str(exc)}), 400
         if fila is None:
             return "Sin datos", 400
         return "OK", 200

@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from awa05.drivers.ws2000 import WS2000Receiver, create_app
+from awa05.drivers.ws2000 import InvalidWS2000Payload, WS2000Receiver, create_app
 
 try:
     import flask  # noqa: F401
@@ -57,6 +57,30 @@ class WS2000ReceiverTests(unittest.TestCase):
             contenido = csv_path.read_text(encoding="utf-8")
             self.assertIn("temp_exterior", contenido)
             self.assertIn("77.0", contenido)
+
+    def test_receive_rechaza_campos_conocidos_no_numericos(self):
+        receiver = WS2000Receiver()
+
+        with self.assertRaisesRegex(InvalidWS2000Payload, "tempf"):
+            receiver.receive({"tempf": "caliente"})
+
+    def test_receive_rechaza_campos_conocidos_fuera_de_rango(self):
+        receiver = WS2000Receiver()
+
+        with self.assertRaisesRegex(InvalidWS2000Payload, "humidity"):
+            receiver.receive({"humidity": "150"})
+
+    def test_receive_tolera_campos_desconocidos(self):
+        with tempfile.TemporaryDirectory() as temporal:
+            csv_path = Path(temporal) / "clima_raw.csv"
+            receiver = WS2000Receiver(
+                csv_path=csv_path,
+                timestamp_fn=lambda: "2026-06-26 10:00:00",
+            )
+
+            fila = receiver.receive({"tempf": "77.0", "extra": "texto"})
+
+        self.assertEqual(fila["temp_exterior"], "77.0")
 
     @unittest.skipUnless(HAS_FLASK, "Flask no instalado en este entorno")
     def test_flask_endpoint_acepta_get_y_rechaza_sin_datos(self):
@@ -157,6 +181,17 @@ class WS2000ReceiverTests(unittest.TestCase):
         response = client.post("/data", data={"tempf": "78.0"})
 
         self.assertEqual(response.status_code, 413)
+
+    @unittest.skipUnless(HAS_FLASK, "Flask no instalado en este entorno")
+    def test_flask_endpoint_rechaza_payload_invalido(self):
+        app = create_app(WS2000Receiver(), shared_secret="")
+        client = app.test_client()
+
+        response = client.get("/data?humidity=150")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json["status"], "invalid")
+        self.assertIn("humidity", response.json["detail"])
 
     @unittest.skipUnless(HAS_FLASK, "Flask no instalado en este entorno")
     def test_health_endpoint_devuelve_status_json(self):

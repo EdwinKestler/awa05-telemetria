@@ -25,6 +25,8 @@ def publicar_salud(node, health_writer=write_health_status):
     try:
         return health_writer(node)
     except Exception as exc:
+        # Intentional scheduler boundary: failing to write the sidecar health
+        # file must be visible but must not stop telemetry jobs.
         print(f"[HEALTH] No se pudo escribir health status: {exc}")
         return None
 

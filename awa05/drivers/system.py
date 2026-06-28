@@ -3,6 +3,17 @@ import re
 import subprocess
 
 
+METRIC_ERRORS = (
+    OSError,
+    subprocess.SubprocessError,
+    AttributeError,
+    IndexError,
+    TypeError,
+    ValueError,
+    ZeroDivisionError,
+)
+
+
 class SystemMonitor:
     """Collect Raspberry Pi/system health metrics with graceful degradation."""
 
@@ -18,14 +29,14 @@ class SystemMonitor:
         try:
             output = self._command_text(["vcgencmd", *args])
             return float(re.search(pattern, output).group(1))
-        except Exception:
+        except METRIC_ERRORS:
             return None
 
     def cpu_temperature_c(self):
         try:
             with self.open("/sys/class/thermal/thermal_zone0/temp", encoding="utf-8") as f:
                 return int(f.read()) / 1000.0
-        except Exception:
+        except METRIC_ERRORS:
             return self._vcgencmd_float(["measure_temp"], r"temp=([\d.]+)")
 
     def voltage_v(self):
@@ -38,7 +49,7 @@ class SystemMonitor:
         try:
             output = self._command_text(["vcgencmd", "measure_clock", "arm"])
             return int(re.search(r"frequency\(\d+\)=(\d+)", output).group(1)) // 1000000
-        except Exception:
+        except METRIC_ERRORS:
             return None
 
     def throttling(self):
@@ -46,7 +57,7 @@ class SystemMonitor:
             output = self._command_text(["vcgencmd", "get_throttled"])
             flags = re.search(r"throttled=(0x[\da-fA-F]+)", output).group(1)
             return int(flags, 16) == 0, flags
-        except Exception:
+        except METRIC_ERRORS:
             return True, "0x0"
 
     def ram_usage_pct(self):
@@ -56,14 +67,14 @@ class SystemMonitor:
             total = int(re.search(r"MemTotal:\s+(\d+)", mem).group(1))
             available = int(re.search(r"MemAvailable:\s+(\d+)", mem).group(1))
             return round((total - available) / total * 100, 1)
-        except Exception:
+        except METRIC_ERRORS:
             return None
 
     def disk_usage_pct(self, path="/"):
         try:
             st = self.statvfs(path)
             return round((1 - st.f_bavail / st.f_blocks) * 100, 1)
-        except Exception:
+        except METRIC_ERRORS:
             return None
 
     def uptime(self):
@@ -72,7 +83,7 @@ class SystemMonitor:
                 uptime_s = float(f.read().split()[0])
             hours, minutes = divmod(int(uptime_s // 60), 60)
             return f"{hours}h {minutes}m"
-        except Exception:
+        except METRIC_ERRORS:
             return None
 
     def wifi_signal(self, interface="wlan0"):
@@ -83,7 +94,7 @@ class SystemMonitor:
             )
             dbm = int(re.search(r"Signal level=(-\d+)", output).group(1))
             return dbm, max(0, min(100, 2 * (dbm + 100)))
-        except Exception:
+        except METRIC_ERRORS:
             return None, None
 
     def load_average(self):
@@ -91,7 +102,7 @@ class SystemMonitor:
             with self.open("/proc/loadavg", encoding="utf-8") as f:
                 load = f.read().split()
             return float(load[0]), float(load[1]), float(load[2])
-        except Exception:
+        except METRIC_ERRORS:
             return None, None, None
 
     def tailscale_ip(self):
@@ -100,7 +111,7 @@ class SystemMonitor:
                 ["tailscale", "ip", "--4"],
                 stderr=subprocess.DEVNULL,
             )
-        except Exception:
+        except METRIC_ERRORS:
             return None
 
     def snapshot(self):

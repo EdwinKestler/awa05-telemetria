@@ -124,6 +124,15 @@ La geometría y parámetros del JSN-SR04T también se leen desde
 - `sensor_distancia.pausa_muestras_s`
 - `sensor_distancia.timeout_echo_s`
 
+Las lecturas de nivel tienen reintentos acotados para fallas transitorias del
+sensor. Si el sensor no responde después de los intentos configurados, la
+lectura se descarta y el estado de salud registra el fallo sin inventar datos.
+
+- `sensor_retry.max_attempts`
+- `sensor_retry.delay_s`
+- `AWA05_SENSOR_READ_MAX_ATTEMPTS`
+- `AWA05_SENSOR_READ_RETRY_DELAY_S`
+
 El receptor WS-2000 acepta el comportamiento histórico por defecto. Para
 proteger `/data` con un secreto compartido:
 
@@ -134,7 +143,10 @@ export AWA05_WS2000_SHARED_SECRET='change-me'
 Luego enviar el token con `X-AWA05-Token`, `token` como query parameter o
 `token` como campo de formulario. El límite de payload se configura con
 `ws2000.max_content_length_bytes` y puede sobreescribirse con
-`AWA05_WS2000_MAX_CONTENT_LENGTH_BYTES`.
+`AWA05_WS2000_MAX_CONTENT_LENGTH_BYTES`. Los campos conocidos del WS-2000 se
+validan como numéricos y dentro de rangos razonables antes de persistirse; esta
+validación se controla con `ws2000.validate_numeric_ranges` y
+`AWA05_WS2000_VALIDATE_NUMERIC_RANGES`.
 
 El mismo servidor Flask expone `/health`, que devuelve el contenido de
 `data/processed/health_status.json` generado por el scheduler. Si el archivo

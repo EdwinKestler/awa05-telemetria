@@ -18,6 +18,10 @@
         "pausa_muestras_s": 0.06,
         "timeout_echo_s": 0.04
     },
+    "sensor_retry": {
+        "max_attempts": 2,
+        "delay_s": 1.0
+    },
     "github": {
         "repo": "",
         "rama": "main"
@@ -36,7 +40,8 @@
     },
     "ws2000": {
         "shared_secret_env": "AWA05_WS2000_SHARED_SECRET",
-        "max_content_length_bytes": 8192
+        "max_content_length_bytes": 8192,
+        "validate_numeric_ranges": true
     },
     "logging": {
         "enabled": true,

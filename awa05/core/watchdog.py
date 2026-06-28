@@ -31,7 +31,7 @@ def reset_estado_watchdog():
 def _config_watchdog():
     try:
         return cargar_config("config/settings.json").get("watchdog", {})
-    except Exception as e:
+    except (OSError, ValueError) as e:
         print(f"[WATCHDOG] No se pudo cargar config/settings.json: {e}")
         return {}
 
@@ -116,5 +116,7 @@ def watchdog_termico(leer_temperatura=leer_temperatura_cpu, ejecutar_apagado=Non
         result.shutdown_executed = True
         return result
     except Exception as e:
+        # Intentional Phase 4 boundary: watchdog failures must be observable
+        # through ThermalWatchdogResult instead of crashing the scheduler loop.
         print(f"[WATCHDOG] Error leyendo temperatura: {e}")
         return ThermalWatchdogResult(error=str(e))

@@ -2,6 +2,7 @@ import os
 
 from awa05.utils import cargar_config
 from awa05.utils import env_bool
+from awa05.utils import env_float
 from awa05.utils import env_int
 
 
@@ -70,6 +71,8 @@ def validar_settings(settings=None):
     requerir_numero(settings, "sensor_distancia.num_muestras", minimo=1)
     requerir_numero(settings, "sensor_distancia.pausa_muestras_s", minimo=0)
     requerir_numero(settings, "sensor_distancia.timeout_echo_s", minimo=0)
+    requerir_numero(settings, "sensor_retry.max_attempts", minimo=1)
+    requerir_numero(settings, "sensor_retry.delay_s", minimo=0)
 
     altura_total = obtener_float(settings, "sensor_distancia.altura_total_cm", 0)
     altura_max = obtener_float(settings, "sensor_distancia.altura_max_agua_cm", 0)
@@ -136,6 +139,20 @@ def sensor_distancia_config():
     }
 
 
+def sensor_retry_config():
+    settings = validar_settings()
+    return {
+        "max_attempts": env_int(
+            "AWA05_SENSOR_READ_MAX_ATTEMPTS",
+            obtener_int(settings, "sensor_retry.max_attempts", 2),
+        ),
+        "delay_s": env_float(
+            "AWA05_SENSOR_READ_RETRY_DELAY_S",
+            obtener_float(settings, "sensor_retry.delay_s", 1.0),
+        ),
+    }
+
+
 def ws2000_config():
     settings = validar_settings()
     secret_env_var = str(
@@ -148,6 +165,10 @@ def ws2000_config():
         "max_content_length_bytes": env_int(
             "AWA05_WS2000_MAX_CONTENT_LENGTH_BYTES",
             obtener_int(settings, "ws2000.max_content_length_bytes", 8192),
+        ),
+        "validate_numeric_ranges": env_bool(
+            "AWA05_WS2000_VALIDATE_NUMERIC_RANGES",
+            bool(obtener(settings, "ws2000.validate_numeric_ranges", True)),
         ),
     }
 

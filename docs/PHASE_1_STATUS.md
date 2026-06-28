@@ -1,6 +1,7 @@
 # Phase 1 Status — Structural Foundations
 
-**Status**: Closed; Phase 2 may proceed.  
+**Status**: Closed and approved; later Phases 2–4 may proceed/close on top of
+this foundation.
 **Date**: 2026-06-26  
 **Human approval to start**: Granted after Phase 0 approval.
 **Human approval to continue**: Granted after real Raspberry Pi validation.
@@ -107,5 +108,6 @@ Known follow-up:
 
 ## Human gate
 
-Phase 1 is ready for closure. Human approval was given to continue with the
-remediation plan; Phase 2 work may proceed.
+Phase 1 is closed. Human approval was given to continue with the remediation
+plan, and the package/config foundation remains the validated base for Phases
+2–4.

@@ -32,4 +32,6 @@ def run_safely(name: str, job: Callable[[], object]) -> JobResult:
         job()
         return JobResult(name=name, ok=True)
     except Exception as exc:
+        # Intentional scheduler boundary: callers get a structured JobResult
+        # and decide whether/how to log or continue.
         return JobResult(name=name, ok=False, error=exc)
