@@ -55,6 +55,11 @@ Por seguridad operacional, la publicación automática de datos queda dirigida a
 automáticos a `main` están bloqueados salvo que se active explícitamente
 `AWA05_ALLOW_MAIN_DATA=true` después de aprobación humana.
 
+La rama `main` no debe contener datos generados. Los CSV crudos y JSON
+procesados se mantienen localmente en la Raspberry Pi como cache operativo y se
+publican en la rama `data`. Ver [docs/DATA_STRATEGY.md](docs/DATA_STRATEGY.md)
+para la política completa.
+
 Los dashboards HTML leen primero desde la rama `data` publicada en GitHub:
 
 ```text

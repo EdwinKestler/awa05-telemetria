@@ -4,6 +4,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 from awa05.upload.github import (
+    ARCHIVOS,
     ConfigPublicacion,
     _ejecutar_con_reintentos,
     config_desde_env,
@@ -13,6 +14,24 @@ from awa05.upload.github import (
 
 
 class UploadGithubTests(unittest.TestCase):
+    def test_config_desde_env_usa_rama_data_por_defecto(self):
+        with patch.dict("os.environ", {}, clear=True):
+            config = config_desde_env()
+
+        self.assertEqual(config.app_branch, "main")
+        self.assertEqual(config.data_branch, "data")
+        self.assertEqual(config.dashboard_branch, "data")
+        self.assertFalse(config.allow_main_data)
+
+    def test_archivos_raw_publicados_van_a_rutas_de_datos(self):
+        self.assertEqual(
+            ARCHIVOS,
+            [
+                "data/raw/nivel_raw.csv",
+                "data/raw/clima_raw.csv",
+            ],
+        )
+
     def test_subir_archivos_dry_run_no_pide_token_ni_cliente(self):
         with tempfile.TemporaryDirectory() as temporal:
             archivo = Path(temporal) / "nivel_raw.csv"

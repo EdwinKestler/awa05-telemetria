@@ -1,10 +1,9 @@
 # AWA05 Telemetría — Remediation Plan by Phases
 
-**Status**: Phases 0–4 closed/approved for code-load validation as of
-2026-06-28. Phase 5 quality-gate foundation implemented and validated for
+**Status**: Phases 0–5 closed/approved for code-load validation as of
+2026-06-28. Phase 6A data-strategy cleanup implemented and validated for
 review. Field hardware validation remains required before deployment on the
-real AWA05 node. Next phase after Phase 5 approval: Phase 6 — Sustainable Data
-Strategy & Long-term Architecture.
+real AWA05 node.
 **Scope**: Python scripts, configuration, testing, data/git strategy, architecture, reliability, and maintainability.  
 **Goals**:
 - Stop repository bloat and data pollution on `main`.
@@ -387,6 +386,10 @@ upload dry-run, and diff whitespace checks.
 ## Phase 6 — Sustainable Data Strategy & Long-term Architecture
 
 **Priority**: High (P0 long-term), can run partially in parallel with earlier phases.
+**Current status**: Phase 6A implemented and validated for review. GitHub
+`data` branch remains the telemetry store for now, generated data is removed
+from `main` tracking, and cloud storage is deferred until the current
+architecture is stable.
 
 ### Objectives
 - Remove raw data and generated JSON from polluting the `main` branch history.
@@ -395,12 +398,15 @@ upload dry-run, and diff whitespace checks.
 ### Key Tasks
 1. **Data branch or external sink**
    - Route automated data updates to a dedicated `data` branch (or `telemetry-data`).
-   - Or stop pushing raw CSVs entirely and use GitHub Releases, a separate data repo, or external storage (S3, etc.).
+   - Keep GitHub `data` branch as the current telemetry store.
+   - Defer GitHub Releases, a separate data repo, cloud object storage, or
+     external database migration until the current architecture is stable.
 
 2. **Dashboard consumption**
    - Update HTML dashboards (or document) to fetch from the correct source (raw GitHub URLs on the data branch or a different hosting mechanism).
 
 3. **Cleanup**
+   - Remove generated CSV/JSON files from `main` tracking going forward.
    - (Careful) Consider history rewrite or shallow history for old data commits (only after backups).
    - Add clear documentation: "data is not part of application source history".
 
@@ -417,6 +423,8 @@ upload dry-run, and diff whitespace checks.
 - Application code commits are small and meaningful.
 - Historical data growth is isolated from the main code history.
 - Dashboards continue to work.
+- `git ls-files data` is empty on `main`.
+- Runtime/generated data policy is documented in `docs/DATA_STRATEGY.md`.
 
 **Effort**: Medium–High  
 **Dependencies**: Phase 0 (containment) + Phase 1 (config)
@@ -444,16 +452,17 @@ upload dry-run, and diff whitespace checks.
 | 5     | Testing + CI                 | Ongoing         | Regression protection     | Medium      |
 | 6     | Data strategy                | 2–4 weeks       | Long-term sustainability  | P0 (long)   |
 
-Phases 0–4 are closed for code/load validation. Phase 5 has a quality-gate
-foundation implemented for review. Phase 6 remains pending for long-term data
-architecture.
+Phases 0–5 are closed for code/load validation. Phase 6A has a data-strategy
+cleanup implemented for review; future Phase 6B work can evaluate external
+storage only after the current architecture remains stable.
 
 ---
 
 ## How to Execute
 
-1. Review/approve **Phase 5 — Testing, CI & Quality**.
-2. Start **Phase 6 — Sustainable Data Strategy & Long-term Architecture**.
+1. Review/approve **Phase 6A — Data Strategy Cleanup**.
+2. Defer cloud/external storage decisions until the GitHub `data` branch model
+   is stable in operation.
 3. Keep the original `scripts/` entry points working as thin shims during
    transition.
 4. Use the dummy Raspberry Pi only for code/load testing; use real AWA05
@@ -477,5 +486,5 @@ This plan systematically eliminates each of them.
 
 ---
 
-**Next step recommendation**: Review the Phase 5 quality gate, then begin Phase
-6 data strategy work.
+**Next step recommendation**: Review Phase 6A, then decide whether to close the
+remediation plan or plan a later Phase 6B storage evaluation.
